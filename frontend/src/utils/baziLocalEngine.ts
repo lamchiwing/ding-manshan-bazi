@@ -127,7 +127,6 @@ export function calculateLocalBazi(birthDate: string, birthTime: string, gender:
   const hour = parseInt(hStr, 10);
   const min = parseInt(minStr, 10);
 
-  // Simplified approximation of Lichun (around Feb 4 04:00)
   const isBeforeLichun = month === 1 || (month === 2 && day < 4);
   const baziYear = isBeforeLichun ? year - 1 : year;
   const yearStemIdx = (baziYear - 4 + 60) % 10;
@@ -135,8 +134,6 @@ export function calculateLocalBazi(birthDate: string, birthTime: string, gender:
   const yearStem = STEMS[yearStemIdx];
   const yearBranch = BRANCHES[yearBranchIdx];
 
-  // Month branch approximate bounds
-  // 1: 丑, 2: 寅, 3: 卯, 4: 辰, 5: 巳, 6: 午, 7: 未, 8: 申, 9: 酉, 10: 戌, 11: 亥, 12: 子
   const monthBranches = ["丑", "寅", "卯", "辰", "巳", "午", "未", "申", "酉", "戌", "亥", "子"];
   const mBranch = monthBranches[(month - 1) % 12];
   const tigerBase = FIVE_TIGER_BASE[yearStem];
@@ -145,7 +142,6 @@ export function calculateLocalBazi(birthDate: string, birthTime: string, gender:
   const mOffset = monthBranchOrder.indexOf(mBranch);
   const monthStem = STEMS[(tigerIdx + mOffset) % 10];
 
-  // Day Stem & Branch using JDN
   let calcDay = day;
   let calcMonth = month;
   let calcYear = year;
@@ -161,7 +157,6 @@ export function calculateLocalBazi(birthDate: string, birthTime: string, gender:
   const dayStem = STEMS[dayStemIdx];
   const dayBranch = BRANCHES[dayBranchIdx];
 
-  // Hour Branch & Stem
   let hBranch = "子";
   const totalMins = hour * 60 + min;
   if (totalMins >= 23 * 60 || totalMins < 60) {
@@ -181,40 +176,43 @@ export function calculateLocalBazi(birthDate: string, birthTime: string, gender:
       branch: yearBranch,
       gan_zhi: `${yearStem}${yearBranch}`,
       stem_element: STEM_PROPERTIES[yearStem].element,
+      branch_element: BRANCH_PROPERTIES[yearBranch].element,
       ten_god: getTenGod(dayStem, yearStem),
       changsheng: getChangsheng(dayStem, yearBranch),
-      hidden_stems: HIDDEN_STEMS[yearBranch].map(h => ({ ...h, ten_god: getTenGod(dayStem, h.stem) }))
+      hidden_stems: HIDDEN_STEMS[yearBranch].map(h => ({ ...h, ten_god: getTenGod(dayStem, h.stem), element: STEM_PROPERTIES[h.stem].element }))
     },
     month: {
       stem: monthStem,
       branch: mBranch,
       gan_zhi: `${monthStem}${mBranch}`,
       stem_element: STEM_PROPERTIES[monthStem].element,
+      branch_element: BRANCH_PROPERTIES[mBranch].element,
       ten_god: getTenGod(dayStem, monthStem),
       changsheng: getChangsheng(dayStem, mBranch),
-      hidden_stems: HIDDEN_STEMS[mBranch].map(h => ({ ...h, ten_god: getTenGod(dayStem, h.stem) }))
+      hidden_stems: HIDDEN_STEMS[mBranch].map(h => ({ ...h, ten_god: getTenGod(dayStem, h.stem), element: STEM_PROPERTIES[h.stem].element }))
     },
     day: {
       stem: dayStem,
       branch: dayBranch,
       gan_zhi: `${dayStem}${dayBranch}`,
       stem_element: STEM_PROPERTIES[dayStem].element,
+      branch_element: BRANCH_PROPERTIES[dayBranch].element,
       ten_god: "日主",
       changsheng: getChangsheng(dayStem, dayBranch),
-      hidden_stems: HIDDEN_STEMS[dayBranch].map(h => ({ ...h, ten_god: getTenGod(dayStem, h.stem) }))
+      hidden_stems: HIDDEN_STEMS[dayBranch].map(h => ({ ...h, ten_god: getTenGod(dayStem, h.stem), element: STEM_PROPERTIES[h.stem].element }))
     },
     hour: {
       stem: hourStem,
       branch: hBranch,
       gan_zhi: `${hourStem}${hBranch}`,
       stem_element: STEM_PROPERTIES[hourStem].element,
+      branch_element: BRANCH_PROPERTIES[hBranch].element,
       ten_god: getTenGod(dayStem, hourStem),
       changsheng: getChangsheng(dayStem, hBranch),
-      hidden_stems: HIDDEN_STEMS[hBranch].map(h => ({ ...h, ten_god: getTenGod(dayStem, h.stem) }))
+      hidden_stems: HIDDEN_STEMS[hBranch].map(h => ({ ...h, ten_god: getTenGod(dayStem, h.stem), element: STEM_PROPERTIES[h.stem].element }))
     }
   };
 
-  // Five Elements balance
   const elementScores: Record<string, number> = { "木": 0, "火": 0, "土": 0, "金": 0, "水": 0 };
   [yearStem, monthStem, dayStem, hourStem].forEach(s => {
     elementScores[STEM_PROPERTIES[s].element] += 1.0;
@@ -240,7 +238,6 @@ export function calculateLocalBazi(birthDate: string, birthTime: string, gender:
     }
   }
 
-  // Da Yun
   const isMale = gender === 'male';
   const isYangYear = STEM_PROPERTIES[yearStem].yin_yang === '陽';
   const isForward = (isMale && isYangYear) || (!isMale && !isYangYear);
