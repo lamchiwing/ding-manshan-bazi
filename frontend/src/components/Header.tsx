@@ -8,18 +8,20 @@ interface HeaderProps {
 export const Header: React.FC<HeaderProps> = ({ activeTab, setActiveTab }) => {
   const navItems = [
     { id: 'home', label: '主頁' },
-    { id: 'ai-reading', label: '線上命理' },
+    { id: 'reading', label: '線上命理' },
     { id: 'services', label: '服務收費' },
-    { id: 'booking', label: '預約諮詢' },
     { id: 'library', label: '圖書館' },
   ];
 
   return (
-    <header className="w-full bg-charcoal border-b border-[#1E3A5F]/40 sticky top-0 z-50 backdrop-blur-md">
-      <div className="max-w-[1440px] mx-auto px-6 md:px-16 lg:px-24 h-20 flex items-center justify-between">
-        {/* Brand Logo - Pure Text Logo matching brief */}
+    <header className="w-full bg-charcoal border-b border-[#1E3A5F]/40 sticky top-0 z-40 backdrop-blur-md">
+      <div className="max-w-[1440px] mx-auto px-6 md:px-12 lg:px-16 h-18 flex items-center justify-between">
+        {/* Brand Logo - Pure Text */}
         <div 
-          onClick={() => setActiveTab('home')}
+          onClick={() => {
+            setActiveTab('home');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+          }}
           className="cursor-pointer select-none text-xl md:text-2xl font-serif tracking-widest flex items-center"
         >
           <span className="text-[#D97706] font-bold">丁</span>
@@ -29,7 +31,7 @@ export const Header: React.FC<HeaderProps> = ({ activeTab, setActiveTab }) => {
         </div>
 
         {/* Minimal Navigation */}
-        <nav className="flex items-center space-x-6 md:space-x-10 text-sm md:text-base">
+        <nav className="flex items-center space-x-6 md:space-x-8 text-sm md:text-base">
           {navItems.map((item) => {
             const isActive = activeTab === item.id;
             return (
