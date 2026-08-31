@@ -8,11 +8,11 @@ export interface ServiceItem {
   description: string;
   features: string[];
   type: 'consultation' | 'naming' | 'date_selection' | 'digital';
-  requires_booking: boolean; // true: requires online appointment; false: digital instant report
+  requires_booking: boolean;
 }
 
-// Ordered strictly from highest price to lowest price
-export const SERVICES_LIST: ServiceItem[] = [
+// 1. 預約項目 (專屬一對一線上諮詢 - 僅在點擊「預約諮詢」卡片彈窗中顯示)
+export const BOOKING_SERVICES: ServiceItem[] = [
   {
     id: "srv-corp-fengshui-layout",
     title: "公司風水佈局",
@@ -182,122 +182,24 @@ export const SERVICES_LIST: ServiceItem[] = [
     ],
     type: "date_selection",
     requires_booking: true
-  },
+  }
+];
+
+// 2. 右側主列表項目 (不需預約，由平價至貴價順序排列 HK$128 -> HK$1,388)
+export const SIDEBAR_PRICE_LIST: ServiceItem[] = [
   {
-    id: "srv-period-9-deep",
-    title: "九運住宅深度風水",
-    price_hkd: 1388,
-    price_display: "HK$1,388",
-    category_name: "深度分析報告",
-    turnaround: "深度玄空排盤 · 即時生成",
-    description: "九運（2024–2043）住宅風水專項分析，評估物業在離九運之氣運走向、正神零神方位與佈局參考。",
+    id: "srv-elem-guide",
+    title: "五行生活指南",
+    price_hkd: 128,
+    price_display: "HK$128",
+    category_name: "生活指南",
+    turnaround: "即時生成 · 專屬報告",
+    description: "解讀個人八字五行分佈，提供專屬顏色、日常方位與生活起居調和參考。",
     features: [
-      "九運物業氣運分析",
-      "正神與零神坐向參考",
-      "長遠空間調和指引",
-      "專屬分析報告"
-    ],
-    type: "digital",
-    requires_booking: false
-  },
-  {
-    id: "srv-synastry-love",
-    title: "雙人合盤・愛情／婚姻",
-    price_hkd: 688,
-    price_display: "HK$688",
-    category_name: "雙人合盤",
-    turnaround: "即時生成 · 雙人對照",
-    description: "輸入雙方出生年月日時，進行天干地支相合相生、五行互補與相處溝通指引。",
-    features: [
-      "雙方五行互補評估",
-      "干支相合與相處特質",
-      "相處盲點與理解建議",
-      "合盤分析報告"
-    ],
-    type: "digital",
-    requires_booking: false
-  },
-  {
-    id: "srv-house-5yr",
-    title: "住宅風水・5年布局",
-    price_hkd: 688,
-    price_display: "HK$688",
-    category_name: "家居風水報告",
-    turnaround: "戶型圖分析 · 即時生成",
-    description: "結合八宅與玄空九星，推算未來 5 年住宅各方位之氣流與星位流轉，提供起居調和參考。",
-    features: [
-      "房屋九宮格飛星排盤",
-      "未來 5 年空間催旺點",
-      "玄關、客廳、睡房調和建議",
-      "完整佈局指引"
-    ],
-    type: "digital",
-    requires_booking: false
-  },
-  {
-    id: "srv-life-nav-3yr",
-    title: "八字人生導航・未來3年",
-    price_hkd: 588,
-    price_display: "HK$588",
-    category_name: "綜合報告",
-    turnaround: "即時生成 · 綜合報告",
-    description: "貫通事業、財運、感情與大運流年變化，提供未來 3 年的全面推演手冊。",
-    features: [
-      "命盤原局結構剖析",
-      "三年運勢節律梳理",
-      "階段規劃參考建議",
-      "完整分析文件"
-    ],
-    type: "digital",
-    requires_booking: false
-  },
-  {
-    id: "srv-monthly-decision",
-    title: "十二流月吉凶＋重大決策",
-    price_hkd: 488,
-    price_display: "HK$488",
-    category_name: "決策指南",
-    turnaround: "即時生成 · 決策矩陣",
-    description: "包含完整十二流月預測，並額外加入置業、簽約、重大交易或變動之時機參考。",
-    features: [
-      "全套十二流月干支排盤",
-      "重大決策時機參考",
-      "風險與時窗提點",
-      "決策分析報告"
-    ],
-    type: "digital",
-    requires_booking: false
-  },
-  {
-    id: "srv-monthly-12",
-    title: "十二流月吉凶",
-    price_hkd: 368,
-    price_display: "HK$368",
-    category_name: "流月曆",
-    turnaround: "即時生成 · 流月曆",
-    description: "按二十四節氣精確推算整年 12 個流月之天干地支與原局關係，月度動態清晰明瞭。",
-    features: [
-      "12 個流月特點與標記",
-      "每月重要節點提醒",
-      "生活與工作節奏建議",
-      "全年流月總覽"
-    ],
-    type: "digital",
-    requires_booking: false
-  },
-  {
-    id: "srv-biz-3yr",
-    title: "創業／投資・未來3年",
-    price_hkd: 288,
-    price_display: "HK$288",
-    category_name: "商業推演",
-    turnaround: "即時生成 · 分析報告",
-    description: "針對合作創業、投資評估與拓展時機進行推演，分析個人命盤特質與商業節奏契合度。",
-    features: [
-      "合夥人五行互補考量",
-      "資金節奏與時機分析",
-      "適合切入月份建議",
-      "商業決策參考"
+      "個人五行能量分佈圖",
+      "合適顏色與日常座向建議",
+      "起居與作息調養參考",
+      "專屬生活指南卡"
     ],
     type: "digital",
     requires_booking: false
@@ -371,20 +273,128 @@ export const SERVICES_LIST: ServiceItem[] = [
     requires_booking: false
   },
   {
-    id: "srv-elem-guide",
-    title: "五行生活指南",
-    price_hkd: 128,
-    price_display: "HK$128",
-    category_name: "生活指南",
-    turnaround: "即時生成 · 專屬報告",
-    description: "解讀個人八字五行分佈，提供專屬顏色、日常方位與生活起居調和參考。",
+    id: "srv-biz-3yr",
+    title: "創業／投資・未來3年",
+    price_hkd: 288,
+    price_display: "HK$288",
+    category_name: "商業推演",
+    turnaround: "即時生成 · 分析報告",
+    description: "針對合作創業、投資評估與拓展時機進行推演，分析個人命盤特質與商業節奏契合度。",
     features: [
-      "個人五行能量分佈圖",
-      "合適顏色與日常座向建議",
-      "起居與作息調養參考",
-      "專屬生活指南卡"
+      "合夥人五行互補考量",
+      "資金節奏與時機分析",
+      "適合切入月份建議",
+      "商業決策參考"
+    ],
+    type: "digital",
+    requires_booking: false
+  },
+  {
+    id: "srv-monthly-12",
+    title: "十二流月吉凶",
+    price_hkd: 368,
+    price_display: "HK$368",
+    category_name: "流月曆",
+    turnaround: "即時生成 · 流月曆",
+    description: "按二十四節氣精確推算整年 12 個流月之天干地支與原局關係，月度動態清晰明瞭。",
+    features: [
+      "12 個流月特點與標記",
+      "每月重要節點提醒",
+      "生活與工作節奏建議",
+      "全年流月總覽"
+    ],
+    type: "digital",
+    requires_booking: false
+  },
+  {
+    id: "srv-monthly-decision",
+    title: "十二流月吉凶＋重大決策",
+    price_hkd: 488,
+    price_display: "HK$488",
+    category_name: "決策指南",
+    turnaround: "即時生成 · 決策矩陣",
+    description: "包含完整十二流月預測，並額外加入置業、簽約、重大交易或變動之時機參考。",
+    features: [
+      "全套十二流月干支排盤",
+      "重大決策時機參考",
+      "風險與時窗提點",
+      "決策分析報告"
+    ],
+    type: "digital",
+    requires_booking: false
+  },
+  {
+    id: "srv-life-nav-3yr",
+    title: "八字人生導航・未來3年",
+    price_hkd: 588,
+    price_display: "HK$588",
+    category_name: "綜合報告",
+    turnaround: "即時生成 · 綜合報告",
+    description: "貫通事業、財運、感情與大運流年變化，提供未來 3 年的全面推演手冊。",
+    features: [
+      "命盤原局結構剖析",
+      "三年運勢節律梳理",
+      "階段規劃參考建議",
+      "完整分析文件"
+    ],
+    type: "digital",
+    requires_booking: false
+  },
+  {
+    id: "srv-house-5yr",
+    title: "住宅風水・5年布局",
+    price_hkd: 688,
+    price_display: "HK$688",
+    category_name: "家居風水報告",
+    turnaround: "戶型圖分析 · 即時生成",
+    description: "結合八宅與玄空九星，推算未來 5 年住宅各方位之氣流與星位流轉，提供起居調和參考。",
+    features: [
+      "房屋九宮格飛星排盤",
+      "未來 5 年空間催旺點",
+      "玄關、客廳、睡房調和建議",
+      "完整佈局指引"
+    ],
+    type: "digital",
+    requires_booking: false
+  },
+  {
+    id: "srv-synastry-love",
+    title: "雙人合盤・愛情／婚姻",
+    price_hkd: 688,
+    price_display: "HK$688",
+    category_name: "雙人合盤",
+    turnaround: "即時生成 · 雙人對照",
+    description: "輸入雙方出生年月日時，進行天干地支相合相生、五行互補與相處溝通指引。",
+    features: [
+      "雙方五行互補評估",
+      "干支相合與相處特質",
+      "相處盲點與理解建議",
+      "合盤分析報告"
+    ],
+    type: "digital",
+    requires_booking: false
+  },
+  {
+    id: "srv-period-9-deep",
+    title: "九運住宅深度風水",
+    price_hkd: 1388,
+    price_display: "HK$1,388",
+    category_name: "深度分析報告",
+    turnaround: "深度玄空排盤 · 即時生成",
+    description: "九運（2024–2043）住宅風水專項分析，評估物業在離九運之氣運走向、正神零神方位與佈局參考。",
+    features: [
+      "九運物業氣運分析",
+      "正神與零神坐向參考",
+      "長遠空間調和指引",
+      "專屬分析報告"
     ],
     type: "digital",
     requires_booking: false
   }
+];
+
+// 所有服務集合 (共22項)
+export const SERVICES_LIST: ServiceItem[] = [
+  ...BOOKING_SERVICES,
+  ...SIDEBAR_PRICE_LIST
 ];
