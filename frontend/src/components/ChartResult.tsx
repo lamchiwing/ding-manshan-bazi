@@ -11,11 +11,13 @@ export const ChartResult: React.FC<ChartResultProps> = ({ baziData, onOpenReadin
 
   const pillars = baziData.pillars || {};
   const dayMaster = baziData.day_master?.display || "丙火";
+  
+  // Strict Left-to-Right Order: 時柱 -> 日柱 -> 月柱 -> 年柱
   const pKeys = [
-    { key: "year", label: "年柱", sub: "根基" },
-    { key: "month", label: "月柱", sub: "提綱" },
-    { key: "day", label: "日柱", sub: "自身" },
     { key: "hour", label: "時柱", sub: "歸宿" },
+    { key: "day", label: "日柱", sub: "自身" },
+    { key: "month", label: "月柱", sub: "提綱" },
+    { key: "year", label: "年柱", sub: "根基" },
   ];
 
   return (
@@ -38,7 +40,7 @@ export const ChartResult: React.FC<ChartResultProps> = ({ baziData, onOpenReadin
           </div>
         </div>
 
-        {/* Four Pillars */}
+        {/* Four Pillars: 時柱 -> 日柱 -> 月柱 -> 年柱 (由左至右) */}
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 md:gap-4 mb-6">
           {pKeys.map((p, idx) => {
             const pData = pillars[p.key] || {};
