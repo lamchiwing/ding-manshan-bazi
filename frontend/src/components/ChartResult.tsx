@@ -1,5 +1,4 @@
 import React from 'react';
-import { FiveElementsChart } from './FiveElementsChart';
 
 interface ChartResultProps {
   baziData: any;
@@ -99,65 +98,59 @@ export const ChartResult: React.FC<ChartResultProps> = ({ baziData, onOpenReadin
           })}
         </div>
 
-        {/* Five Elements & Da Yun */}
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-4 mb-6">
-          <div className="md:col-span-5">
-            <FiveElementsChart elements={baziData.elements || {}} />
+        {/* Da Yun & Shen Sha (Full Width - Five Elements Section completely removed) */}
+        <div className="bg-[#F4EFEA] text-[#2B2D2F] p-4 md:p-5 rounded-[3px] border border-[#1E3A5F]/20 mb-6">
+          <div>
+            <div className="flex items-center justify-between mb-2.5 border-b border-[#2B2D2F]/10 pb-1.5">
+              <h3 className="font-serif text-sm md:text-base font-bold">大運排盤</h3>
+              <span className="text-[11px] text-[#1E3A5F]">十年一柱</span>
+            </div>
+            <div className="grid grid-cols-4 sm:grid-cols-8 gap-1.5 mb-4">
+              {(baziData.luck_cycles || []).slice(0, 8).map((lc: any, i: number) => (
+                <div key={i} className="bg-white/80 p-1.5 rounded border border-[#1E3A5F]/15 text-center">
+                  <div className="text-[9px] text-[#A4B3C6] font-mono">{lc.start_age}歲</div>
+                  <div className="font-serif font-bold text-sm text-[#2B2D2F] my-0.5">{lc.gan_zhi}</div>
+                  <div className="text-[9px] text-[#1E3A5F]">{lc.ten_god}</div>
+                  <div className="text-[8px] text-[#D97706]">{lc.changsheng}</div>
+                </div>
+              ))}
+            </div>
+
+            {/* Shen Sha */}
+            <div className="border-t border-[#2B2D2F]/10 pt-2">
+              <h4 className="font-serif text-xs font-bold text-[#2B2D2F] mb-1.5">
+                神煞吉凶
+              </h4>
+              <div className="flex flex-wrap gap-1.5">
+                {(baziData.shen_sha?.list || []).map((ss: any, idx: number) => (
+                  <span
+                    key={idx}
+                    className={`text-[10px] px-2 py-0.5 rounded-[2px] font-sans ${
+                      ss.type === "吉神" 
+                        ? "bg-[#1E3A5F] text-[#F4EFEA]" 
+                        : "bg-[#D97706]/15 text-[#D97706] font-medium border border-[#D97706]/30"
+                    }`}
+                  >
+                    {ss.name} · {ss.pillar}
+                  </span>
+                ))}
+                {(!baziData.shen_sha?.list || baziData.shen_sha.list.length === 0) && (
+                  <span className="text-[11px] text-[#A4B3C6]">原局氣象平和</span>
+                )}
+              </div>
+            </div>
           </div>
 
-          <div className="md:col-span-7 bg-[#F4EFEA] text-[#2B2D2F] p-4 md:p-5 rounded-[3px] border border-[#1E3A5F]/20 flex flex-col justify-between">
-            <div>
-              <div className="flex items-center justify-between mb-2.5 border-b border-[#2B2D2F]/10 pb-1.5">
-                <h3 className="font-serif text-sm md:text-base font-bold">大運排盤</h3>
-                <span className="text-[11px] text-[#1E3A5F]">十年一柱</span>
-              </div>
-              <div className="grid grid-cols-4 sm:grid-cols-8 gap-1.5 mb-4">
-                {(baziData.luck_cycles || []).slice(0, 8).map((lc: any, i: number) => (
-                  <div key={i} className="bg-white/80 p-1.5 rounded border border-[#1E3A5F]/15 text-center">
-                    <div className="text-[9px] text-[#A4B3C6] font-mono">{lc.start_age}歲</div>
-                    <div className="font-serif font-bold text-sm text-[#2B2D2F] my-0.5">{lc.gan_zhi}</div>
-                    <div className="text-[9px] text-[#1E3A5F]">{lc.ten_god}</div>
-                    <div className="text-[8px] text-[#D97706]">{lc.changsheng}</div>
-                  </div>
-                ))}
-              </div>
-
-              {/* Shen Sha */}
-              <div className="border-t border-[#2B2D2F]/10 pt-2">
-                <h4 className="font-serif text-xs font-bold text-[#2B2D2F] mb-1.5">
-                  神煞吉凶
-                </h4>
-                <div className="flex flex-wrap gap-1.5">
-                  {(baziData.shen_sha?.list || []).map((ss: any, idx: number) => (
-                    <span
-                      key={idx}
-                      className={`text-[10px] px-2 py-0.5 rounded-[2px] font-sans ${
-                        ss.type === "吉神" 
-                          ? "bg-[#1E3A5F] text-[#F4EFEA]" 
-                          : "bg-[#D97706]/15 text-[#D97706] font-medium border border-[#D97706]/30"
-                      }`}
-                    >
-                      {ss.name} · {ss.pillar}
-                    </span>
-                  ))}
-                  {(!baziData.shen_sha?.list || baziData.shen_sha.list.length === 0) && (
-                    <span className="text-[11px] text-[#A4B3C6]">原局氣象平和</span>
-                  )}
-                </div>
-              </div>
-            </div>
-
-            <div className="mt-4 pt-3 border-t border-[#2B2D2F]/10 flex items-center justify-between">
-              <span className="text-[11px] text-[#2B2D2F]/70">
-                深入解讀事業、感情與流年走向？
-              </span>
-              <button
-                onClick={onOpenReading}
-                className="bg-[#1E3A5F] hover:bg-[#2B2D2F] text-[#F4EFEA] px-3 py-1.5 text-xs font-sans rounded transition-colors font-medium"
-              >
-                線上命理對話 →
-              </button>
-            </div>
+          <div className="mt-4 pt-3 border-t border-[#2B2D2F]/10 flex items-center justify-between">
+            <span className="text-[11px] text-[#2B2D2F]/70">
+              深入解讀事業、感情與流年走向？
+            </span>
+            <button
+              onClick={onOpenReading}
+              className="bg-[#1E3A5F] hover:bg-[#2B2D2F] text-[#F4EFEA] px-3 py-1.5 text-xs font-sans rounded transition-colors font-medium"
+            >
+              線上命理對話 →
+            </button>
           </div>
         </div>
       </div>
