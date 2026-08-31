@@ -5,6 +5,7 @@ import { ChartResult } from './components/ChartResult';
 import { OnlineReading } from './components/OnlineReading';
 import { ServicesSidebar } from './components/ServicesSidebar';
 import { ServiceDetailModal } from './components/ServiceDetailModal';
+import { BookingCardsModal } from './components/BookingCardsModal';
 import { LibrarySection } from './components/LibrarySection';
 import { Footer } from './components/Footer';
 import { calculateLocalBazi } from './utils/baziLocalEngine';
@@ -17,7 +18,10 @@ export function App() {
 
   // Selected Service for Modal (Details + Direct Pay & Book)
   const [selectedService, setSelectedService] = useState<ServiceItem | null>(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
+
+  // Booking Cards Modal State
+  const [isBookingCardsOpen, setIsBookingCardsOpen] = useState(false);
 
   // Initial calculation on load
   useEffect(() => {
@@ -56,9 +60,9 @@ export function App() {
     }
   };
 
-  const handleOpenService = (service: ServiceItem) => {
+  const handleOpenServiceDetail = (service: ServiceItem) => {
     setSelectedService(service);
-    setIsModalOpen(true);
+    setIsDetailModalOpen(true);
   };
 
   return (
@@ -70,7 +74,7 @@ export function App() {
       <main className="flex-1 max-w-[1440px] w-full mx-auto px-4 sm:px-8 md:px-12 lg:px-16 py-6 md:py-8">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
           
-          {/* Left Main Area: Chart Input, Result, Online Reading & Library (7 or 8 columns) */}
+          {/* Left Main Area: Chart Input, Result, Online Reading & Library (8 columns) */}
           <div className="lg:col-span-7 xl:col-span-8 space-y-2">
             {/* 1. Hero & Birth Chart Input */}
             <HeroChartInput onCalculate={handleCalculate} isLoading={isLoading} />
@@ -90,9 +94,8 @@ export function App() {
             <OnlineReading
               baziData={baziData}
               onOpenBooking={() => {
-                // Open 1-on-1 consultation service (八字論命 or 問事求謀)
                 const baziService = SERVICES_LIST.find(s => s.id === 'srv-master-bazi') || SERVICES_LIST[4];
-                handleOpenService(baziService);
+                handleOpenServiceDetail(baziService);
               }}
             />
 
@@ -100,10 +103,11 @@ export function App() {
             <LibrarySection />
           </div>
 
-          {/* Right Sidebar: Services & Pricing List (Ordered from expensive to cheap) (5 or 4 columns) */}
+          {/* Right Sidebar: Services & Pricing List (Ordered from expensive to cheap) (4 columns) */}
           <div className="lg:col-span-5 xl:col-span-4 sticky top-24">
             <ServicesSidebar
-              onSelectService={handleOpenService}
+              onSelectService={handleOpenServiceDetail}
+              onOpenBookingCards={() => setIsBookingCardsOpen(true)}
               selectedServiceId={selectedService?.id}
             />
           </div>
@@ -114,13 +118,22 @@ export function App() {
       {/* Footer */}
       <Footer />
 
-      {/* Service Detail & Direct Payment/Booking Modal */}
+      {/* 1. Service Detail & Direct Payment/Booking Modal */}
       <ServiceDetailModal
         service={selectedService}
-        isOpen={isModalOpen}
+        isOpen={isDetailModalOpen}
         onClose={() => {
-          setIsModalOpen(false);
+          setIsDetailModalOpen(false);
           setSelectedService(null);
+        }}
+      />
+
+      {/* 2. Booking Cards Modal (Opens when top '預約諮詢項目' button is clicked) */}
+      <BookingCardsModal
+        isOpen={isBookingCardsOpen}
+        onClose={() => setIsBookingCardsOpen(false)}
+        onSelectBookingService={(service) => {
+          handleOpenServiceDetail(service);
         }}
       />
     </div>

@@ -7,7 +7,8 @@ export interface ServiceItem {
   turnaround: string;
   description: string;
   features: string[];
-  type: 'onsite' | 'consultation' | 'naming' | 'date_selection' | 'digital';
+  type: 'consultation' | 'naming' | 'date_selection' | 'digital';
+  requires_booking: boolean; // true: requires online appointment; false: digital instant report
 }
 
 // Ordered strictly from highest price to lowest price
@@ -17,80 +18,85 @@ export const SERVICES_LIST: ServiceItem[] = [
     title: "公司風水佈局",
     price_hkd: 28000,
     price_display: "HK$28,000+",
-    category_name: "現場勘察",
-    turnaround: "預約上門 · 實地勘測",
-    description: "針對企業辦公室、總部或商舖進行空間風水規劃。著重負責人辦公室、財務位置、大門納氣與團隊動線配置。",
+    category_name: "線上深度規劃",
+    turnaround: "線上視像諮詢 · 交付平面佈局圖",
+    description: "透過線上視像與建築戶型圖，針對企業辦公室、總部或商舖進行全面風水規劃。著重負責人辦公室、財務位置、大門納氣與團隊動線配置。",
     features: [
-      "丁蔓山親臨現場（香港及周邊地區）",
-      "精確羅盤定坐向與玄空飛星立極",
+      "丁蔓山親自 1 對 1 線上視像深入諮詢",
+      "精確戶型圖坐向測定與玄空飛星立極",
       "負責人辦公位與財務區域佈局圖",
-      "跟進調整與諮詢"
+      "一年內線上跟進與調整"
     ],
-    type: "onsite"
+    type: "consultation",
+    requires_booking: true
   },
   {
     id: "srv-corp-inspection",
     title: "公司查宅",
     price_hkd: 28000,
     price_display: "HK$28,000+",
-    category_name: "商業選址",
-    turnaround: "選址實地勘測",
-    description: "企業擴張、搬遷或新店選址評估。衡量商廈周邊環境、大廈納氣與行業五行契合度。",
+    category_name: "線上選址評估",
+    turnaround: "線上視像評估 · 交付報告",
+    description: "企業擴張、搬遷或新店選址前線上深度評估。透過地圖、照片與平面圖，衡量商廈周邊環境、大廈納氣與行業五行契合度。",
     features: [
-      "多處候選商廈/地舖地氣對比",
-      "周邊道路與形煞檢測",
+      "多處候選商廈/地舖線上環境對比",
+      "周邊道路與形煞線上檢測",
       "選址綜合評估與建議",
       "出具查宅分析報告"
     ],
-    type: "onsite"
+    type: "consultation",
+    requires_booking: true
   },
   {
     id: "srv-home-fengshui-layout",
     title: "家居風水佈局",
     price_hkd: 18000,
     price_display: "HK$18,000+",
-    category_name: "現場勘察",
-    turnaround: "預約上門 · 實地勘測",
-    description: "親臨住宅現場羅盤定針，勘測外在環境與室內格局，提供和諧起居與安穩聚氣的佈局建議。",
+    category_name: "線上深度規劃",
+    turnaround: "線上視像諮詢 · 交付平面佈局圖",
+    description: "透過線上視像與戶型平面圖，勘測住宅外在環境與室內格局，提供和諧起居與安穩聚氣的專業佈局建議。",
     features: [
-      "丁蔓山親臨住宅現場勘察",
-      "精準羅盤定坐向與玄空飛星",
+      "丁蔓山親自 1 對 1 線上視像諮詢",
+      "精準戶型圖坐向與玄空飛星排盤",
       "全屋各房佈置平面圖",
-      "一年內跟進諮詢"
+      "一年內線上跟進諮詢"
     ],
-    type: "onsite"
+    type: "consultation",
+    requires_booking: true
   },
   {
     id: "srv-home-inspection",
     title: "家居查宅",
     price_hkd: 18000,
     price_display: "HK$18,000+",
-    category_name: "置業把關",
-    turnaround: "實地 / 線上勘測",
-    description: "買樓置業或租屋前評估。勘察單位環境磁場、周邊形煞與住戶生辰五行契合度。",
+    category_name: "線上置業把關",
+    turnaround: "線上視像評估 · 交付報告",
+    description: "買樓置業或租屋前線上把關。檢視單位格局、環境採光、周邊形煞與住戶生辰五行契合度。",
     features: [
       "置業租屋前吉凶評估與避坑",
-      "周邊道路與建築格局檢視",
+      "周邊環境與建築格局線上檢視",
       "物業契合度分析",
       "出具查宅診斷記錄"
     ],
-    type: "onsite"
+    type: "consultation",
+    requires_booking: true
   },
   {
     id: "srv-master-bazi",
     title: "八字論命",
     price_hkd: 4800,
     price_display: "HK$4,800",
-    category_name: "一對一諮詢",
-    turnaround: "60-90 分鐘專屬視像 / 面談",
-    description: "由丁蔓山親自排盤詳論，梳理格局喜忌、大運起伏、六親緣分與重要轉折點，附命書一份。",
+    category_name: "線上視像諮詢",
+    turnaround: "60-90 分鐘專屬線上視像 / 語音",
+    description: "由丁蔓山親自排盤詳論，梳理格局喜忌、大運起伏、六親緣分與重要轉折點，附專屬命書一份。",
     features: [
       "丁蔓山親自推演四柱八字命盤",
       "大運走勢與轉折點詳解",
-      "一對一深度解答",
+      "1 對 1 深度線上解答",
       "專屬命書一份"
     ],
-    type: "consultation"
+    type: "consultation",
+    requires_booking: true
   },
   {
     id: "srv-company-naming",
@@ -98,7 +104,7 @@ export const SERVICES_LIST: ServiceItem[] = [
     price_hkd: 3800,
     price_display: "HK$3,800",
     category_name: "商業起名",
-    turnaround: "3-5 工作日交付",
+    turnaround: "3-5 工作日交付 · 線上解讀",
     description: "結合創辦人生辰五行、行業屬性與品牌定位，挑選合適數理與五行契合之商業名號。",
     features: [
       "創辦人生辰與行業五行匹配",
@@ -106,39 +112,42 @@ export const SERVICES_LIST: ServiceItem[] = [
       "提供 6–10 組商號建議",
       "名稱意涵與五行分析書"
     ],
-    type: "naming"
+    type: "naming",
+    requires_booking: true
   },
   {
     id: "srv-inquiry-matter",
     title: "問事求謀",
     price_hkd: 2800,
     price_display: "HK$2,800",
-    category_name: "專項決策",
-    turnaround: "45 分鐘專屬諮詢",
+    category_name: "線上專項決策",
+    turnaround: "45 分鐘專屬線上視像 / 語音",
     description: "針對特定單一事件（如工作轉換、合約簽署、重大投資、感情抉擇）進行專項起卦與命理推演。",
     features: [
       "針對具體問題深入推演",
       "事件進展與時機分析",
       "應對策略與時窗建議",
-      "一對一即時交流"
+      "1 對 1 即時線上交流"
     ],
-    type: "consultation"
+    type: "consultation",
+    requires_booking: true
   },
   {
     id: "srv-annual-inquiry",
     title: "流年問事",
     price_hkd: 2800,
     price_display: "HK$2,800",
-    category_name: "年度諮詢",
-    turnaround: "45 分鐘專屬面談",
+    category_name: "線上年度諮詢",
+    turnaround: "45 分鐘專屬線上視像 / 語音",
     description: "針對當前或即將到來之一年進行批算，涵蓋十二流月動態、太歲關係與生活起居調和。",
     features: [
       "流年太歲與原局關係詳解",
       "十二流月變化提點",
       "開運方位與日常調理建議",
-      "一對一解答"
+      "1 對 1 線上解答"
     ],
-    type: "consultation"
+    type: "consultation",
+    requires_booking: true
   },
   {
     id: "srv-baby-naming",
@@ -146,7 +155,7 @@ export const SERVICES_LIST: ServiceItem[] = [
     price_hkd: 2800,
     price_display: "HK$2,800",
     category_name: "姓名學",
-    turnaround: "3-5 工作日交付",
+    turnaround: "3-5 工作日交付 · 線上交付",
     description: "根據新生兒生辰八字，遵循五行平衡、數理結構、生肖喜忌與音律意蘊，定製吉祥名字。",
     features: [
       "生辰五行缺補平衡分析",
@@ -154,7 +163,8 @@ export const SERVICES_LIST: ServiceItem[] = [
       "提供 5–8 組名字建議",
       "寓意與解析書"
     ],
-    type: "naming"
+    type: "naming",
+    requires_booking: true
   },
   {
     id: "srv-auspicious-date",
@@ -162,7 +172,7 @@ export const SERVICES_LIST: ServiceItem[] = [
     price_hkd: 2800,
     price_display: "HK$2,800",
     category_name: "擇日吉課",
-    turnaround: "2-3 工作日交付",
+    turnaround: "2-3 工作日交付 · 線上交付",
     description: "嫁娶、開張、入伙、動土或重要儀式吉日良辰推算，避開相沖時辰，選取吉利天時。",
     features: [
       "主事人八字生肖避沖避煞",
@@ -170,7 +180,8 @@ export const SERVICES_LIST: ServiceItem[] = [
       "儀式與時間節點提示",
       "擇日報告一份"
     ],
-    type: "date_selection"
+    type: "date_selection",
+    requires_booking: true
   },
   {
     id: "srv-period-9-deep",
@@ -178,7 +189,7 @@ export const SERVICES_LIST: ServiceItem[] = [
     price_hkd: 1388,
     price_display: "HK$1,388",
     category_name: "深度分析報告",
-    turnaround: "深度玄空排盤",
+    turnaround: "深度玄空排盤 · 即時生成",
     description: "九運（2024–2043）住宅風水專項分析，評估物業在離九運之氣運走向、正神零神方位與佈局參考。",
     features: [
       "九運物業氣運分析",
@@ -186,7 +197,8 @@ export const SERVICES_LIST: ServiceItem[] = [
       "長遠空間調和指引",
       "專屬分析報告"
     ],
-    type: "digital"
+    type: "digital",
+    requires_booking: false
   },
   {
     id: "srv-synastry-love",
@@ -202,15 +214,16 @@ export const SERVICES_LIST: ServiceItem[] = [
       "相處盲點與理解建議",
       "合盤分析報告"
     ],
-    type: "digital"
+    type: "digital",
+    requires_booking: false
   },
   {
     id: "srv-house-5yr",
     title: "住宅風水・5年布局",
     price_hkd: 688,
     price_display: "HK$688",
-    category_name: "家居風水",
-    turnaround: "戶型圖分析",
+    category_name: "家居風水報告",
+    turnaround: "戶型圖分析 · 即時生成",
     description: "結合八宅與玄空九星，推算未來 5 年住宅各方位之氣流與星位流轉，提供起居調和參考。",
     features: [
       "房屋九宮格飛星排盤",
@@ -218,7 +231,8 @@ export const SERVICES_LIST: ServiceItem[] = [
       "玄關、客廳、睡房調和建議",
       "完整佈局指引"
     ],
-    type: "digital"
+    type: "digital",
+    requires_booking: false
   },
   {
     id: "srv-life-nav-3yr",
@@ -234,7 +248,8 @@ export const SERVICES_LIST: ServiceItem[] = [
       "階段規劃參考建議",
       "完整分析文件"
     ],
-    type: "digital"
+    type: "digital",
+    requires_booking: false
   },
   {
     id: "srv-monthly-decision",
@@ -250,7 +265,8 @@ export const SERVICES_LIST: ServiceItem[] = [
       "風險與時窗提點",
       "決策分析報告"
     ],
-    type: "digital"
+    type: "digital",
+    requires_booking: false
   },
   {
     id: "srv-monthly-12",
@@ -266,7 +282,8 @@ export const SERVICES_LIST: ServiceItem[] = [
       "生活與工作節奏建議",
       "全年流月總覽"
     ],
-    type: "digital"
+    type: "digital",
+    requires_booking: false
   },
   {
     id: "srv-biz-3yr",
@@ -282,7 +299,8 @@ export const SERVICES_LIST: ServiceItem[] = [
       "適合切入月份建議",
       "商業決策參考"
     ],
-    type: "digital"
+    type: "digital",
+    requires_booking: false
   },
   {
     id: "srv-love-3yr",
@@ -298,7 +316,8 @@ export const SERVICES_LIST: ServiceItem[] = [
       "相處溝通指引",
       "脫單與穩定時窗分析"
     ],
-    type: "digital"
+    type: "digital",
+    requires_booking: false
   },
   {
     id: "srv-career-3yr",
@@ -314,7 +333,8 @@ export const SERVICES_LIST: ServiceItem[] = [
       "未來 3 年財務起伏曲線",
       "防範與規劃建議"
     ],
-    type: "digital"
+    type: "digital",
+    requires_booking: false
   },
   {
     id: "srv-ai-face",
@@ -330,7 +350,8 @@ export const SERVICES_LIST: ServiceItem[] = [
       "近期狀態與提點",
       "面相修飾與氣色建議"
     ],
-    type: "digital"
+    type: "digital",
+    requires_booking: false
   },
   {
     id: "srv-ai-photo-fengshui",
@@ -346,7 +367,8 @@ export const SERVICES_LIST: ServiceItem[] = [
       "常見擺設禁忌提點",
       "簡易調整指引"
     ],
-    type: "digital"
+    type: "digital",
+    requires_booking: false
   },
   {
     id: "srv-elem-guide",
@@ -362,6 +384,7 @@ export const SERVICES_LIST: ServiceItem[] = [
       "起居與作息調養參考",
       "專屬生活指南卡"
     ],
-    type: "digital"
+    type: "digital",
+    requires_booking: false
   }
 ];

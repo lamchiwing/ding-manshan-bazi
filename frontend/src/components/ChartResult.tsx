@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 interface ChartResultProps {
   baziData: any;
@@ -7,6 +7,8 @@ interface ChartResultProps {
 
 export const ChartResult: React.FC<ChartResultProps> = ({ baziData, onOpenReading }) => {
   if (!baziData) return null;
+
+  const [activeCycleTab, setActiveCycleTab] = useState<'dayun' | 'liunian' | 'liuyue'>('dayun');
 
   const pillars = baziData.pillars || {};
   const dayMaster = baziData.day_master?.display || "丙火";
@@ -18,6 +20,10 @@ export const ChartResult: React.FC<ChartResultProps> = ({ baziData, onOpenReadin
     { key: "month", label: "月柱", sub: "提綱" },
     { key: "year", label: "年柱", sub: "根基" },
   ];
+
+  const luckCycles = baziData.luck_cycles || [];
+  const annualCycles = baziData.annual_cycles || [];
+  const monthlyCycles = baziData.monthly_cycles || [];
 
   return (
     <section className="w-full bg-charcoal text-ivory py-8 border-t border-[#1E3A5F]/30 animate-fade-in-up">
@@ -67,7 +73,7 @@ export const ChartResult: React.FC<ChartResultProps> = ({ baziData, onOpenReadin
                   <span className="text-[10px] text-[#A4B3C6] font-sans">{p.sub}</span>
                 </div>
 
-                {/* Main Characters */}
+                {/* Main Characters (Vertical) */}
                 <div className="text-center my-1.5">
                   <div className="text-[11px] text-[#1E3A5F] font-serif mb-0.5 font-semibold">
                     {tenGod}
@@ -98,52 +104,187 @@ export const ChartResult: React.FC<ChartResultProps> = ({ baziData, onOpenReadin
           })}
         </div>
 
-        {/* Da Yun & Shen Sha (Full Width - Five Elements Section completely removed) */}
+        {/* Da Yun & Liu Nian & Shen Sha Main Box */}
         <div className="bg-[#F4EFEA] text-[#2B2D2F] p-4 md:p-5 rounded-[3px] border border-[#1E3A5F]/20 mb-6">
-          <div>
-            <div className="flex items-center justify-between mb-2.5 border-b border-[#2B2D2F]/10 pb-1.5">
-              <h3 className="font-serif text-sm md:text-base font-bold">大運排盤</h3>
-              <span className="text-[11px] text-[#1E3A5F]">十年一柱</span>
+          {/* Cycle Tabs Navigation */}
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between border-b border-[#2B2D2F]/10 pb-2.5 mb-4 gap-2">
+            <div className="flex items-center space-x-2 font-sans text-xs">
+              <button
+                onClick={() => setActiveCycleTab('dayun')}
+                className={`px-3 py-1 rounded-[2px] font-medium transition-all ${
+                  activeCycleTab === 'dayun'
+                    ? 'bg-[#1E3A5F] text-[#F4EFEA] font-bold'
+                    : 'bg-white/80 text-[#2B2D2F] hover:bg-[#1E3A5F]/10'
+                }`}
+              >
+                大運排盤 (十年一柱)
+              </button>
+              <button
+                onClick={() => setActiveCycleTab('liunian')}
+                className={`px-3 py-1 rounded-[2px] font-medium transition-all ${
+                  activeCycleTab === 'liunian'
+                    ? 'bg-[#1E3A5F] text-[#F4EFEA] font-bold'
+                    : 'bg-white/80 text-[#2B2D2F] hover:bg-[#1E3A5F]/10'
+                }`}
+              >
+                流年運勢盤 (當前/未來)
+              </button>
+              <button
+                onClick={() => setActiveCycleTab('liuyue')}
+                className={`px-3 py-1 rounded-[2px] font-medium transition-all ${
+                  activeCycleTab === 'liuyue'
+                    ? 'bg-[#1E3A5F] text-[#F4EFEA] font-bold'
+                    : 'bg-white/80 text-[#2B2D2F] hover:bg-[#1E3A5F]/10'
+                }`}
+              >
+                十二流月盤
+              </button>
             </div>
-            <div className="grid grid-cols-4 sm:grid-cols-8 gap-1.5 mb-4">
-              {(baziData.luck_cycles || []).slice(0, 8).map((lc: any, i: number) => (
-                <div key={i} className="bg-white/80 p-1.5 rounded border border-[#1E3A5F]/15 text-center">
-                  <div className="text-[9px] text-[#A4B3C6] font-mono">{lc.start_age}歲</div>
-                  <div className="font-serif font-bold text-sm text-[#2B2D2F] my-0.5">{lc.gan_zhi}</div>
-                  <div className="text-[9px] text-[#1E3A5F]">{lc.ten_god}</div>
-                  <div className="text-[8px] text-[#D97706]">{lc.changsheng}</div>
-                </div>
-              ))}
-            </div>
+            <span className="text-[11px] text-[#A4B3C6] font-sans">
+              干支直行排列 · 十神長生對照
+            </span>
+          </div>
 
-            {/* Shen Sha */}
-            <div className="border-t border-[#2B2D2F]/10 pt-2">
-              <h4 className="font-serif text-xs font-bold text-[#2B2D2F] mb-1.5">
-                神煞吉凶
-              </h4>
-              <div className="flex flex-wrap gap-1.5">
-                {(baziData.shen_sha?.list || []).map((ss: any, idx: number) => (
-                  <span
-                    key={idx}
-                    className={`text-[10px] px-2 py-0.5 rounded-[2px] font-sans ${
-                      ss.type === "吉神" 
-                        ? "bg-[#1E3A5F] text-[#F4EFEA]" 
-                        : "bg-[#D97706]/15 text-[#D97706] font-medium border border-[#D97706]/30"
-                    }`}
-                  >
-                    {ss.name} · {ss.pillar}
-                  </span>
-                ))}
-                {(!baziData.shen_sha?.list || baziData.shen_sha.list.length === 0) && (
-                  <span className="text-[11px] text-[#A4B3C6]">原局氣象平和</span>
-                )}
+          {/* 1. Da Yun (大運排盤) - Vertical Gan-Zhi like Four Pillars */}
+          {activeCycleTab === 'dayun' && (
+            <div>
+              <div className="grid grid-cols-4 sm:grid-cols-8 gap-2 mb-4">
+                {luckCycles.slice(0, 8).map((lc: any, i: number) => {
+                  const stem = lc.stem || (lc.gan_zhi ? lc.gan_zhi[0] : "");
+                  const branch = lc.branch || (lc.gan_zhi ? lc.gan_zhi[1] : "");
+
+                  return (
+                    <div
+                      key={i}
+                      className="bg-white p-2.5 rounded-[2px] border border-[#1E3A5F]/20 text-center flex flex-col justify-between shadow-xs hover:border-[#D97706] transition-colors"
+                    >
+                      {/* Age */}
+                      <div className="text-[10px] text-[#A4B3C6] font-mono border-b border-[#2B2D2F]/5 pb-1">
+                        {lc.start_age}歲起
+                      </div>
+
+                      {/* Ten God */}
+                      <div className="text-[10px] text-[#1E3A5F] font-serif font-medium mt-1">
+                        {lc.ten_god}
+                      </div>
+
+                      {/* Vertical Gan-Zhi (戊 上 寅 下 直行排列) */}
+                      <div className="font-serif font-extrabold text-xl sm:text-2xl text-[#2B2D2F] leading-tight my-1.5">
+                        <span className="block">{stem}</span>
+                        <span className="block mt-0.5">{branch}</span>
+                      </div>
+
+                      {/* Changsheng & Element */}
+                      <div className="pt-1 border-t border-[#2B2D2F]/5 space-y-0.5">
+                        <div className="text-[9px] text-[#D97706] font-medium">{lc.changsheng}</div>
+                        <div className="text-[9px] text-[#A4B3C6]">{lc.element}</div>
+                      </div>
+                    </div>
+                  );
+                })}
               </div>
+            </div>
+          )}
+
+          {/* 2. Liu Nian (流年運勢盤) - Vertical Gan-Zhi */}
+          {activeCycleTab === 'liunian' && (
+            <div>
+              <div className="grid grid-cols-3 sm:grid-cols-6 gap-2 mb-4">
+                {annualCycles.map((ac: any, i: number) => {
+                  const stem = ac.stem || (ac.gan_zhi ? ac.gan_zhi[0] : "");
+                  const branch = ac.branch || (ac.gan_zhi ? ac.gan_zhi[1] : "");
+
+                  return (
+                    <div
+                      key={i}
+                      className="bg-white p-2.5 rounded-[2px] border border-[#1E3A5F]/20 text-center flex flex-col justify-between shadow-xs hover:border-[#D97706] transition-colors"
+                    >
+                      {/* Year */}
+                      <div className="text-[10px] text-[#1E3A5F] font-mono font-bold border-b border-[#2B2D2F]/5 pb-1">
+                        {ac.year}年
+                      </div>
+
+                      {/* Ten God */}
+                      <div className="text-[10px] text-[#1E3A5F] font-serif font-medium mt-1">
+                        {ac.ten_god}
+                      </div>
+
+                      {/* Vertical Gan-Zhi */}
+                      <div className="font-serif font-extrabold text-xl sm:text-2xl text-[#2B2D2F] leading-tight my-1.5">
+                        <span className="block">{stem}</span>
+                        <span className="block mt-0.5">{branch}</span>
+                      </div>
+
+                      {/* Changsheng & Element */}
+                      <div className="pt-1 border-t border-[#2B2D2F]/5 space-y-0.5">
+                        <div className="text-[9px] text-[#D97706] font-medium">{ac.changsheng}</div>
+                        <div className="text-[9px] text-[#A4B3C6]">{ac.element}</div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+
+          {/* 3. Liu Yue (十二流月盤) */}
+          {activeCycleTab === 'liuyue' && (
+            <div>
+              <div className="grid grid-cols-3 sm:grid-cols-6 gap-2 mb-4">
+                {monthlyCycles.map((mc: any, i: number) => {
+                  const stem = mc.month_stem || (mc.gan_zhi ? mc.gan_zhi[0] : "");
+                  const branch = mc.month_branch || (mc.gan_zhi ? mc.gan_zhi[1] : "");
+
+                  return (
+                    <div
+                      key={i}
+                      className="bg-white p-2 rounded-[2px] border border-[#1E3A5F]/20 text-center flex flex-col justify-between"
+                    >
+                      <div className="text-[9px] text-[#A4B3C6] font-mono">{i + 1}月 ({branch}月)</div>
+                      <div className="text-[9px] text-[#1E3A5F] font-serif mt-0.5">{mc.ten_god}</div>
+                      <div className="font-serif font-bold text-lg text-[#2B2D2F] leading-tight my-1">
+                        <span className="block">{stem}</span>
+                        <span className="block mt-0.5">{branch}</span>
+                      </div>
+                      <div className="text-[8px] text-[#D97706]">{mc.changsheng}</div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+
+          {/* Shen Sha Section */}
+          <div className="border-t border-[#2B2D2F]/10 pt-3">
+            <h4 className="font-serif text-xs font-bold text-[#2B2D2F] mb-1.5 flex items-center justify-between">
+              <span>神煞吉凶 (Active Shen Sha)</span>
+              <span className="text-[10px] text-[#A4B3C6] font-sans font-normal">
+                共發現 {baziData.shen_sha?.list?.length || 0} 個神煞
+              </span>
+            </h4>
+            <div className="flex flex-wrap gap-1.5">
+              {(baziData.shen_sha?.list || []).map((ss: any, idx: number) => (
+                <span
+                  key={idx}
+                  className={`text-[10px] px-2 py-0.5 rounded-[2px] font-sans ${
+                    ss.type === "吉神" 
+                      ? "bg-[#1E3A5F] text-[#F4EFEA]" 
+                      : "bg-[#D97706]/15 text-[#D97706] font-medium border border-[#D97706]/30"
+                  }`}
+                >
+                  {ss.name} · {ss.pillar}
+                </span>
+              ))}
+              {(!baziData.shen_sha?.list || baziData.shen_sha.list.length === 0) && (
+                <span className="text-[11px] text-[#A4B3C6]">原局氣象平和</span>
+              )}
             </div>
           </div>
 
+          {/* Bottom Action */}
           <div className="mt-4 pt-3 border-t border-[#2B2D2F]/10 flex items-center justify-between">
             <span className="text-[11px] text-[#2B2D2F]/70">
-              深入解讀事業、感情與流年走向？
+              深入解讀大運、流年走向與重要決策？
             </span>
             <button
               onClick={onOpenReading}

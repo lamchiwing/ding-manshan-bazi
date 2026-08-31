@@ -171,25 +171,15 @@ export function calculateLocalBazi(birthDate: string, birthTime: string, gender:
   const hourStem = STEMS[(ratIdx + hOffset) % 10];
 
   const pillars = {
-    year: {
-      stem: yearStem,
-      branch: yearBranch,
-      gan_zhi: `${yearStem}${yearBranch}`,
-      stem_element: STEM_PROPERTIES[yearStem].element,
-      branch_element: BRANCH_PROPERTIES[yearBranch].element,
-      ten_god: getTenGod(dayStem, yearStem),
-      changsheng: getChangsheng(dayStem, yearBranch),
-      hidden_stems: HIDDEN_STEMS[yearBranch].map(h => ({ ...h, ten_god: getTenGod(dayStem, h.stem), element: STEM_PROPERTIES[h.stem].element }))
-    },
-    month: {
-      stem: monthStem,
-      branch: mBranch,
-      gan_zhi: `${monthStem}${mBranch}`,
-      stem_element: STEM_PROPERTIES[monthStem].element,
-      branch_element: BRANCH_PROPERTIES[mBranch].element,
-      ten_god: getTenGod(dayStem, monthStem),
-      changsheng: getChangsheng(dayStem, mBranch),
-      hidden_stems: HIDDEN_STEMS[mBranch].map(h => ({ ...h, ten_god: getTenGod(dayStem, h.stem), element: STEM_PROPERTIES[h.stem].element }))
+    hour: {
+      stem: hourStem,
+      branch: hBranch,
+      gan_zhi: `${hourStem}${hBranch}`,
+      stem_element: STEM_PROPERTIES[hourStem].element,
+      branch_element: BRANCH_PROPERTIES[hBranch].element,
+      ten_god: getTenGod(dayStem, hourStem),
+      changsheng: getChangsheng(dayStem, hBranch),
+      hidden_stems: HIDDEN_STEMS[hBranch].map(h => ({ ...h, ten_god: getTenGod(dayStem, h.stem), element: STEM_PROPERTIES[h.stem].element }))
     },
     day: {
       stem: dayStem,
@@ -201,43 +191,29 @@ export function calculateLocalBazi(birthDate: string, birthTime: string, gender:
       changsheng: getChangsheng(dayStem, dayBranch),
       hidden_stems: HIDDEN_STEMS[dayBranch].map(h => ({ ...h, ten_god: getTenGod(dayStem, h.stem), element: STEM_PROPERTIES[h.stem].element }))
     },
-    hour: {
-      stem: hourStem,
-      branch: hBranch,
-      gan_zhi: `${hourStem}${hBranch}`,
-      stem_element: STEM_PROPERTIES[hourStem].element,
-      branch_element: BRANCH_PROPERTIES[hBranch].element,
-      ten_god: getTenGod(dayStem, hourStem),
-      changsheng: getChangsheng(dayStem, hBranch),
-      hidden_stems: HIDDEN_STEMS[hBranch].map(h => ({ ...h, ten_god: getTenGod(dayStem, h.stem), element: STEM_PROPERTIES[h.stem].element }))
+    month: {
+      stem: monthStem,
+      branch: mBranch,
+      gan_zhi: `${monthStem}${mBranch}`,
+      stem_element: STEM_PROPERTIES[monthStem].element,
+      branch_element: BRANCH_PROPERTIES[mBranch].element,
+      ten_god: getTenGod(dayStem, monthStem),
+      changsheng: getChangsheng(dayStem, mBranch),
+      hidden_stems: HIDDEN_STEMS[mBranch].map(h => ({ ...h, ten_god: getTenGod(dayStem, h.stem), element: STEM_PROPERTIES[h.stem].element }))
+    },
+    year: {
+      stem: yearStem,
+      branch: yearBranch,
+      gan_zhi: `${yearStem}${yearBranch}`,
+      stem_element: STEM_PROPERTIES[yearStem].element,
+      branch_element: BRANCH_PROPERTIES[yearBranch].element,
+      ten_god: getTenGod(dayStem, yearStem),
+      changsheng: getChangsheng(dayStem, yearBranch),
+      hidden_stems: HIDDEN_STEMS[yearBranch].map(h => ({ ...h, ten_god: getTenGod(dayStem, h.stem), element: STEM_PROPERTIES[h.stem].element }))
     }
   };
 
-  const elementScores: Record<string, number> = { "木": 0, "火": 0, "土": 0, "金": 0, "水": 0 };
-  [yearStem, monthStem, dayStem, hourStem].forEach(s => {
-    elementScores[STEM_PROPERTIES[s].element] += 1.0;
-  });
-  [yearBranch, mBranch, dayBranch, hBranch].forEach(b => {
-    HIDDEN_STEMS[b].forEach(h => {
-      elementScores[STEM_PROPERTIES[h.stem].element] += h.weight;
-    });
-  });
-
-  const totalScore = Object.values(elementScores).reduce((a, b) => a + b, 0) || 1;
-  const elementPercentages: Record<string, number> = {};
-  for (const [k, v] of Object.entries(elementScores)) {
-    elementPercentages[k] = Math.round((v / totalScore) * 100);
-  }
-
-  let dominantElement = "木";
-  let maxScore = -1;
-  for (const [k, v] of Object.entries(elementScores)) {
-    if (v > maxScore) {
-      maxScore = v;
-      dominantElement = k;
-    }
-  }
-
+  // Da Yun (8 decades)
   const isMale = gender === 'male';
   const isYangYear = STEM_PROPERTIES[yearStem].yin_yang === '陽';
   const isForward = (isMale && isYangYear) || (!isMale && !isYangYear);
@@ -265,6 +241,80 @@ export function calculateLocalBazi(birthDate: string, birthTime: string, gender:
     });
   }
 
+  // Annual Cycles (2026 - 2031)
+  const annualCycles = [];
+  const currentYear = new Date().getFullYear();
+  for (let y = currentYear; y < currentYear + 6; y++) {
+    const yStemIdx = (y - 4 + 60) % 10;
+    const yBranchIdx = (y - 4 + 60) % 12;
+    const yStem = STEMS[yStemIdx];
+    const yBranch = BRANCHES[yBranchIdx];
+    annualCycles.push({
+      year: y,
+      stem: yStem,
+      branch: yBranch,
+      gan_zhi: `${yStem}${yBranch}`,
+      ten_god: getTenGod(dayStem, yStem),
+      element: STEM_PROPERTIES[yStem].element,
+      changsheng: getChangsheng(dayStem, yBranch)
+    });
+  }
+
+  // Monthly Cycles for current year
+  const monthlyCycles = [];
+  const currYrStemIdx = (currentYear - 4 + 60) % 10;
+  const currYrStem = STEMS[currYrStemIdx];
+  const currYrTigerStem = FIVE_TIGER_BASE[currYrStem];
+  const currYrTigerStemIdx = STEMS.indexOf(currYrTigerStem);
+  
+  for (let mIdx = 0; mIdx < 12; mIdx++) {
+    const mB = monthBranchOrder[mIdx];
+    const mS = STEMS[(currYrTigerStemIdx + mIdx) % 10];
+    monthlyCycles.push({
+      month_order: mIdx + 1,
+      month_branch: mB,
+      month_stem: mS,
+      gan_zhi: `${mS}${mB}`,
+      ten_god: getTenGod(dayStem, mS),
+      element: STEM_PROPERTIES[mS].element,
+      changsheng: getChangsheng(dayStem, mB)
+    });
+  }
+
+  // Shen Sha Detection
+  const shenShaList = [];
+  const tianYiMap: Record<string, string[]> = {
+    "甲": ["丑", "未"], "戊": ["丑", "未"], "庚": ["丑", "未"],
+    "乙": ["子", "申"], "己": ["子", "申"],
+    "丙": ["亥", "酉"], "丁": ["亥", "酉"],
+    "壬": ["卯", "巳"], "癸": ["卯", "巳"], "辛": ["午", "寅"]
+  };
+  const branchesList = [
+    { p: "時柱", b: hBranch },
+    { p: "日柱", b: dayBranch },
+    { p: "月柱", b: mBranch },
+    { p: "年柱", b: yearBranch }
+  ];
+  if (tianYiMap[dayStem]) {
+    branchesList.forEach(({ p, b }) => {
+      if (tianYiMap[dayStem].includes(b)) {
+        shenShaList.push({ name: "天乙貴人", pillar: p, type: "吉神" });
+      }
+    });
+  }
+  // 文昌
+  const wenChangMap: Record<string, string> = {
+    "甲": "巳", "乙": "午", "丙": "申", "丁": "酉", "戊": "申",
+    "己": "酉", "庚": "亥", "辛": "子", "壬": "寅", "癸": "卯"
+  };
+  if (wenChangMap[dayStem]) {
+    branchesList.forEach(({ p, b }) => {
+      if (b === wenChangMap[dayStem]) {
+        shenShaList.push({ name: "文昌貴人", pillar: p, type: "吉神" });
+      }
+    });
+  }
+
   return {
     input: { birth_date: birthDate, birth_time: birthTime, gender },
     day_master: {
@@ -274,10 +324,9 @@ export function calculateLocalBazi(birthDate: string, birthTime: string, gender:
       display: `${dayStem}${STEM_PROPERTIES[dayStem].element}`
     },
     pillars,
-    elements: {
-      percentages: elementPercentages,
-      dominant_element: dominantElement
-    },
-    luck_cycles: luckCycles
+    luck_cycles: luckCycles,
+    annual_cycles: annualCycles,
+    monthly_cycles: monthlyCycles,
+    shen_sha: { list: shenShaList }
   };
 }
