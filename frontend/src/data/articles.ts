@@ -1,4 +1,4 @@
-export interface LibraryArticle {
+export interface ArticleItem {
   id: string;
   category: string;
   title: string;
@@ -8,7 +8,9 @@ export interface LibraryArticle {
   author: string;
 }
 
-export const LIBRARY_ARTICLES: LibraryArticle[] = [
+export type LibraryArticle = ArticleItem;
+
+export const ARTICLES_DATA: ArticleItem[] = [
   {
     id: "art-1",
     category: "八字",
@@ -21,18 +23,18 @@ export const LIBRARY_ARTICLES: LibraryArticle[] = [
   {
     id: "art-2",
     category: "四柱推命",
-    title: "日本四柱推命與子平八字的流變與精微異同",
+    title: "四柱推命與子平八字的流變與精微異同",
     readTime: "6 分鐘閱讀",
-    summary: "從阿部泰山到現代日本命理學，如何以更細膩的心理學視角重新詮釋十神與行運變遷。",
+    summary: "從古典命理到現代詮釋，如何以更細膩客觀的視角重新理解十神與行運變遷。",
     publishedDate: "2026.07",
-    author: "山田 拓真"
+    author: "丁蔓山"
   },
   {
     id: "art-3",
     category: "九運風水",
     title: "2024–2043 離九運大勢：科技、女性與南方火旺的二十年佈局",
     readTime: "8 分鐘閱讀",
-    summary: "九運當令，玄空風水正神零神易位，住宅與商業物業如何借火運之力順勢騰飛。",
+    summary: "九運當令，玄空風水正神零神易位，住宅與商業物業如何借火運之力順勢調和。",
     publishedDate: "2026.06",
     author: "丁蔓山"
   },
@@ -52,7 +54,7 @@ export const LIBRARY_ARTICLES: LibraryArticle[] = [
     readTime: "5 分鐘閱讀",
     summary: "以五行生剋洞悉伴侶間的底層價值觀差異，學習在相沖之處建立包容，在相生之處昇華默契。",
     publishedDate: "2026.04",
-    author: "命理誌編輯部"
+    author: "命理誌"
   },
   {
     id: "art-6",
@@ -61,6 +63,8 @@ export const LIBRARY_ARTICLES: LibraryArticle[] = [
     readTime: "4 分鐘閱讀",
     summary: "缺火者如何藉光明與熱誠補氣？金過旺者如何以水之柔和化解剛烈？極簡五行日常指南。",
     publishedDate: "2026.03",
-    author: "命理誌編輯部"
+    author: "命理誌"
   }
 ];
+
+export const LIBRARY_ARTICLES = ARTICLES_DATA;
