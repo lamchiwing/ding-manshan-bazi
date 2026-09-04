@@ -1,4 +1,5 @@
 // Client-side deterministic Bazi calculation engine matching backend logic exactly
+// Supports 早子時 (00:00 - 00:59) and 夜子時 (23:00 - 23:59)
 
 const STEMS = ["甲", "乙", "丙", "丁", "戊", "己", "庚", "辛", "壬", "癸"];
 const BRANCHES = ["子", "丑", "寅", "卯", "辰", "巳", "午", "未", "申", "酉", "戌", "亥"];
@@ -127,6 +128,7 @@ export function calculateLocalBazi(birthDate: string, birthTime: string, gender:
   const hour = parseInt(hStr, 10);
   const min = parseInt(minStr, 10);
 
+  // Year Pillar (Lichun estimation ~Feb 4)
   const isBeforeLichun = month === 1 || (month === 2 && day < 4);
   const baziYear = isBeforeLichun ? year - 1 : year;
   const yearStemIdx = (baziYear - 4 + 60) % 10;
@@ -134,6 +136,7 @@ export function calculateLocalBazi(birthDate: string, birthTime: string, gender:
   const yearStem = STEMS[yearStemIdx];
   const yearBranch = BRANCHES[yearBranchIdx];
 
+  // Month Pillar
   const monthBranches = ["丑", "寅", "卯", "辰", "巳", "午", "未", "申", "酉", "戌", "亥", "子"];
   const mBranch = monthBranches[(month - 1) % 12];
   const tigerBase = FIVE_TIGER_BASE[yearStem];
@@ -142,29 +145,30 @@ export function calculateLocalBazi(birthDate: string, birthTime: string, gender:
   const mOffset = monthBranchOrder.indexOf(mBranch);
   const monthStem = STEMS[(tigerIdx + mOffset) % 10];
 
-  let calcDay = day;
-  let calcMonth = month;
-  let calcYear = year;
-  if (hour >= 23) {
-    const dt = new Date(year, month - 1, day + 1);
-    calcYear = dt.getFullYear();
-    calcMonth = dt.getMonth() + 1;
-    calcDay = dt.getDate();
-  }
-  const jd = getJulianDay(calcYear, calcMonth, calcDay, 12, 0);
+  // Day Pillar:
+  // Under standard 早子時 (00:00-00:59) / 夜子時 (23:00-23:59):
+  // Day remains the calendar day.
+  const jd = getJulianDay(year, month, day, 12, 0);
   const dayStemIdx = Math.floor((Math.floor(jd + 0.5) + 49) % 10);
   const dayBranchIdx = Math.floor((Math.floor(jd + 0.5) + 49) % 12);
   const dayStem = STEMS[dayStemIdx];
   const dayBranch = BRANCHES[dayBranchIdx];
 
+  // Hour Branch & Stem:
   let hBranch = "子";
-  const totalMins = hour * 60 + min;
-  if (totalMins >= 23 * 60 || totalMins < 60) {
+  let ziLabel = "";
+  if (hour === 0) {
     hBranch = "子";
+    ziLabel = "早子時 (00:00-00:59)";
+  } else if (hour === 23) {
+    hBranch = "子";
+    ziLabel = "夜子時 (23:00-23:59)";
   } else {
+    const totalMins = hour * 60 + min;
     const bIdx = Math.floor((totalMins + 60) / 120);
     hBranch = BRANCHES[bIdx % 12];
   }
+
   const ratBase = FIVE_RAT_BASE[dayStem];
   const ratIdx = STEMS.indexOf(ratBase);
   const hOffset = BRANCHES.indexOf(hBranch);
@@ -179,6 +183,7 @@ export function calculateLocalBazi(birthDate: string, birthTime: string, gender:
       branch_element: BRANCH_PROPERTIES[hBranch].element,
       ten_god: getTenGod(dayStem, hourStem),
       changsheng: getChangsheng(dayStem, hBranch),
+      zi_type: ziLabel,
       hidden_stems: HIDDEN_STEMS[hBranch].map(h => ({ ...h, ten_god: getTenGod(dayStem, h.stem), element: STEM_PROPERTIES[h.stem].element }))
     },
     day: {
@@ -241,7 +246,7 @@ export function calculateLocalBazi(birthDate: string, birthTime: string, gender:
     });
   }
 
-  // Annual Cycles (2026 - 2031)
+  // Annual Cycles (2026 - 2031+)
   const annualCycles = [];
   const currentYear = new Date().getFullYear();
   for (let y = currentYear; y < currentYear + 6; y++) {
@@ -281,40 +286,6 @@ export function calculateLocalBazi(birthDate: string, birthTime: string, gender:
     });
   }
 
-  // Shen Sha Detection
-  const shenShaList = [];
-  const tianYiMap: Record<string, string[]> = {
-    "甲": ["丑", "未"], "戊": ["丑", "未"], "庚": ["丑", "未"],
-    "乙": ["子", "申"], "己": ["子", "申"],
-    "丙": ["亥", "酉"], "丁": ["亥", "酉"],
-    "壬": ["卯", "巳"], "癸": ["卯", "巳"], "辛": ["午", "寅"]
-  };
-  const branchesList = [
-    { p: "時柱", b: hBranch },
-    { p: "日柱", b: dayBranch },
-    { p: "月柱", b: mBranch },
-    { p: "年柱", b: yearBranch }
-  ];
-  if (tianYiMap[dayStem]) {
-    branchesList.forEach(({ p, b }) => {
-      if (tianYiMap[dayStem].includes(b)) {
-        shenShaList.push({ name: "天乙貴人", pillar: p, type: "吉神" });
-      }
-    });
-  }
-  // 文昌
-  const wenChangMap: Record<string, string> = {
-    "甲": "巳", "乙": "午", "丙": "申", "丁": "酉", "戊": "申",
-    "己": "酉", "庚": "亥", "辛": "子", "壬": "寅", "癸": "卯"
-  };
-  if (wenChangMap[dayStem]) {
-    branchesList.forEach(({ p, b }) => {
-      if (b === wenChangMap[dayStem]) {
-        shenShaList.push({ name: "文昌貴人", pillar: p, type: "吉神" });
-      }
-    });
-  }
-
   return {
     input: { birth_date: birthDate, birth_time: birthTime, gender },
     day_master: {
@@ -326,7 +297,6 @@ export function calculateLocalBazi(birthDate: string, birthTime: string, gender:
     pillars,
     luck_cycles: luckCycles,
     annual_cycles: annualCycles,
-    monthly_cycles: monthlyCycles,
-    shen_sha: { list: shenShaList }
+    monthly_cycles: monthlyCycles
   };
 }

@@ -10,10 +10,11 @@ export const HeroChartInput: React.FC<HeroChartInputProps> = ({ onCalculate, isL
   const [birthYear, setBirthYear] = useState('1990');
   const [birthMonth, setBirthMonth] = useState('05');
   const [birthDay, setBirthDay] = useState('20');
-  const [birthTimeSlot, setBirthTimeSlot] = useState('22');
+  const [birthTimeSlot, setBirthTimeSlot] = useState('21');
 
+  // Time slots with explicit 早子時 (00:00 - 00:59) and 夜子時 (23:00 - 23:59)
   const timeSlots = [
-    { label: "子時 (23:00 - 00:59)", value: "23" },
+    { label: "早子時 (00:00 - 00:59)", value: "00" },
     { label: "丑時 (01:00 - 02:59)", value: "01" },
     { label: "寅時 (03:00 - 04:59)", value: "03" },
     { label: "卯時 (05:00 - 06:59)", value: "05" },
@@ -25,6 +26,7 @@ export const HeroChartInput: React.FC<HeroChartInputProps> = ({ onCalculate, isL
     { label: "酉時 (17:00 - 18:59)", value: "17" },
     { label: "戌時 (19:00 - 20:59)", value: "19" },
     { label: "亥時 (21:00 - 22:59)", value: "21" },
+    { label: "夜子時 (23:00 - 23:59)", value: "23" },
   ];
 
   const handleSubmit = (e: React.FormEvent) => {
