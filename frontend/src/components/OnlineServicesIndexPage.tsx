@@ -21,27 +21,27 @@ export const OnlineServicesIndexPage: React.FC<OnlineServicesIndexPageProps> = (
             主頁
           </button>
           <span>/</span>
-          <span className="text-[#D97706] font-semibold">線上命理服務</span>
+          <span className="text-[#D97706] font-semibold">線上服務</span>
         </div>
         <button
           onClick={onNavigateBooking}
           className="bg-[#D97706] hover:bg-[#b45309] text-white text-xs font-serif font-bold px-4 py-2 rounded-[2px] transition-all shadow"
         >
-          切換至：線上一對一預約服務 →
+          切換至：線上一對一預約 →
         </button>
       </div>
 
       {/* Page Header */}
       <div className="mb-8">
         <h1 className="font-serif text-2xl md:text-3xl font-bold text-[#F4EFEA] mb-2">
-          丁蔓山 · 線上命理服務項目
+          線上命理服務項目
         </h1>
         <p className="text-xs md:text-sm text-[#A4B3C6] max-w-2xl leading-relaxed">
           輸入生辰資料即時推演生成專屬深度解讀報告，涵蓋五行喜忌、感情姻緣、事業財運、流年流月與空間風水布局。
         </p>
       </div>
 
-      {/* Cards Grid (Same visual format as Booking Index) */}
+      {/* Cards Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {SIDEBAR_PRICE_LIST.map((service, index) => {
           const isComing = service.isComingSoon;
@@ -77,7 +77,7 @@ export const OnlineServicesIndexPage: React.FC<OnlineServicesIndexPageProps> = (
                   {service.description}
                 </p>
 
-                {/* Included Features List (Index view) */}
+                {/* Included Features List */}
                 {service.indexFeatures && (
                   <div className="mb-6">
                     <div className="text-[11px] font-bold text-[#1E3A5F] uppercase mb-1.5">
@@ -109,8 +109,7 @@ export const OnlineServicesIndexPage: React.FC<OnlineServicesIndexPageProps> = (
                     onClick={() => onSelectService(service)}
                     className="w-full bg-[#1E3A5F] hover:bg-[#D97706] text-[#F4EFEA] text-xs font-serif font-bold py-2.5 rounded-[2px] transition-colors shadow-sm flex items-center justify-center space-x-1"
                   >
-                    <span>查看詳情與購買 (Solo Page)</span>
-                    <span>→</span>
+                    <span>查看詳情與購買 →</span>
                   </button>
                 )}
               </div>

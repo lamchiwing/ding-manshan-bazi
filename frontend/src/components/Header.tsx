@@ -21,8 +21,8 @@ export const Header: React.FC<HeaderProps> = ({ currentView, onNavigate }) => {
           <span className="text-[#A4B3C6] text-sm ml-2 font-sans font-light">命理誌</span>
         </div>
 
-        {/* Navigation */}
-        <nav className="flex items-center space-x-3 sm:space-x-7 text-xs sm:text-sm text-[#A4B3C6]">
+        {/* Clean Navigation: 主頁 | 線上服務 | 線上一對一預約 | 命理誌 */}
+        <nav className="flex items-center space-x-4 sm:space-x-8 text-xs sm:text-sm text-[#A4B3C6]">
           <button
             onClick={() => onNavigate('home')}
             className={`hover:text-[#F4EFEA] transition-colors py-1 ${
@@ -47,7 +47,7 @@ export const Header: React.FC<HeaderProps> = ({ currentView, onNavigate }) => {
               currentView === 'booking-services' ? 'text-[#D97706] font-semibold border-b-2 border-[#D97706]' : ''
             }`}
           >
-            預約服務
+            線上一對一預約
           </button>
 
           <a
@@ -68,14 +68,6 @@ export const Header: React.FC<HeaderProps> = ({ currentView, onNavigate }) => {
           >
             命理誌
           </a>
-
-          {/* Direct One-on-One Booking button */}
-          <button
-            onClick={() => onNavigate('booking-services')}
-            className="bg-[#D97706] hover:bg-[#b45309] text-white px-3 sm:px-4 py-1.5 rounded-[2px] text-xs font-serif font-bold transition-all shadow"
-          >
-            線上一對一預約
-          </button>
         </nav>
 
       </div>

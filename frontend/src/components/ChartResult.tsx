@@ -233,7 +233,7 @@ export const ChartResult: React.FC<ChartResultProps> = ({
               onClick={onOpenOneOnOneBooking}
               className="bg-[#D97706] hover:bg-[#b45309] text-white px-4 py-2 text-xs font-sans rounded transition-colors font-semibold shadow-xs"
             >
-              線上一對一服務 →
+              線上一對一預約 →
             </button>
           </div>
         </div>

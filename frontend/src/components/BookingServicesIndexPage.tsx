@@ -21,7 +21,7 @@ export const BookingServicesIndexPage: React.FC<BookingServicesIndexPageProps> =
             主頁
           </button>
           <span>/</span>
-          <span className="text-[#D97706] font-semibold">線上一對一預約服務</span>
+          <span className="text-[#D97706] font-semibold">線上一對一預約</span>
         </div>
         <button
           onClick={onNavigateOnlineServices}
@@ -31,29 +31,26 @@ export const BookingServicesIndexPage: React.FC<BookingServicesIndexPageProps> =
         </button>
       </div>
 
-      {/* Page Header */}
+      {/* Page Header: Clean title as requested */}
       <div className="mb-8">
         <h1 className="font-serif text-2xl md:text-3xl font-bold text-[#F4EFEA] mb-2">
-          丁蔓山 · 線上一對一預約服務項目
+          線上一對一預約服務項目
         </h1>
         <p className="text-xs md:text-sm text-[#A4B3C6] max-w-2xl leading-relaxed">
           所有諮詢項目均由丁蔓山親自對接，透過線上視像（Zoom / Google Meet）或語音深入探討，為您的人生關鍵決策把脈定向。
         </p>
       </div>
 
-      {/* Cards Grid */}
+      {/* Cards Grid: No numbers, clean duration, button as '預約查詢' */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {BOOKING_SERVICES.map((service, index) => (
+        {BOOKING_SERVICES.map((service) => (
           <div
             key={service.id}
             className="bg-[#F4EFEA] text-[#2B2D2F] rounded-[3px] border border-[#1E3A5F]/20 p-6 flex flex-col justify-between hover:border-[#D97706] transition-all shadow-sm group hover:-translate-y-0.5"
           >
             <div>
-              {/* Top Bar */}
-              <div className="flex items-center justify-between mb-2.5">
-                <span className="font-mono text-xs font-bold text-[#D97706]">
-                  {String(index + 1).padStart(2, '0')}
-                </span>
+              {/* Top Tag (Number removed) */}
+              <div className="flex items-center justify-end mb-2.5">
                 <span className="text-[11px] bg-[#D97706]/15 text-[#D97706] px-2 py-0.5 rounded font-medium">
                   需預約時段
                 </span>
@@ -69,9 +66,10 @@ export const BookingServicesIndexPage: React.FC<BookingServicesIndexPageProps> =
                 {service.price_display}
               </div>
 
-              {/* Turnaround */}
-              <div className="text-[11px] text-[#1E3A5F] font-medium mb-3">
-                ⏱️ {service.turnaround}
+              {/* Turnaround / Duration */}
+              <div className="text-[11px] text-[#1E3A5F] font-medium mb-3 flex items-center space-x-1">
+                <span>⏱️</span>
+                <span>{service.turnaround}</span>
               </div>
 
               <p className="text-xs text-[#2B2D2F]/85 leading-relaxed mb-4">
@@ -96,13 +94,13 @@ export const BookingServicesIndexPage: React.FC<BookingServicesIndexPageProps> =
               )}
             </div>
 
-            {/* Button */}
+            {/* Button: '預約查詢' */}
             <div className="pt-3 border-t border-[#2B2D2F]/10">
               <button
                 onClick={() => onSelectService(service)}
-                className="w-full bg-[#1E3A5F] hover:bg-[#D97706] text-[#F4EFEA] text-xs font-serif font-bold py-2.5 rounded-[2px] transition-colors shadow-sm"
+                className="w-full bg-[#1E3A5F] hover:bg-[#D97706] text-[#F4EFEA] text-xs font-serif font-bold py-2.5 rounded-[2px] transition-colors shadow-sm text-center"
               >
-                選擇預約時段及詳情 (Solo Page) →
+                預約查詢
               </button>
             </div>
           </div>

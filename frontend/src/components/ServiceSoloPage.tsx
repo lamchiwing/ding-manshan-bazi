@@ -110,7 +110,7 @@ export const ServiceSoloPage: React.FC<ServiceSoloPageProps> = ({
           </button>
           <span>/</span>
           <button onClick={onBack} className="hover:text-[#F4EFEA] transition-colors">
-            {isConsultationOrOnsite ? '線上一對一預約服務' : '線上命理服務'}
+            {isConsultationOrOnsite ? '線上一對一預約' : '線上命理服務'}
           </button>
           <span>/</span>
           <span className="text-[#D97706] font-semibold">{service.title}</span>
