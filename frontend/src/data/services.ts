@@ -19,78 +19,14 @@ export interface ServiceItem {
   requires_booking: boolean;
 }
 
-// 1. 線上一對一預約服務項目 (10 項專屬一對一線上服務)
+// 1. 線上一對一預約服務項目 (10 項專屬一對一線上服務 - 依指定順序由上至下排列)
 export const BOOKING_SERVICES: ServiceItem[] = [
-  {
-    id: "srv-corp-fengshui-layout",
-    title: "公司風水佈局",
-    price_hkd: 28000,
-    price_display: "HK$28,000+",
-    turnaround: "60-90 分鐘 · 線上視像諮詢",
-    description: "透過線上視像與建築戶型圖，針對企業辦公室、總部或商舖進行全面風水規劃。著重負責人辦公室、財務位置、大門納氣與團隊動線配置。",
-    indexFeatures: [
-      "丁蔓山親自 1 對 1 線上視像深入諮詢",
-      "精確戶型圖坐向測定與玄空飛星立極",
-      "負責人辦公位與財務區域佈局圖",
-      "一年內線上跟進與調整"
-    ],
-    type: "consultation",
-    requires_booking: true
-  },
-  {
-    id: "srv-corp-inspection",
-    title: "公司查宅",
-    price_hkd: 28000,
-    price_display: "HK$28,000+",
-    turnaround: "60-90 分鐘 · 線上視像評估",
-    description: "企業擴張、搬遷或新店選址前線上深度評估。透過地圖、照片與平面圖，衡量商廈周邊環境、大廈納氣與行業五行契合度。",
-    indexFeatures: [
-      "多處候選商廈/地舖線上環境對比",
-      "周邊道路與形煞線上檢測",
-      "選址綜合評估與建議",
-      "出具查宅分析報告"
-    ],
-    type: "consultation",
-    requires_booking: true
-  },
-  {
-    id: "srv-home-fengshui-layout",
-    title: "家居風水佈局",
-    price_hkd: 18000,
-    price_display: "HK$18,000+",
-    turnaround: "60-90 分鐘 · 線上視像諮詢",
-    description: "透過線上視像與戶型平面圖，勘測住宅外在環境與室內格局，提供和諧起居與安穩聚氣的專業佈局建議。",
-    indexFeatures: [
-      "丁蔓山親自 1 對 1 線上視像諮詢",
-      "精準戶型圖坐向與玄空飛星排盤",
-      "全屋各房佈置平面圖",
-      "一年內線上跟進諮詢"
-    ],
-    type: "consultation",
-    requires_booking: true
-  },
-  {
-    id: "srv-home-inspection",
-    title: "家居查宅",
-    price_hkd: 18000,
-    price_display: "HK$18,000+",
-    turnaround: "60-90 分鐘 · 線上視像評估",
-    description: "買樓置業或租屋前線上把關。檢視單位格局、環境採光、周邊形煞與住戶生辰五行契合度。",
-    indexFeatures: [
-      "置業租屋前吉凶評估與避坑",
-      "周邊環境與建築格局線上檢視",
-      "物業契合度分析",
-      "出具查宅診斷記錄"
-    ],
-    type: "consultation",
-    requires_booking: true
-  },
   {
     id: "srv-master-bazi",
     title: "八字論命",
     price_hkd: 4800,
     price_display: "HK$4,800",
-    turnaround: "60-90 分鐘 · 專屬線上視像 / 語音",
+    turnaround: "60分鐘線上視像諮詢",
     description: "由丁蔓山親自排盤詳論，梳理格局喜忌、大運起伏、六親緣分與重要轉折點，附專屬命書一份。",
     indexFeatures: [
       "丁蔓山親自推演四柱八字命盤",
@@ -102,43 +38,11 @@ export const BOOKING_SERVICES: ServiceItem[] = [
     requires_booking: true
   },
   {
-    id: "srv-company-naming",
-    title: "公司定號",
-    price_hkd: 3800,
-    price_display: "HK$3,800",
-    turnaround: "3-5 工作日交付 · 商業起名",
-    description: "結合創辦人生辰五行、行業屬性與品牌定位，挑選合適數理與五行契合之商業名號。",
-    indexFeatures: [
-      "創辦人生辰與行業五行匹配",
-      "數理吉凶評估",
-      "提供 6–10 組商號建議",
-      "名稱意涵與五行分析書"
-    ],
-    type: "naming",
-    requires_booking: true
-  },
-  {
-    id: "srv-inquiry-matter",
-    title: "問事求謀",
-    price_hkd: 2800,
-    price_display: "HK$2,800",
-    turnaround: "45 分鐘 · 專屬線上視像 / 語音",
-    description: "針對特定單一事件（如工作轉換、合約簽署、重大投資、感情抉擇）進行專項起卦與命理推演。",
-    indexFeatures: [
-      "針對具體問題深入推演",
-      "事件進展與時機分析",
-      "應對策略與時窗建議",
-      "1 對 1 即時線上交流"
-    ],
-    type: "consultation",
-    requires_booking: true
-  },
-  {
     id: "srv-annual-inquiry",
     title: "流年問事",
     price_hkd: 2800,
     price_display: "HK$2,800",
-    turnaround: "45 分鐘 · 專屬線上視像 / 語音",
+    turnaround: "線上年度諮詢 • 30分鐘專屬線上視像/語音",
     description: "針對當前或即將到來之一年進行批算，涵蓋十二流月動態、太歲關係與生活起居調和。",
     indexFeatures: [
       "流年太歲與原局關係詳解",
@@ -150,11 +54,27 @@ export const BOOKING_SERVICES: ServiceItem[] = [
     requires_booking: true
   },
   {
+    id: "srv-inquiry-matter",
+    title: "問事求謀",
+    price_hkd: 2800,
+    price_display: "HK$2,800",
+    turnaround: "線上專項決策 • 20分鐘專屬線上視像/語音",
+    description: "針對特定單一事件（如工作轉換、合約簽署、重大投資、感情抉擇）進行專項起卦與命理推演。",
+    indexFeatures: [
+      "針對具體問題深入推演",
+      "事件進展與時機分析",
+      "應對策略與時窗建議",
+      "1 對 1 即時線上交流"
+    ],
+    type: "consultation",
+    requires_booking: true
+  },
+  {
     id: "srv-baby-naming",
     title: "小兒定名",
     price_hkd: 2800,
     price_display: "HK$2,800",
-    turnaround: "3-5 工作日交付 · 姓名學",
+    turnaround: "30分鐘",
     description: "根據新生兒生辰八字，遵循五行平衡、數理結構、生肖喜忌與音律意蘊，定製吉祥名字。",
     indexFeatures: [
       "生辰五行缺補平衡分析",
@@ -170,7 +90,7 @@ export const BOOKING_SERVICES: ServiceItem[] = [
     title: "吉時擇日（生育免問）",
     price_hkd: 2800,
     price_display: "HK$2,800",
-    turnaround: "2-3 工作日交付 · 擇日吉課",
+    turnaround: "30分鐘",
     description: "嫁娶、開張、入伙、動土或重要儀式吉日良辰推算，避開相沖時辰，選取吉利天時（生育免問）。",
     indexFeatures: [
       "主事人八字生肖避沖避煞",
@@ -179,6 +99,86 @@ export const BOOKING_SERVICES: ServiceItem[] = [
       "擇日報告一份"
     ],
     type: "date_selection",
+    requires_booking: true
+  },
+  {
+    id: "srv-company-naming",
+    title: "公司定號",
+    price_hkd: 3800,
+    price_display: "HK$3,800",
+    turnaround: "60分鐘",
+    description: "結合創辦人生辰五行、行業屬性與品牌定位，挑選合適數理與五行契合之商業名號。",
+    indexFeatures: [
+      "創辦人生辰與行業五行匹配",
+      "數理吉凶評估",
+      "提供 6–10 組商號建議",
+      "名稱意涵與五行分析書"
+    ],
+    type: "naming",
+    requires_booking: true
+  },
+  {
+    id: "srv-home-fengshui-layout",
+    title: "家居風水佈局",
+    price_hkd: 18000,
+    price_display: "HK$18,000+",
+    turnaround: "60分鐘",
+    description: "透過線上視像與戶型平面圖，勘測住宅外在環境與室內格局，提供和諧起居與安穩聚氣的專業佈局建議。",
+    indexFeatures: [
+      "丁蔓山親自 1 對 1 線上視像諮詢",
+      "精準戶型圖坐向與玄空飛星排盤",
+      "全屋各房佈置平面圖",
+      "一年內線上跟進諮詢"
+    ],
+    type: "consultation",
+    requires_booking: true
+  },
+  {
+    id: "srv-home-inspection",
+    title: "家居查宅",
+    price_hkd: 18000,
+    price_display: "HK$18,000+",
+    turnaround: "60分鐘",
+    description: "買樓置業或租屋前線上把關。檢視單位格局、環境採光、周邊形煞與住戶生辰五行契合度。",
+    indexFeatures: [
+      "置業租屋前吉凶評估與避坑",
+      "周邊環境與建築格局線上檢視",
+      "物業契合度分析",
+      "出具查宅診斷記錄"
+    ],
+    type: "consultation",
+    requires_booking: true
+  },
+  {
+    id: "srv-corp-fengshui-layout",
+    title: "公司風水佈局",
+    price_hkd: 28000,
+    price_display: "HK$28,000+",
+    turnaround: "60分鐘",
+    description: "透過線上視像與建築戶型圖，針對企業辦公室、總部或商舖進行全面風水規劃。著重負責人辦公室、財務位置、大門納氣與團隊動線配置。",
+    indexFeatures: [
+      "丁蔓山親自 1 對 1 線上視像深入諮詢",
+      "精確戶型圖坐向測定與玄空飛星立極",
+      "負責人辦公位與財務區域佈局圖",
+      "一年內線上跟進與調整"
+    ],
+    type: "consultation",
+    requires_booking: true
+  },
+  {
+    id: "srv-corp-inspection",
+    title: "公司查宅",
+    price_hkd: 28000,
+    price_display: "HK$28,000+",
+    turnaround: "60分鐘",
+    description: "企業擴張、搬遷或新店選址前線上深度評估。透過地圖、照片與平面圖，衡量商廈周邊環境、大廈納氣與行業五行契合度。",
+    indexFeatures: [
+      "多處候選商廈/地舖線上環境對比",
+      "周邊道路與形煞線上檢測",
+      "選址綜合評估與建議",
+      "出具查宅分析報告"
+    ],
+    type: "consultation",
     requires_booking: true
   }
 ];
