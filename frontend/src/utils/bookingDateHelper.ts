@@ -1,23 +1,46 @@
 /**
  * Dynamic Booking Dates & Slots Helper
- * Automatically rolls forward daily to provide dynamic booking options
+ * Starts from 1 week (7 days) after today, up to 1 year (365 days) in the future.
  */
 
 export interface AvailableDateOption {
   value: string;       // YYYY-MM-DD
-  label: string;       // e.g. "9月1日 (二)"
-  dayOfWeek: string;   // e.g. "星期二"
+  label: string;       // e.g. "9月17日 (四)"
+  dayOfWeek: string;   // e.g. "星期四"
   isWeekend: boolean;
 }
 
-export function generateDynamicAvailableDates(daysAhead: number = 14): AvailableDateOption[] {
+export function getBookingDateBounds() {
+  const today = new Date();
+  
+  const minDateObj = new Date(today);
+  minDateObj.setDate(today.getDate() + 7); // 1 week after today
+
+  const maxDateObj = new Date(today);
+  maxDateObj.setDate(today.getDate() + 365); // 1 year after today
+
+  const formatDate = (d: Date) => {
+    const y = d.getFullYear();
+    const m = String(d.getMonth() + 1).padStart(2, '0');
+    const day = String(d.getDate()).padStart(2, '0');
+    return `${y}-${m}-${day}`;
+  };
+
+  return {
+    minDate: formatDate(minDateObj),
+    maxDate: formatDate(maxDateObj),
+    defaultDate: formatDate(minDateObj)
+  };
+}
+
+export function generateDynamicAvailableDates(daysAhead: number = 30, startOffset: number = 7): AvailableDateOption[] {
   const dates: AvailableDateOption[] = [];
   const weekDays = ['日', '一', '二', '三', '四', '五', '六'];
   
   const today = new Date();
   
-  // Start from tomorrow
-  for (let i = 1; i <= daysAhead; i++) {
+  // Start from 7 days after today
+  for (let i = startOffset; i < startOffset + daysAhead; i++) {
     const d = new Date(today);
     d.setDate(today.getDate() + i);
     

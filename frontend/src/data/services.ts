@@ -183,14 +183,15 @@ export const BOOKING_SERVICES: ServiceItem[] = [
   }
 ];
 
-// 2. 主項右側列表 (9 項線上即時分析服務 · 由平價至貴價順序排列)
+// 2. 主項右側列表 (9 項線上即時分析服務 · 全面標註「即將登場」)
 export const SIDEBAR_PRICE_LIST: ServiceItem[] = [
   {
     id: "srv-five-elements",
     title: "五行喜忌指南",
     price_hkd: 128,
-    price_display: "HK$128",
-    turnaround: "即時生成 · 深度解讀",
+    price_display: "即將登場",
+    turnaround: "即將登場 · 深度解讀",
+    isComingSoon: true,
     description: "解讀個人八字五行分佈，提供專屬顏色、日常方位、起居調和、飲食與生活作息指引。",
     indexFeatures: [
       "個人五行能量分佈圖與喜忌",
@@ -255,8 +256,9 @@ export const SIDEBAR_PRICE_LIST: ServiceItem[] = [
     id: "srv-love-3yr",
     title: "姻緣導航‧未來3年",
     price_hkd: 188,
-    price_display: "HK$188",
-    turnaround: "即時生成 · 深度解讀",
+    price_display: "即將登場",
+    turnaround: "即將登場 · 深度解讀",
+    isComingSoon: true,
     description: "全面剖析感情模式、正緣時機與未來 3 年感情運勢走向。",
     categoriesOptions: [
       "單身",
@@ -305,8 +307,9 @@ export const SIDEBAR_PRICE_LIST: ServiceItem[] = [
     id: "srv-career-3yr",
     title: "事業／財運・未來3年",
     price_hkd: 188,
-    price_display: "HK$188",
-    turnaround: "即時生成 · 深度解讀",
+    price_display: "即將登場",
+    turnaround: "即將登場 · 深度解讀",
+    isComingSoon: true,
     description: "分析事業格局、正偏財運勢與未來 3 年最佳發力期與轉折點。",
     indexFeatures: [
       "事業格局分析與職場優勢",
@@ -349,8 +352,9 @@ export const SIDEBAR_PRICE_LIST: ServiceItem[] = [
     id: "srv-startup-3yr",
     title: "創業／拓展 ・未來3年",
     price_hkd: 288,
-    price_display: "HK$288",
-    turnaround: "即時生成 · 商業推演",
+    price_display: "即將登場",
+    turnaround: "即將登場 · 商業推演",
+    isComingSoon: true,
     description: "專為創業者與業務拓展者設計，評估創業命格、合夥運勢與資金節奏。",
     indexFeatures: [
       "創業格局與商業潛力評估",
@@ -402,8 +406,9 @@ export const SIDEBAR_PRICE_LIST: ServiceItem[] = [
     id: "srv-12-months",
     title: "十二流月運程",
     price_hkd: 488,
-    price_display: "HK$488",
-    turnaround: "即時生成 · 深度解讀",
+    price_display: "即將登場",
+    turnaround: "即將登場 · 深度解讀",
+    isComingSoon: true,
     description: "精確推演未來 12 個月每月的吉凶起伏、事業、財運與感情變化。",
     indexFeatures: [
       "未來 12 個月逐月運勢推演",
@@ -431,8 +436,9 @@ export const SIDEBAR_PRICE_LIST: ServiceItem[] = [
     id: "srv-12-months-decisions",
     title: "十二流月運程＋重大決策",
     price_hkd: 688,
-    price_display: "HK$688",
-    turnaround: "即時生成 · 決策矩陣",
+    price_display: "即將登場",
+    turnaround: "即將登場 · 決策矩陣",
+    isComingSoon: true,
     description: "包含十二流月運程，並針對您自選的重大決策進行專項 Timing 評級分析。",
     decisionOptions: [
       "轉工／跳槽",
@@ -478,9 +484,9 @@ export const SIDEBAR_PRICE_LIST: ServiceItem[] = [
     title: "八字人生導航・未來3年",
     price_hkd: 588,
     price_display: "即將登場",
-    turnaround: "敬請期待 · 深度綜合",
-    description: "全方位人生大數據推演，跨越事業、財富、情感與健康的三年總覽。",
+    turnaround: "即將登場 · 深度綜合",
     isComingSoon: true,
+    description: "全方位人生大數據推演，跨越事業、財富、情感與健康的三年總覽。",
     indexFeatures: [
       "人生大格局與大運交接分析",
       "三年綜合運勢矩陣",
@@ -494,8 +500,9 @@ export const SIDEBAR_PRICE_LIST: ServiceItem[] = [
     id: "srv-synastry",
     title: "雙人合盤・愛情／婚姻",
     price_hkd: 688,
-    price_display: "HK$688",
-    turnaround: "即時生成 · 深度合盤",
+    price_display: "即將登場",
+    turnaround: "即將登場 · 深度合盤",
+    isComingSoon: true,
     description: "深度推演雙方八字五行生剋、緣分深淺、契合度與未來相處建議。",
     categoriesOptions: [
       "計劃發展關係（追求中／曖昧中）",
@@ -542,8 +549,9 @@ export const SIDEBAR_PRICE_LIST: ServiceItem[] = [
     id: "srv-house-fengshui",
     title: "住宅風水・5年布局",
     price_hkd: 888,
-    price_display: "HK$888",
-    turnaround: "戶型圖分析 · 即時生成",
+    price_display: "即將登場",
+    turnaround: "即將登場 · 即時生成",
+    isComingSoon: true,
     description: "結合屋主八字與住宅戶型圖，打造九運 5 年旺財旺丁旺健康的空間佈局。",
     indexFeatures: [
       "九運住宅玄空飛星立極",
