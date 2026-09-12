@@ -62,9 +62,16 @@ export const BookingServicesIndexPage: React.FC<BookingServicesIndexPageProps> =
               </h3>
 
               {/* Price (Larger Font) */}
-              <div className="font-serif text-2xl md:text-3xl font-extrabold text-[#D97706] mb-2.5">
+              <div className="font-serif text-2xl md:text-3xl font-extrabold text-[#D97706] mb-1.5">
                 {service.price_display}
               </div>
+
+              {/* Pricing Note (if applicable) */}
+              {service.pricing_note && (
+                <div className="text-[11px] sm:text-xs text-[#2B2D2F]/80 whitespace-pre-line bg-[#D97706]/10 p-2 rounded border border-[#D97706]/20 font-sans mb-3 leading-relaxed">
+                  {service.pricing_note}
+                </div>
+              )}
 
               {/* Turnaround / Duration (Clear larger text) */}
               <div className="text-xs sm:text-sm text-[#1E3A5F] font-semibold mb-3.5 flex items-center space-x-1.5">

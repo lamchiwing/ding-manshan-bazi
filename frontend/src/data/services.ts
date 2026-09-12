@@ -8,6 +8,7 @@ export interface ServiceItem {
   title: string;
   price_hkd: number;
   price_display: string;
+  pricing_note?: string;
   turnaround: string;
   description: string;
   indexFeatures?: string[];
@@ -121,7 +122,8 @@ export const BOOKING_SERVICES: ServiceItem[] = [
     id: "srv-home-fengshui-layout",
     title: "家居風水佈局",
     price_hkd: 18000,
-    price_display: "HK$18,000+",
+    price_display: "HK$18,000",
+    pricing_note: "以實尺計算，最低消費HK$18,000 (HK$28/平方呎)\n*如最終尺價大於 HK$18,000, 餘額後付。",
     turnaround: "60分鐘視像/語音諮詢",
     description: "透過線上視像與戶型平面圖，勘測住宅外在環境與室內格局，提供和諧起居與安穩聚氣的專業佈局建議。",
     indexFeatures: [
@@ -137,7 +139,8 @@ export const BOOKING_SERVICES: ServiceItem[] = [
     id: "srv-home-inspection",
     title: "家居查宅",
     price_hkd: 18000,
-    price_display: "HK$18,000+",
+    price_display: "HK$18,000",
+    pricing_note: "超過3個單位：每個額外單位+HK$1,000\n每跨超一個地區：+HK$1,200",
     turnaround: "30分鐘視像/語音諮詢",
     description: "買樓置業或租屋前線上把關。檢視單位格局、環境採光、周邊形煞與住戶生辰五行契合度。",
     indexFeatures: [
@@ -153,7 +156,8 @@ export const BOOKING_SERVICES: ServiceItem[] = [
     id: "srv-corp-fengshui-layout",
     title: "公司風水佈局",
     price_hkd: 28000,
-    price_display: "HK$28,000+",
+    price_display: "HK$28,000",
+    pricing_note: "HK$38/平方呎\n以實尺計算，最低消費HK$28,000，*如最終尺價大於 HK$28,000, 餘額後付。",
     turnaround: "60分鐘視像/語音諮詢",
     description: "透過線上視像與建築戶型圖，針對企業辦公室、總部或商舖進行全面風水規劃。著重負責人辦公室、財務位置、大門納氣與團隊動線配置。",
     indexFeatures: [
@@ -169,7 +173,8 @@ export const BOOKING_SERVICES: ServiceItem[] = [
     id: "srv-corp-inspection",
     title: "公司查宅",
     price_hkd: 28000,
-    price_display: "HK$28,000+",
+    price_display: "HK$28,000",
+    pricing_note: "超過3個單位：每個額外單位+HK$1,300\n每跨超一個地區：+HK$1,800",
     turnaround: "30分鐘視像/語音諮詢",
     description: "企業擴張、搬遷或新店選址前線上深度評估。透過地圖、照片與平面圖，衡量商廈周邊環境、大廈納氣與行業五行契合度。",
     indexFeatures: [

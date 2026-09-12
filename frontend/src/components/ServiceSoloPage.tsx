@@ -3,6 +3,12 @@ import { ServiceItem } from '../data/services';
 import { MASTERS_LIST } from '../data/masters';
 import { generateDynamicAvailableDates, getBookingDateBounds, DYNAMIC_TIME_SLOTS } from '../utils/bookingDateHelper';
 
+interface InspectionUnit {
+  country: string;
+  region: string;
+  building: string;
+}
+
 interface ServiceSoloPageProps {
   service: ServiceItem;
   onBack: () => void;
@@ -50,22 +56,70 @@ export const ServiceSoloPage: React.FC<ServiceSoloPageProps> = ({
   // Fengshui Layout specific
   const [fengshuiAddress, setFengshuiAddress] = useState('');
   const [floorPlanFile, setFloorPlanFile] = useState<string | null>(null);
+  const [sqftInput, setSqftInput] = useState<number | ''>(500);
 
-  // Inspection (3 Preferred Locations) specific
-  const [location1, setLocation1] = useState({ country: '香港', region: '', building: '' });
-  const [location2, setLocation2] = useState({ country: '香港', region: '', building: '' });
-  const [location3, setLocation3] = useState({ country: '香港', region: '', building: '' });
+  // Inspection Dynamic Units (Supports > 3 units & > 1 region)
+  const [inspectionUnits, setInspectionUnits] = useState<InspectionUnit[]>([
+    { country: '香港', region: '', building: '' },
+    { country: '香港', region: '', building: '' },
+    { country: '香港', region: '', building: '' },
+  ]);
 
   const [notes, setNotes] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Service Type Identifiers
   const isMasterBazi = service.id === 'srv-master-bazi';
-  const isFengshuiLayout = service.id === 'srv-home-fengshui-layout' || service.id === 'srv-corp-fengshui-layout';
-  const isInspection = service.id === 'srv-home-inspection' || service.id === 'srv-corp-inspection';
-  const isSynastry = service.id.includes('synastry');
+  const isHomeFengshui = service.id === 'srv-home-fengshui-layout';
+  const isCorpFengshui = service.id === 'srv-corp-fengshui-layout';
+  const isFengshuiLayout = isHomeFengshui || isCorpFengshui;
+  const isHomeInspection = service.id === 'srv-home-inspection';
+  const isCorpInspection = service.id === 'srv-corp-inspection';
+  const isInspection = isHomeInspection || isCorpInspection;
 
   const effectiveDate = customDate || selectedDate;
+
+  // Fengshui Layout dynamic fee estimation
+  const sqftNum = typeof sqftInput === 'number' && sqftInput > 0 ? sqftInput : 0;
+  const fengshuiRate = isHomeFengshui ? 28 : 38;
+  const fengshuiMinCharge = isHomeFengshui ? 18000 : 28000;
+  const fengshuiEstimatedTotal = sqftNum > 0 ? Math.round(sqftNum * fengshuiRate) : fengshuiMinCharge;
+  const fengshuiDeposit = fengshuiMinCharge;
+  const fengshuiBalance = Math.max(0, fengshuiEstimatedTotal - fengshuiDeposit);
+
+  // Inspection dynamic pricing calculations
+  const unitsCount = inspectionUnits.length;
+  const extraUnitsCount = Math.max(0, unitsCount - 3);
+  const extraUnitRate = isHomeInspection ? 1000 : 1300;
+  const extraUnitsFee = extraUnitsCount * extraUnitRate;
+
+  const distinctRegions = useMemo(() => {
+    return Array.from(new Set(inspectionUnits.map((u) => u.region.trim()).filter(Boolean)));
+  }, [inspectionUnits]);
+
+  const regionsCount = Math.max(1, distinctRegions.length);
+  const extraRegionsCount = Math.max(0, regionsCount - 1);
+  const extraRegionRate = isHomeInspection ? 1200 : 1800;
+  const extraRegionsFee = extraRegionsCount * extraRegionRate;
+
+  const inspectionBaseFee = isHomeInspection ? 18000 : 28000;
+  const inspectionTotalFee = inspectionBaseFee + extraUnitsFee + extraRegionsFee;
+
+  const handleAddUnit = () => {
+    setInspectionUnits([...inspectionUnits, { country: '香港', region: '', building: '' }]);
+  };
+
+  const handleRemoveUnit = (index: number) => {
+    if (inspectionUnits.length > 1) {
+      setInspectionUnits(inspectionUnits.filter((_, i) => i !== index));
+    }
+  };
+
+  const handleUpdateUnit = (index: number, field: keyof InspectionUnit, value: string) => {
+    const updated = [...inspectionUnits];
+    updated[index] = { ...updated[index], [field]: value };
+    setInspectionUnits(updated);
+  };
 
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -99,8 +153,20 @@ export const ServiceSoloPage: React.FC<ServiceSoloPageProps> = ({
             partnerBirthTime,
             fengshuiAddress,
             floorPlanFile,
-            preferredLocations: isInspection ? [location1, location2, location3] : undefined,
-            isDepositPayment: isMasterBazi
+            sqft: isFengshuiLayout ? sqftNum : undefined,
+            preferredLocations: isInspection ? inspectionUnits : undefined,
+            inspectionPricing: isInspection
+              ? {
+                  unitsCount,
+                  extraUnitsCount,
+                  extraUnitsFee,
+                  distinctRegions,
+                  extraRegionsCount,
+                  extraRegionsFee,
+                  totalFee: inspectionTotalFee
+                }
+              : undefined,
+            isDepositPayment: isMasterBazi || isFengshuiLayout
           },
           notes: notes
         })
@@ -159,6 +225,11 @@ export const ServiceSoloPage: React.FC<ServiceSoloPageProps> = ({
               <span className="font-serif text-3xl font-extrabold text-[#D97706]">
                 {service.price_display}
               </span>
+              {service.pricing_note && (
+                <div className="text-[11px] text-[#F4EFEA]/85 whitespace-pre-line mt-1 max-w-xs text-left md:text-right font-sans">
+                  {service.pricing_note}
+                </div>
+              )}
             </div>
           </div>
         </div>
@@ -206,7 +277,7 @@ export const ServiceSoloPage: React.FC<ServiceSoloPageProps> = ({
                 </p>
               </div>
 
-              {/* 1. Date & Time Selection (1 week after today to 1 year, no '自動即時滾動' text) */}
+              {/* 1. Date & Time Selection (1 week after today to 1 year) */}
               {isConsultationOrOnsite && (
                 <div className="bg-white p-5 md:p-6 rounded-[4px] border border-[#1E3A5F]/20 space-y-4 shadow-sm">
                   <div>
@@ -219,7 +290,7 @@ export const ServiceSoloPage: React.FC<ServiceSoloPageProps> = ({
                       </span>
                     </div>
 
-                    {/* Date Picker Input (Allows selecting any date up to 1 year) */}
+                    {/* Date Picker Input */}
                     <div className="flex items-center space-x-3 mb-3">
                       <input
                         type="date"
@@ -352,28 +423,95 @@ export const ServiceSoloPage: React.FC<ServiceSoloPageProps> = ({
                 </div>
               </div>
 
-              {/* 3. Special Requirement: 家居風水佈局 & 公司風水佈局 (地址 + 平面圖上載) */}
+              {/* 3. Special Requirement: 家居風水佈局 & 公司風水佈局 (英文地址 + 實用面積計算 + 平面圖上載) */}
               {isFengshuiLayout && (
                 <div className="bg-white p-5 md:p-6 rounded-[4px] border border-[#1E3A5F]/20 space-y-4 shadow-sm">
                   <h4 className="text-xs sm:text-sm font-bold text-[#1E3A5F] uppercase border-b border-[#2B2D2F]/10 pb-2">
-                    風水物業地址與平面圖上載
+                    {isHomeFengshui ? '家居物業資料與平面圖上載' : '公司物業資料與平面圖上載'}
                   </h4>
+
+                  {/* English Address Field */}
                   <div>
                     <label className="block text-xs text-[#2B2D2F] mb-1 font-medium">
-                      看風水的家居／公司詳細地址 *
+                      {isHomeFengshui
+                        ? '看風水的家居詳細 （英文）地址 *'
+                        : '看風水的公司詳細 （英文）地址 *'}
                     </label>
                     <input
                       type="text"
                       required
-                      placeholder="例：香港九龍尖沙咀海港城寫字樓 / 某屋苑某座某室"
+                      placeholder={
+                        isHomeFengshui
+                          ? "e.g. Flat B, 15/F, Tower 1, Residence Bel-Air, Island South, Hong Kong"
+                          : "e.g. Suite 2801, 28/F, Tower 2, The Gateway, Harbour City, Tsim Sha Tsui, Hong Kong"
+                      }
                       value={fengshuiAddress}
                       onChange={(e) => setFengshuiAddress(e.target.value)}
                       className="w-full bg-[#F4EFEA]/40 border border-[#1E3A5F]/30 rounded px-3 py-2 text-xs sm:text-sm focus:outline-none focus:border-[#D97706]"
                     />
                   </div>
+
+                  {/* Practical Square Footage Input & Dynamic Calculation */}
+                  <div className="p-4 bg-[#F4EFEA]/50 rounded border border-[#1E3A5F]/20 space-y-3">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                      <label className="text-xs sm:text-sm font-bold text-[#1E3A5F]">
+                        物業實用面積（平方呎 / sq ft）*
+                      </label>
+                      <span className="text-xs text-[#D97706] font-semibold">
+                        {isHomeFengshui
+                          ? '收費標準：HK$28/平方呎（最低消費 HK$18,000）'
+                          : '收費標準：HK$38/平方呎（最低消費 HK$28,000）'}
+                      </span>
+                    </div>
+
+                    <div className="flex items-center space-x-3">
+                      <input
+                        type="number"
+                        min="1"
+                        step="1"
+                        required
+                        value={sqftInput}
+                        onChange={(e) => {
+                          const val = e.target.value;
+                          setSqftInput(val === '' ? '' : parseInt(val, 10));
+                        }}
+                        placeholder="請輸入實用呎數，例：650"
+                        className="w-44 bg-white border border-[#1E3A5F]/30 rounded px-3 py-2 text-xs sm:text-sm font-bold text-[#1E3A5F] focus:outline-none focus:border-[#D97706]"
+                      />
+                      <span className="text-xs text-[#2B2D2F]/80">平方呎 (sq ft)</span>
+                    </div>
+
+                    {/* Real-time Pricing Summary */}
+                    <div className="bg-white p-3.5 rounded border border-[#1E3A5F]/10 text-xs sm:text-sm space-y-1.5 text-[#2B2D2F]">
+                      <div className="flex justify-between items-center text-[#1E3A5F] font-semibold">
+                        <span>預估總收費 ({sqftNum} 呎 × HK${fengshuiRate}/呎)：</span>
+                        <span className="font-serif text-base font-bold text-[#D97706]">
+                          HK${Math.max(fengshuiMinCharge, fengshuiEstimatedTotal).toLocaleString()}
+                        </span>
+                      </div>
+                      <div className="flex justify-between items-center text-xs text-[#2B2D2F]/80 pt-1 border-t border-[#2B2D2F]/10">
+                        <span>預約即時繳付（最低消費訂金）：</span>
+                        <span className="font-bold text-[#1E3A5F]">HK${fengshuiDeposit.toLocaleString()}</span>
+                      </div>
+                      {fengshuiBalance > 0 ? (
+                        <div className="flex justify-between items-center text-xs text-[#D97706] font-medium">
+                          <span>* 最終尺價大於最低消費，餘額於諮詢完成後繳付：</span>
+                          <span>+HK${fengshuiBalance.toLocaleString()}</span>
+                        </div>
+                      ) : (
+                        <div className="text-[11px] text-[#A4B3C6]">
+                          * 呎數計算未超最低消費額，按最低消費 HK${fengshuiMinCharge.toLocaleString()} 結算。
+                        </div>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Floor Plan Upload */}
                   <div>
                     <label className="block text-xs text-[#2B2D2F] mb-1 font-medium">
-                      上載房屋／寫字樓平面圖（支援 JPG, PNG, PDF）*
+                      {isHomeFengshui
+                        ? '上載家居平面圖（支援 JPG, PNG, PDF）*'
+                        : '上載公司／寫字樓平面圖（支援 JPG, PNG, PDF）*'}
                     </label>
                     <div className="border-2 border-dashed border-[#1E3A5F]/30 rounded p-4 text-center bg-[#F4EFEA]/20 hover:border-[#D97706] transition-colors">
                       <input
@@ -397,97 +535,128 @@ export const ServiceSoloPage: React.FC<ServiceSoloPageProps> = ({
                 </div>
               )}
 
-              {/* 4. Special Requirement: 家居查宅 & 公司查宅 (選出3個偏好地方：國家、地區、大廈名稱) */}
+              {/* 4. Special Requirement: 家居查宅 & 公司查宅 (動態增減單位、跨區自動計算收費) */}
               {isInspection && (
                 <div className="bg-white p-5 md:p-6 rounded-[4px] border border-[#1E3A5F]/20 space-y-4 shadow-sm">
-                  <h4 className="text-xs sm:text-sm font-bold text-[#1E3A5F] uppercase border-b border-[#2B2D2F]/10 pb-2">
-                    候選查宅物業（請填寫 3 個偏好地方）
-                  </h4>
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between border-b border-[#2B2D2F]/10 pb-2 gap-2">
+                    <div>
+                      <h4 className="text-xs sm:text-sm font-bold text-[#1E3A5F] uppercase">
+                        候選查宅單位清單（支援多於 3 個單位 / 跨多個地區）
+                      </h4>
+                      <p className="text-[11px] text-[#2B2D2F]/70 mt-0.5">
+                        {isHomeInspection
+                          ? '基礎收費 HK$18,000 包 3 個單位及 1 個地區。超過 3 個單位每額外單位 +HK$1,000，每跨超一個地區 +HK$1,200。'
+                          : '基礎收費 HK$28,000 包 3 個單位及 1 個地區。超過 3 個單位每額外單位 +HK$1,300，每跨超一個地區 +HK$1,800。'}
+                      </p>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={handleAddUnit}
+                      className="bg-[#1E3A5F] hover:bg-[#D97706] text-white text-xs font-bold px-3 py-1.5 rounded transition-colors shrink-0 flex items-center space-x-1"
+                    >
+                      <span>+</span>
+                      <span>增加候選單位</span>
+                    </button>
+                  </div>
                   
-                  {/* Location 1 */}
-                  <div className="p-3.5 bg-[#F4EFEA]/40 rounded border border-[#1E3A5F]/15 space-y-2">
-                    <span className="text-xs font-bold text-[#D97706]">偏好地點 1 *</span>
-                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
-                      <input
-                        type="text"
-                        required
-                        placeholder="國家（例：香港 / 英國）"
-                        value={location1.country}
-                        onChange={(e) => setLocation1({ ...location1, country: e.target.value })}
-                        className="bg-white border border-[#1E3A5F]/30 rounded px-2.5 py-1.5 text-xs focus:outline-none focus:border-[#D97706]"
-                      />
-                      <input
-                        type="text"
-                        required
-                        placeholder="地區（例：中環 / 尖沙咀）"
-                        value={location1.region}
-                        onChange={(e) => setLocation1({ ...location1, region: e.target.value })}
-                        className="bg-white border border-[#1E3A5F]/30 rounded px-2.5 py-1.5 text-xs focus:outline-none focus:border-[#D97706]"
-                      />
-                      <input
-                        type="text"
-                        required
-                        placeholder="大廈／屋苑名稱"
-                        value={location1.building}
-                        onChange={(e) => setLocation1({ ...location1, building: e.target.value })}
-                        className="bg-white border border-[#1E3A5F]/30 rounded px-2.5 py-1.5 text-xs focus:outline-none focus:border-[#D97706]"
-                      />
-                    </div>
+                  {/* Dynamic Units List */}
+                  <div className="space-y-3">
+                    {inspectionUnits.map((unit, idx) => (
+                      <div
+                        key={idx}
+                        className="p-3.5 bg-[#F4EFEA]/40 rounded border border-[#1E3A5F]/15 space-y-2 relative"
+                      >
+                        <div className="flex items-center justify-between">
+                          <span className="text-xs font-bold text-[#D97706]">
+                            候選單位 {idx + 1} {idx < 3 ? '(基礎名額內)' : '(額外單位)'}
+                          </span>
+                          {inspectionUnits.length > 1 && (
+                            <button
+                              type="button"
+                              onClick={() => handleRemoveUnit(idx)}
+                              className="text-[11px] text-red-600 hover:text-red-800 font-medium"
+                            >
+                              ✕ 刪除
+                            </button>
+                          )}
+                        </div>
+
+                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                          <div>
+                            <label className="block text-[11px] text-[#2B2D2F]/70 mb-0.5">國家 / 地點</label>
+                            <input
+                              type="text"
+                              required
+                              placeholder="國家（例：香港 / 英國）"
+                              value={unit.country}
+                              onChange={(e) => handleUpdateUnit(idx, 'country', e.target.value)}
+                              className="w-full bg-white border border-[#1E3A5F]/30 rounded px-2.5 py-1.5 text-xs focus:outline-none focus:border-[#D97706]"
+                            />
+                          </div>
+                          <div>
+                            <label className="block text-[11px] text-[#2B2D2F]/70 mb-0.5">地區 / 區份</label>
+                            <input
+                              type="text"
+                              required
+                              placeholder="地區（例：中環 / 尖沙咀）"
+                              value={unit.region}
+                              onChange={(e) => handleUpdateUnit(idx, 'region', e.target.value)}
+                              className="w-full bg-white border border-[#1E3A5F]/30 rounded px-2.5 py-1.5 text-xs focus:outline-none focus:border-[#D97706]"
+                            />
+                          </div>
+                          <div>
+                            <label className="block text-[11px] text-[#2B2D2F]/70 mb-0.5">大廈／屋苑名稱</label>
+                            <input
+                              type="text"
+                              required
+                              placeholder="大廈／屋苑名稱"
+                              value={unit.building}
+                              onChange={(e) => handleUpdateUnit(idx, 'building', e.target.value)}
+                              className="w-full bg-white border border-[#1E3A5F]/30 rounded px-2.5 py-1.5 text-xs focus:outline-none focus:border-[#D97706]"
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    ))}
                   </div>
 
-                  {/* Location 2 */}
-                  <div className="p-3.5 bg-[#F4EFEA]/40 rounded border border-[#1E3A5F]/15 space-y-2">
-                    <span className="text-xs font-bold text-[#1E3A5F]">偏好地點 2</span>
-                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
-                      <input
-                        type="text"
-                        placeholder="國家"
-                        value={location2.country}
-                        onChange={(e) => setLocation2({ ...location2, country: e.target.value })}
-                        className="bg-white border border-[#1E3A5F]/30 rounded px-2.5 py-1.5 text-xs focus:outline-none focus:border-[#D97706]"
-                      />
-                      <input
-                        type="text"
-                        placeholder="地區"
-                        value={location2.region}
-                        onChange={(e) => setLocation2({ ...location2, region: e.target.value })}
-                        className="bg-white border border-[#1E3A5F]/30 rounded px-2.5 py-1.5 text-xs focus:outline-none focus:border-[#D97706]"
-                      />
-                      <input
-                        type="text"
-                        placeholder="大廈／屋苑名稱"
-                        value={location2.building}
-                        onChange={(e) => setLocation2({ ...location2, building: e.target.value })}
-                        className="bg-white border border-[#1E3A5F]/30 rounded px-2.5 py-1.5 text-xs focus:outline-none focus:border-[#D97706]"
-                      />
+                  {/* Real-time Dynamic Fee Calculation Breakdown */}
+                  <div className="bg-[#1E3A5F]/5 p-4 rounded border border-[#1E3A5F]/20 space-y-2 text-xs sm:text-sm">
+                    <div className="font-bold text-[#1E3A5F] flex items-center justify-between border-b border-[#1E3A5F]/20 pb-1.5">
+                      <span>查宅費用即時自動計算明細</span>
+                      <span className="text-xs text-[#2B2D2F]/70">
+                        共 {unitsCount} 個單位 ｜ 涵蓋 {regionsCount} 個不同地區
+                      </span>
                     </div>
-                  </div>
 
-                  {/* Location 3 */}
-                  <div className="p-3.5 bg-[#F4EFEA]/40 rounded border border-[#1E3A5F]/15 space-y-2">
-                    <span className="text-xs font-bold text-[#1E3A5F]">偏好地點 3</span>
-                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
-                      <input
-                        type="text"
-                        placeholder="國家"
-                        value={location3.country}
-                        onChange={(e) => setLocation3({ ...location3, country: e.target.value })}
-                        className="bg-white border border-[#1E3A5F]/30 rounded px-2.5 py-1.5 text-xs focus:outline-none focus:border-[#D97706]"
-                      />
-                      <input
-                        type="text"
-                        placeholder="地區"
-                        value={location3.region}
-                        onChange={(e) => setLocation3({ ...location3, region: e.target.value })}
-                        className="bg-white border border-[#1E3A5F]/30 rounded px-2.5 py-1.5 text-xs focus:outline-none focus:border-[#D97706]"
-                      />
-                      <input
-                        type="text"
-                        placeholder="大廈／屋苑名稱"
-                        value={location3.building}
-                        onChange={(e) => setLocation3({ ...location3, building: e.target.value })}
-                        className="bg-white border border-[#1E3A5F]/30 rounded px-2.5 py-1.5 text-xs focus:outline-none focus:border-[#D97706]"
-                      />
+                    <div className="space-y-1 text-[#2B2D2F]/90">
+                      <div className="flex justify-between">
+                        <span>基礎收費（包含首 3 個單位、1 個地區）：</span>
+                        <span className="font-medium">HK${inspectionBaseFee.toLocaleString()}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span>
+                          額外單位加收（{extraUnitsCount} 個額外單位 × HK${extraUnitRate.toLocaleString()}）：
+                        </span>
+                        <span className={`font-medium ${extraUnitsFee > 0 ? 'text-[#D97706]' : ''}`}>
+                          {extraUnitsFee > 0 ? `+HK$${extraUnitsFee.toLocaleString()}` : 'HK$0'}
+                        </span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span>
+                          跨區加收（跨超 {extraRegionsCount} 個地區 × HK${extraRegionRate.toLocaleString()}）：
+                        </span>
+                        <span className={`font-medium ${extraRegionsFee > 0 ? 'text-[#D97706]' : ''}`}>
+                          {extraRegionsFee > 0 ? `+HK$${extraRegionsFee.toLocaleString()}` : 'HK$0'}
+                        </span>
+                      </div>
+                    </div>
+
+                    <div className="flex justify-between items-center pt-2 border-t border-[#1E3A5F]/20 font-serif">
+                      <span className="font-bold text-sm sm:text-base text-[#1E3A5F]">應繳付款總額：</span>
+                      <span className="text-xl sm:text-2xl font-extrabold text-[#D97706]">
+                        HK${inspectionTotalFee.toLocaleString()}
+                      </span>
                     </div>
                   </div>
                 </div>
@@ -505,7 +674,7 @@ export const ServiceSoloPage: React.FC<ServiceSoloPageProps> = ({
                 />
               </div>
 
-              {/* 6. Action Button & Special Terms (八字論命 Deposit Rule) */}
+              {/* 6. Action Button & Special Terms */}
               <div className="pt-4 border-t border-[#2B2D2F]/15 space-y-4">
                 {/* Master Bazi Specific Deposit Notice */}
                 {isMasterBazi && (
@@ -513,6 +682,18 @@ export const ServiceSoloPage: React.FC<ServiceSoloPageProps> = ({
                     <strong>八字論命諮詢須知：</strong>
                     <p className="mt-1">
                       “先判前事，若資料有誤，續談不果，只收取訂金。續談在收取前事報告後，閣下有 7天時間決定並繳付餘額。”
+                    </p>
+                  </div>
+                )}
+
+                {/* Fengshui Deposit Surcharge Notice */}
+                {isFengshuiLayout && (
+                  <div className="p-3.5 bg-[#D97706]/10 border-l-4 border-[#D97706] rounded-[2px] text-xs md:text-sm text-[#2B2D2F]/90 leading-relaxed">
+                    <strong>風水佈局收費須知：</strong>
+                    <p className="mt-1">
+                      {isHomeFengshui
+                        ? '以實尺計算，最低消費HK$18,000 (HK$28/平方呎)。*如最終尺價大於 HK$18,000, 餘額後付。'
+                        : '以實尺計算，最低消費HK$28,000 (HK$38/平方呎)。*如最終尺價大於 HK$28,000, 餘額後付。'}
                     </p>
                   </div>
                 )}
@@ -535,6 +716,12 @@ export const ServiceSoloPage: React.FC<ServiceSoloPageProps> = ({
                       ? '處理中…'
                       : isMasterBazi
                       ? '繳付訂金 HK$2,400'
+                      : isHomeFengshui
+                      ? '繳付訂金 HK$18,000'
+                      : isCorpFengshui
+                      ? '繳付訂金 HK$28,000'
+                      : isInspection
+                      ? `確認並付款 (HK$${inspectionTotalFee.toLocaleString()})`
                       : `確認並付款 (${service.price_display})`}
                   </button>
                 </div>
@@ -546,3 +733,4 @@ export const ServiceSoloPage: React.FC<ServiceSoloPageProps> = ({
     </div>
   );
 };
+
