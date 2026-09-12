@@ -83,9 +83,9 @@ export const ServiceSoloPage: React.FC<ServiceSoloPageProps> = ({
   const sqftNum = typeof sqftInput === 'number' && sqftInput > 0 ? sqftInput : 0;
   const fengshuiRate = isHomeFengshui ? 28 : 38;
   const fengshuiMinCharge = isHomeFengshui ? 18000 : 28000;
-  const fengshuiEstimatedTotal = sqftNum > 0 ? Math.round(sqftNum * fengshuiRate) : fengshuiMinCharge;
-  const fengshuiDeposit = fengshuiMinCharge;
-  const fengshuiBalance = Math.max(0, fengshuiEstimatedTotal - fengshuiDeposit);
+  const fengshuiCalculatedRaw = sqftNum > 0 ? Math.round(sqftNum * fengshuiRate) : fengshuiMinCharge;
+  const fengshuiTotalFee = Math.max(fengshuiMinCharge, fengshuiCalculatedRaw);
+  const fengshuiExtraSurcharge = Math.max(0, fengshuiTotalFee - fengshuiMinCharge);
 
   // Inspection dynamic pricing calculations
   const unitsCount = inspectionUnits.length;
@@ -482,27 +482,37 @@ export const ServiceSoloPage: React.FC<ServiceSoloPageProps> = ({
                     </div>
 
                     {/* Real-time Pricing Summary */}
-                    <div className="bg-white p-3.5 rounded border border-[#1E3A5F]/10 text-xs sm:text-sm space-y-1.5 text-[#2B2D2F]">
+                    <div className="bg-white p-4 rounded border border-[#1E3A5F]/15 text-xs sm:text-sm space-y-2 text-[#2B2D2F]">
                       <div className="flex justify-between items-center text-[#1E3A5F] font-semibold">
-                        <span>預估總收費 ({sqftNum} 呎 × HK${fengshuiRate}/呎)：</span>
-                        <span className="font-serif text-base font-bold text-[#D97706]">
-                          HK${Math.max(fengshuiMinCharge, fengshuiEstimatedTotal).toLocaleString()}
+                        <span>預估總收費 ({sqftNum} 平方呎 × HK${fengshuiRate}/平方呎)：</span>
+                        <span className="font-serif text-base md:text-lg font-bold text-[#D97706]">
+                          HK${(sqftNum * fengshuiRate).toLocaleString()}
                         </span>
                       </div>
-                      <div className="flex justify-between items-center text-xs text-[#2B2D2F]/80 pt-1 border-t border-[#2B2D2F]/10">
-                        <span>預約即時繳付（最低消費訂金）：</span>
-                        <span className="font-bold text-[#1E3A5F]">HK${fengshuiDeposit.toLocaleString()}</span>
+
+                      <div className="pt-2 border-t border-[#2B2D2F]/10 space-y-1 text-xs text-[#2B2D2F]/80">
+                        <div className="flex justify-between">
+                          <span>服務最低消費額：</span>
+                          <span className="font-medium">HK${fengshuiMinCharge.toLocaleString()}</span>
+                        </div>
+                        {sqftNum * fengshuiRate > fengshuiMinCharge ? (
+                          <div className="flex justify-between text-[#D97706] font-medium">
+                            <span>超出最低消費之差額（{sqftNum} 呎總額 - 最低消費）：</span>
+                            <span>+HK${fengshuiExtraSurcharge.toLocaleString()}</span>
+                          </div>
+                        ) : (
+                          <div className="text-[11px] text-[#A4B3C6]">
+                            * 實用面積計算額（HK${(sqftNum * fengshuiRate).toLocaleString()}）未達最低消費，按最低消費 HK${fengshuiMinCharge.toLocaleString()} 結算。
+                          </div>
+                        )}
                       </div>
-                      {fengshuiBalance > 0 ? (
-                        <div className="flex justify-between items-center text-xs text-[#D97706] font-medium">
-                          <span>* 最終尺價大於最低消費，餘額於諮詢完成後繳付：</span>
-                          <span>+HK${fengshuiBalance.toLocaleString()}</span>
-                        </div>
-                      ) : (
-                        <div className="text-[11px] text-[#A4B3C6]">
-                          * 呎數計算未超最低消費額，按最低消費 HK${fengshuiMinCharge.toLocaleString()} 結算。
-                        </div>
-                      )}
+
+                      <div className="flex justify-between items-center pt-2 border-t border-[#1E3A5F]/20 font-serif">
+                        <span className="font-bold text-sm sm:text-base text-[#1E3A5F]">應繳付款總額（自動計算）：</span>
+                        <span className="text-xl sm:text-2xl font-extrabold text-[#D97706]">
+                          HK${fengshuiTotalFee.toLocaleString()}
+                        </span>
+                      </div>
                     </div>
                   </div>
 
@@ -716,10 +726,8 @@ export const ServiceSoloPage: React.FC<ServiceSoloPageProps> = ({
                       ? '處理中…'
                       : isMasterBazi
                       ? '繳付訂金 HK$2,400'
-                      : isHomeFengshui
-                      ? '繳付訂金 HK$18,000'
-                      : isCorpFengshui
-                      ? '繳付訂金 HK$28,000'
+                      : isFengshuiLayout
+                      ? `確認並付款 (HK$${fengshuiTotalFee.toLocaleString()})`
                       : isInspection
                       ? `確認並付款 (HK$${inspectionTotalFee.toLocaleString()})`
                       : `確認並付款 (${service.price_display})`}
