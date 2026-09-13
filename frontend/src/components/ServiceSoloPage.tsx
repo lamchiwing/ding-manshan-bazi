@@ -166,13 +166,15 @@ export const ServiceSoloPage: React.FC<ServiceSoloPageProps> = ({
       });
       const stripeResult = await stripeResponse.json();
 
-      // If Stripe Checkout Session URL is returned (Live/Test Mode with Key), redirect immediately!
-      if (stripeResult.checkout_url) {
+      // If Stripe Checkout Session URL is returned, redirect immediately to Stripe!
+      if (stripeResult && stripeResult.checkout_url) {
         window.location.href = stripeResult.checkout_url;
         return;
       }
 
-      // Fallback/Simulation mode (when running locally or before Stripe keys are placed in .env)
+      if (stripeResult && stripeResult.error) {
+        alert(`Stripe 支付連線提示：${stripeResult.message || '請確認 Cloudflare 已設定 STRIPE_SECRET_KEY'}`);
+      }
       await fetch('/api/v1/booking/create', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
