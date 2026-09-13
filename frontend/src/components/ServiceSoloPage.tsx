@@ -121,6 +121,15 @@ export const ServiceSoloPage: React.FC<ServiceSoloPageProps> = ({
     setInspectionUnits(updated);
   };
 
+  // Calculate final dynamic payment amount for Stripe
+  const finalPaymentAmount = isMasterBazi
+    ? 2400
+    : isFengshuiLayout
+    ? fengshuiTotalFee
+    : isInspection
+    ? inspectionTotalFee
+    : service.price_hkd;
+
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       setFloorPlanFile(e.target.files[0].name);
@@ -131,6 +140,39 @@ export const ServiceSoloPage: React.FC<ServiceSoloPageProps> = ({
     e.preventDefault();
     setIsSubmitting(true);
     try {
+      // 1. Call Backend Stripe Checkout Session API
+      const stripePayload = {
+        service_id: service.id,
+        service_title: service.title,
+        amount_hkd: finalPaymentAmount,
+        client_name: clientName,
+        client_email: clientEmail,
+        client_phone: clientPhone,
+        booking_date: isConsultationOrOnsite ? effectiveDate : new Date().toISOString().split('T')[0],
+        time_slot: isConsultationOrOnsite ? selectedSlot : '即時生成',
+        birth_date: birthDate,
+        birth_time: birthTime,
+        notes: notes,
+        sqft: isFengshuiLayout ? sqftNum : undefined,
+        fengshui_address: isFengshuiLayout ? fengshuiAddress : undefined,
+        inspection_units: isInspection ? inspectionUnits : undefined,
+        is_deposit_payment: isMasterBazi
+      };
+
+      const stripeResponse = await fetch('/api/v1/payment/create-checkout-session', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(stripePayload)
+      });
+      const stripeResult = await stripeResponse.json();
+
+      // If Stripe Checkout Session URL is returned (Live/Test Mode with Key), redirect immediately!
+      if (stripeResult.checkout_url) {
+        window.location.href = stripeResult.checkout_url;
+        return;
+      }
+
+      // Fallback/Simulation mode (when running locally or before Stripe keys are placed in .env)
       await fetch('/api/v1/booking/create', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -166,11 +208,13 @@ export const ServiceSoloPage: React.FC<ServiceSoloPageProps> = ({
                   totalFee: inspectionTotalFee
                 }
               : undefined,
-            isDepositPayment: isMasterBazi || isFengshuiLayout
+            isDepositPayment: isMasterBazi,
+            amountPaid: finalPaymentAmount
           },
           notes: notes
         })
       });
+
       setActiveStep('confirmed');
       window.scrollTo({ top: 0, behavior: 'smooth' });
     } catch (err) {
@@ -242,12 +286,33 @@ export const ServiceSoloPage: React.FC<ServiceSoloPageProps> = ({
                 ✓
               </div>
               <h2 className="font-serif text-2xl font-bold text-[#2B2D2F] mb-2">
-                {isConsultationOrOnsite ? '預約申請已成功提交' : '訂單確認成功'}
+                {isConsultationOrOnsite ? '預約與付款已成功確認' : '訂單確認成功'}
               </h2>
-              <p className="text-sm text-[#2B2D2F]/80 leading-relaxed my-4">
-                感謝您的委託。我們已收到您關於「<strong>{service.title}</strong>」的預約申請。
-                {isConsultationOrOnsite && ` 預約日期：${effectiveDate}（時段：${selectedSlot}）。`}
-                詳細確認信已發送至您的電郵。
+              <div className="p-4 bg-white rounded border border-[#1E3A5F]/20 my-4 text-left text-xs sm:text-sm space-y-2">
+                <div className="flex justify-between border-b border-gray-100 pb-2">
+                  <span className="text-[#A4B3C6]">預約項目：</span>
+                  <span className="font-bold text-[#1E3A5F]">{service.title}</span>
+                </div>
+                <div className="flex justify-between border-b border-gray-100 pb-2">
+                  <span className="text-[#A4B3C6]">預約時段：</span>
+                  <span className="font-medium">{effectiveDate}（{selectedSlot}）</span>
+                </div>
+                <div className="flex justify-between border-b border-gray-100 pb-2">
+                  <span className="text-[#A4B3C6]">實付金額 (Stripe)：</span>
+                  <span className="font-serif font-bold text-[#D97706] text-base">
+                    HK${finalPaymentAmount.toLocaleString()}
+                  </span>
+                </div>
+                {isMasterBazi && (
+                  <div className="p-2.5 bg-[#D97706]/10 rounded text-[11px] text-[#2B2D2F]/90 leading-relaxed border border-[#D97706]/20 mt-2">
+                    📌 <strong>八字論命 7天繳款提示：</strong>
+                    <br />
+                    本筆為前事排查訂金 HK$2,400。收到前事批查報告後，閣下有 7 天時間決定並繳付餘額 HK$2,400 進行深度視像詳談。
+                  </div>
+                )}
+              </div>
+              <p className="text-xs text-[#2B2D2F]/70 leading-relaxed my-3">
+                詳細確認信與專屬會議連結已發送至您的電郵（<strong>{clientEmail || '您的電郵'}</strong>）。
               </p>
               <div className="pt-4 flex justify-center space-x-3">
                 <button
