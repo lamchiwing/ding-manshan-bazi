@@ -8,10 +8,11 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.api.routes_bazi import router as bazi_router
 from app.api.routes_services import router as services_router
 from app.api.routes_booking import router as booking_router
+from app.api.routes_payment import router as payment_router
 
 app = FastAPI(
     title="丁蔓山｜命理誌 Bazi & Fortune Platform API",
-    description="Deterministic Bazi calculation engine, AI reading and Fortune teller booking API.",
+    description="Deterministic Bazi calculation engine, AI reading, Fortune teller booking & Stripe payment API.",
     version="1.0.0"
 )
 
@@ -28,6 +29,7 @@ app.add_middleware(
 app.include_router(bazi_router, prefix="/api/v1")
 app.include_router(services_router, prefix="/api/v1")
 app.include_router(booking_router, prefix="/api/v1")
+app.include_router(payment_router, prefix="/api/v1")
 
 @app.get("/")
 def root():
