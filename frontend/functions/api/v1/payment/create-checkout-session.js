@@ -72,8 +72,13 @@ export async function onRequestPost(context) {
     }
 
     const unitAmountCents = Math.round(finalAmount * 100);
-    const origin = new URL(request.url).origin;
-    const frontendUrl = env.FRONTEND_URL || origin;
+    
+    // Automatically use the exact origin that the user is currently browsing
+    const requestOrigin = request.headers.get("origin") || new URL(request.url).origin;
+    let frontendUrl = requestOrigin;
+    if (env.FRONTEND_URL && !requestOrigin.includes("pages.dev")) {
+      frontendUrl = env.FRONTEND_URL;
+    }
 
     // Build Stripe form URL-encoded payload
     const formData = new URLSearchParams();
