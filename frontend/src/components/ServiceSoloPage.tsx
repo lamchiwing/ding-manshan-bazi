@@ -808,4 +808,3 @@ export const ServiceSoloPage: React.FC<ServiceSoloPageProps> = ({
     </div>
   );
 };
-

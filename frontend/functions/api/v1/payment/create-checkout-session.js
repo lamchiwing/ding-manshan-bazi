@@ -84,7 +84,11 @@ export async function onRequestPost(context) {
     const formData = new URLSearchParams();
     formData.append("payment_method_types[0]", "card");
     formData.append("mode", "payment");
-    if (client_email) formData.append("customer_email", client_email);
+    if (client_email) {
+      formData.append("customer_email", client_email);
+      formData.append("payment_intent_data[receipt_email]", client_email);
+    }
+    formData.append("payment_intent_data[description]", `${productName} - 預約人: ${client_name || ""}`);
     formData.append("client_reference_id", `bk_${service_id}_${Date.now()}`);
 
     formData.append("line_items[0][price_data][currency]", "hkd");

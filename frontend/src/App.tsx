@@ -7,11 +7,19 @@ import { OnlineServicesIndexPage } from './components/OnlineServicesIndexPage';
 import { BookingServicesIndexPage } from './components/BookingServicesIndexPage';
 import { ServiceSoloPage } from './components/ServiceSoloPage';
 import { LibrarySection } from './components/LibrarySection';
+import { LegalPage } from './components/LegalPages';
 import { Footer } from './components/Footer';
 import { calculateLocalBazi } from './utils/baziLocalEngine';
 import { ServiceItem } from './data/services';
 
-type ViewMode = 'home' | 'online-services' | 'booking-services' | 'service-solo';
+type ViewMode =
+  | 'home'
+  | 'online-services'
+  | 'booking-services'
+  | 'service-solo'
+  | 'privacy-policy'
+  | 'terms-of-service'
+  | 'contact-us';
 
 export function App() {
   const [currentView, setCurrentView] = useState<ViewMode>('home');
@@ -95,7 +103,7 @@ export function App() {
     }
   };
 
-  const handleNavigate = (view: 'home' | 'online-services' | 'booking-services') => {
+  const handleNavigate = (view: ViewMode) => {
     setPreviousView(currentView);
     setCurrentView(view);
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -226,10 +234,52 @@ export function App() {
             onNavigateHome={() => handleNavigate('home')}
           />
         )}
+
+        {/* 5. Privacy Policy Page View */}
+        {currentView === 'privacy-policy' && (
+          <LegalPage
+            type="privacy"
+            onNavigateHome={() => handleNavigate('home')}
+            onNavigateBooking={() => handleNavigate('booking-services')}
+            onSwitchLegalTab={(tab) => {
+              if (tab === 'privacy') handleNavigate('privacy-policy');
+              else if (tab === 'terms') handleNavigate('terms-of-service');
+              else if (tab === 'contact') handleNavigate('contact-us');
+            }}
+          />
+        )}
+
+        {/* 6. Terms of Service Page View */}
+        {currentView === 'terms-of-service' && (
+          <LegalPage
+            type="terms"
+            onNavigateHome={() => handleNavigate('home')}
+            onNavigateBooking={() => handleNavigate('booking-services')}
+            onSwitchLegalTab={(tab) => {
+              if (tab === 'privacy') handleNavigate('privacy-policy');
+              else if (tab === 'terms') handleNavigate('terms-of-service');
+              else if (tab === 'contact') handleNavigate('contact-us');
+            }}
+          />
+        )}
+
+        {/* 7. Contact Us Page View */}
+        {currentView === 'contact-us' && (
+          <LegalPage
+            type="contact"
+            onNavigateHome={() => handleNavigate('home')}
+            onNavigateBooking={() => handleNavigate('booking-services')}
+            onSwitchLegalTab={(tab) => {
+              if (tab === 'privacy') handleNavigate('privacy-policy');
+              else if (tab === 'terms') handleNavigate('terms-of-service');
+              else if (tab === 'contact') handleNavigate('contact-us');
+            }}
+          />
+        )}
       </main>
 
       {/* Footer */}
-      <Footer />
+      <Footer onNavigate={handleNavigate} />
     </div>
   );
 }

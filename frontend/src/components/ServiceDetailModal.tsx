@@ -18,25 +18,51 @@ export const ServiceDetailModal: React.FC<ServiceDetailModalProps> = ({
 
   const reader = MASTERS_LIST[0]; // 丁蔓山
 
-  // Automatically generate rolling next 14 available dates based on current day
+  // Dynamic booking dates
   const availableDates = useMemo(() => generateDynamicAvailableDates(14), []);
 
   const [activeStep, setActiveStep] = useState<'details' | 'booking' | 'confirmed'>('details');
   const [selectedDate, setSelectedDate] = useState(availableDates[0].value);
-  const [selectedSlot, setSelectedSlot] = useState(DYNAMIC_TIME_SLOTS[2].time); // 14:00
+  const [selectedSlot, setSelectedSlot] = useState(DYNAMIC_TIME_SLOTS[2].time);
   const [customDate, setCustomDate] = useState('');
 
+  // Interactive selectors for specific services
+  const [selectedLoveCategory, setSelectedLoveCategory] = useState<string>(
+    service.categoriesOptions ? service.categoriesOptions[0] : ''
+  );
+  const [selectedDecisions, setSelectedDecisions] = useState<string[]>([]);
+  const [hasPlanStatus, setHasPlanStatus] = useState<'已有明確計劃' | '正在考慮' | '尚未決定'>('已有明確計劃');
+  const [planTimeframe, setPlanTimeframe] = useState('2026年內');
+
+  // Client Info Inputs
   const [clientName, setClientName] = useState('');
   const [clientEmail, setClientEmail] = useState('');
   const [clientPhone, setClientPhone] = useState('');
   const [birthDate, setBirthDate] = useState('1990-05-20');
   const [birthTime, setBirthTime] = useState('21:30');
+  const [partnerBirthDate, setPartnerBirthDate] = useState('1992-08-15');
+  const [partnerBirthTime, setPartnerBirthTime] = useState('14:00');
+  const [propertyAddress, setPropertyAddress] = useState('');
+  const [moveInYear, setMoveInYear] = useState('2024');
   const [notes, setNotes] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const isConsultationOrOnsite = service.type === 'consultation' || service.type === 'onsite';
+  const isConsultationOrOnsite = service.requires_booking;
+  const isSynastry = service.id.includes('synastry');
+  const isFengshui5yr = service.id.includes('house-fengshui');
+  const isDecisionMatrix = service.id.includes('decision-matrix');
 
   const effectiveDate = customDate || selectedDate;
+
+  const toggleDecision = (dec: string) => {
+    if (selectedDecisions.includes(dec)) {
+      setSelectedDecisions(selectedDecisions.filter(d => d !== dec));
+    } else {
+      if (selectedDecisions.length < 3) {
+        setSelectedDecisions([...selectedDecisions, dec]);
+      }
+    }
+  };
 
   const handleConfirmAndPay = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -48,13 +74,23 @@ export const ServiceDetailModal: React.FC<ServiceDetailModalProps> = ({
         body: JSON.stringify({
           service_id: service.id,
           reader_id: reader.id,
-          date: effectiveDate,
-          time_slot: selectedSlot,
+          date: isConsultationOrOnsite ? effectiveDate : new Date().toISOString().split('T')[0],
+          time_slot: isConsultationOrOnsite ? selectedSlot : '即時生成',
           client_name: clientName,
           client_email: clientEmail,
           client_phone: clientPhone,
           birth_date: birthDate,
           birth_time: birthTime,
+          custom_options: {
+            selectedLoveCategory,
+            selectedDecisions,
+            hasPlanStatus,
+            planTimeframe,
+            partnerBirthDate,
+            partnerBirthTime,
+            propertyAddress,
+            moveInYear
+          },
           notes: notes
         })
       });
@@ -67,15 +103,17 @@ export const ServiceDetailModal: React.FC<ServiceDetailModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 bg-charcoal/80 backdrop-blur-sm flex items-center justify-center p-4">
-      <div className="bg-[#F4EFEA] text-[#2B2D2F] w-full max-w-xl rounded-[4px] border border-[#1E3A5F]/30 shadow-2xl overflow-hidden animate-fade-in-up">
+    <div className="fixed inset-0 z-50 bg-charcoal/85 backdrop-blur-sm flex items-center justify-center p-4">
+      <div className="bg-[#F4EFEA] text-[#2B2D2F] w-full max-w-2xl rounded-[4px] border border-[#1E3A5F]/30 shadow-2xl overflow-hidden animate-fade-in-up flex flex-col max-h-[90vh]">
         {/* Modal Header */}
-        <div className="bg-[#1E3A5F] text-[#F4EFEA] px-6 py-4 flex items-center justify-between">
+        <div className="bg-[#1E3A5F] text-[#F4EFEA] px-6 py-4 flex items-center justify-between shrink-0">
           <div>
-            <span className="text-[11px] text-[#D97706] uppercase tracking-widest font-sans font-semibold">
-              {service.category_name}
+            <h3 className="font-serif text-lg md:text-xl font-bold">
+              {service.title}
+            </h3>
+            <span className="text-[11px] text-[#A4B3C6] font-sans">
+              {service.turnaround}
             </span>
-            <h3 className="font-serif text-lg md:text-xl font-bold">{service.title}</h3>
           </div>
           <button
             onClick={onClose}
@@ -86,19 +124,19 @@ export const ServiceDetailModal: React.FC<ServiceDetailModalProps> = ({
         </div>
 
         {/* Modal Content */}
-        <div className="p-6 max-h-[80vh] overflow-y-auto font-sans">
+        <div className="p-6 overflow-y-auto font-sans flex-1">
           {activeStep === 'confirmed' ? (
             <div className="text-center py-6">
               <div className="w-14 h-14 bg-[#1E3A5F] text-[#D97706] rounded-full flex items-center justify-center text-2xl mx-auto mb-3">
                 ✓
               </div>
               <h4 className="font-serif text-xl font-bold text-[#2B2D2F] mb-1">
-                預約與付款確認成功
+                {isConsultationOrOnsite ? '預約確認成功' : '訂單確認成功'}
               </h4>
               <p className="text-xs md:text-sm text-[#2B2D2F]/80 max-w-md mx-auto leading-relaxed my-3">
                 感謝您的委託。我們已收到您關於「<strong>{service.title}</strong>」的申請。
                 {isConsultationOrOnsite && ` 預約時間為 ${effectiveDate} ${selectedSlot}。`}
-                詳細確認信及資料準備提示已發送至您的電郵。
+                詳細確認信及報告資料已發送至您的電郵。
               </p>
               <button
                 onClick={onClose}
@@ -118,12 +156,11 @@ export const ServiceDetailModal: React.FC<ServiceDetailModalProps> = ({
                   </span>
                 </div>
                 <div className="text-right text-xs text-[#2B2D2F]/80">
-                  <span>交付方式：</span>
                   <span className="font-medium text-[#1E3A5F]">{service.turnaround}</span>
                 </div>
               </div>
 
-              {/* Description */}
+              {/* Service Description */}
               <div>
                 <h4 className="text-xs font-bold text-[#1E3A5F] uppercase mb-1">服務內容</h4>
                 <p className="text-xs md:text-sm text-[#2B2D2F]/90 leading-relaxed">
@@ -131,18 +168,144 @@ export const ServiceDetailModal: React.FC<ServiceDetailModalProps> = ({
                 </p>
               </div>
 
-              {/* Features List */}
-              <div>
-                <h4 className="text-xs font-bold text-[#1E3A5F] uppercase mb-1.5">包含項目</h4>
-                <ul className="space-y-1.5 text-xs text-[#2B2D2F]/90 bg-white/60 p-3 rounded-[2px] border border-[#1E3A5F]/15">
-                  {service.features.map((f, i) => (
-                    <li key={i} className="flex items-start space-x-1.5">
-                      <span className="text-[#D97706] font-bold">✓</span>
-                      <span>{f}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
+              {/* Interactive Category Selector if available (e.g. 姻緣導航, 雙人合盤) */}
+              {service.categoriesOptions && (
+                <div>
+                  <h4 className="text-xs font-bold text-[#1E3A5F] uppercase mb-1.5">服務分類選擇</h4>
+                  <div className="flex flex-wrap gap-1.5">
+                    {service.categoriesOptions.map((cat) => (
+                      <button
+                        key={cat}
+                        type="button"
+                        onClick={() => setSelectedLoveCategory(cat)}
+                        className={`px-3 py-1 text-xs rounded transition-all ${
+                          selectedLoveCategory === cat
+                            ? 'bg-[#1E3A5F] text-[#F4EFEA] font-bold'
+                            : 'bg-white border border-[#1E3A5F]/20 text-[#2B2D2F]'
+                        }`}
+                      >
+                        {cat}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Interactive Decision Options if available (十二流月運程＋重大決策) */}
+              {service.decisionOptions && (
+                <div className="bg-white/80 p-3.5 rounded border border-[#1E3A5F]/15 space-y-3">
+                  <div>
+                    <div className="flex justify-between items-center mb-1.5">
+                      <h4 className="text-xs font-bold text-[#1E3A5F] uppercase">
+                        自選重大決策（最多選 3 項進行 Timing 評級）
+                      </h4>
+                      <span className="text-[10px] text-[#D97706] font-mono">
+                        已選 {selectedDecisions.length}/3
+                      </span>
+                    </div>
+                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-1.5">
+                      {service.decisionOptions.map((opt) => {
+                        const isChecked = selectedDecisions.includes(opt);
+                        return (
+                          <button
+                            key={opt}
+                            type="button"
+                            onClick={() => toggleDecision(opt)}
+                            className={`p-2 text-xs text-left rounded transition-all border ${
+                              isChecked
+                                ? 'bg-[#1E3A5F] text-[#F4EFEA] border-[#1E3A5F] font-bold'
+                                : 'bg-white text-[#2B2D2F] border-[#1E3A5F]/20 hover:border-[#D97706]'
+                            }`}
+                          >
+                            <span>{isChecked ? '✓ ' : '+ '}</span>
+                            <span>{opt}</span>
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+
+                  {selectedDecisions.length > 0 && (
+                    <div className="pt-2 border-t border-[#2B2D2F]/10 space-y-2 text-xs">
+                      <div>
+                        <span className="text-[11px] font-bold text-[#1E3A5F] block mb-1">
+                          你目前是否已有相關計劃？
+                        </span>
+                        <div className="flex space-x-3">
+                          {(['已有明確計劃', '正在考慮', '尚未決定'] as const).map((st) => (
+                            <label key={st} className="flex items-center space-x-1 cursor-pointer">
+                              <input
+                                type="radio"
+                                name="plan_status"
+                                checked={hasPlanStatus === st}
+                                onChange={() => setHasPlanStatus(st)}
+                                className="accent-[#D97706]"
+                              />
+                              <span>{st}</span>
+                            </label>
+                          ))}
+                        </div>
+                      </div>
+
+                      {hasPlanStatus === '已有明確計劃' && (
+                        <div>
+                          <span className="text-[11px] font-bold text-[#1E3A5F] block mb-1">
+                            預計何時進行？
+                          </span>
+                          <select
+                            value={planTimeframe}
+                            onChange={(e) => setPlanTimeframe(e.target.value)}
+                            className="bg-white border border-[#1E3A5F]/30 rounded px-2.5 py-1 text-xs text-[#2B2D2F]"
+                          >
+                            <option value="2026年內">2026年內</option>
+                            <option value="2027年">2027年</option>
+                            <option value="1–3個月內">1–3個月內</option>
+                            <option value="3–6個月內">3–6個月內</option>
+                            <option value="6–12個月內">6–12個月內</option>
+                            <option value="未確定">未確定</option>
+                          </select>
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {/* Detailed Breakdown Sections / Solo Page Content */}
+              {service.soloSections ? (
+                <div className="space-y-3">
+                  <h4 className="text-xs font-bold text-[#1E3A5F] uppercase">服務包括項目詳情</h4>
+                  <div className="space-y-2.5">
+                    {service.soloSections.map((sec, idx) => (
+                      <div key={idx} className="bg-white/80 p-3 rounded-[2px] border border-[#1E3A5F]/15">
+                        <div className="font-serif text-xs font-bold text-[#D97706] mb-1.5">
+                          {sec.groupTitle}
+                        </div>
+                        <ul className="grid grid-cols-1 sm:grid-cols-2 gap-1 text-[11px] text-[#2B2D2F]/90">
+                          {sec.items.map((item, i) => (
+                            <li key={i} className="flex items-center space-x-1">
+                              <span className="text-[#1E3A5F]">▪</span>
+                              <span>{item}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ) : service.indexFeatures ? (
+                <div>
+                  <h4 className="text-xs font-bold text-[#1E3A5F] uppercase mb-1.5">服務包括</h4>
+                  <ul className="space-y-1.5 text-xs text-[#2B2D2F]/90 bg-white/60 p-3 rounded-[2px] border border-[#1E3A5F]/15">
+                    {service.indexFeatures.map((f, i) => (
+                      <li key={i} className="flex items-start space-x-1.5">
+                        <span className="text-[#D97706] font-bold">✓</span>
+                        <span>{f}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ) : null}
 
               {/* Action Buttons */}
               <div className="pt-4 border-t border-[#2B2D2F]/10 flex items-center justify-between">
@@ -153,13 +316,22 @@ export const ServiceDetailModal: React.FC<ServiceDetailModalProps> = ({
                 >
                   返回主頁
                 </button>
-                <button
-                  type="button"
-                  onClick={() => setActiveStep('booking')}
-                  className="bg-[#D97706] hover:bg-[#1E3A5F] text-[#F4EFEA] px-6 py-2.5 rounded-[2px] font-serif text-sm font-semibold transition-colors"
-                >
-                  {isConsultationOrOnsite ? '立即預約時段及付款 →' : '填寫資料並直接付款 →'}
-                </button>
+                {service.isComingSoon ? (
+                  <button
+                    disabled
+                    className="bg-[#A4B3C6] text-white px-6 py-2 rounded-[2px] text-xs font-medium cursor-not-allowed"
+                  >
+                    即將登場 · 敬請期待
+                  </button>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={() => setActiveStep('booking')}
+                    className="bg-[#D97706] hover:bg-[#b45309] text-[#F4EFEA] px-6 py-2.5 rounded-[2px] font-serif text-sm font-semibold transition-colors shadow"
+                  >
+                    {isConsultationOrOnsite ? '立即預約時段及付款 →' : '填寫資料並直接付款 →'}
+                  </button>
+                )}
               </div>
             </div>
           ) : (
@@ -167,21 +339,22 @@ export const ServiceDetailModal: React.FC<ServiceDetailModalProps> = ({
             <form onSubmit={handleConfirmAndPay} className="space-y-4">
               <div className="text-xs text-[#1E3A5F] font-semibold border-b border-[#2B2D2F]/10 pb-1 flex justify-between items-center">
                 <span>填寫預約及付款資料</span>
-                <span className="text-[10px] text-[#A4B3C6] font-normal">由丁蔓山親自對接</span>
+                <span className="text-[10px] text-[#A4B3C6] font-normal">
+                  {isConsultationOrOnsite ? '由丁蔓山親自對接' : '即時生成深度分析報告'}
+                </span>
               </div>
 
-              {/* Dynamic Auto-Rolling Date & Time slot picker */}
+              {/* Dynamic Auto-Rolling Date & Time slot picker (For 1-on-1 consultations) */}
               {isConsultationOrOnsite && (
                 <div className="space-y-3 bg-white/70 p-3.5 rounded-[3px] border border-[#1E3A5F]/15">
                   <div>
                     <div className="flex justify-between items-center mb-1.5">
                       <label className="text-[11px] font-bold text-[#1E3A5F]">
-                        選擇預約日期 (自動即時滾動)
+                        選擇預約日期
                       </label>
-                      <span className="text-[10px] text-[#A4B3C6]">未來 14 天可選</span>
+                      <span className="text-[10px] text-[#A4B3C6]">未來 14 天每日自動滾動</span>
                     </div>
 
-                    {/* Quick rolling date pills */}
                     <div className="grid grid-cols-2 sm:grid-cols-4 gap-1.5 max-h-36 overflow-y-auto p-1 border border-[#1E3A5F]/10 rounded bg-white">
                       {availableDates.map((d) => {
                         const isSelected = selectedDate === d.value && !customDate;
@@ -207,21 +380,8 @@ export const ServiceDetailModal: React.FC<ServiceDetailModalProps> = ({
                         );
                       })}
                     </div>
-
-                    {/* Or custom date picker */}
-                    <div className="mt-2 flex items-center space-x-2 text-[11px] text-[#A4B3C6]">
-                      <span>或自選日期：</span>
-                      <input
-                        type="date"
-                        value={customDate}
-                        min={new Date().toISOString().split('T')[0]}
-                        onChange={(e) => setCustomDate(e.target.value)}
-                        className="bg-white border border-[#1E3A5F]/30 rounded px-2 py-1 text-xs text-[#2B2D2F] focus:outline-none focus:border-[#D97706]"
-                      />
-                    </div>
                   </div>
 
-                  {/* Time Slots */}
                   <div>
                     <label className="block text-[11px] font-bold text-[#1E3A5F] mb-1.5">
                       選擇諮詢時段 (香港時間 HKT)
@@ -255,7 +415,7 @@ export const ServiceDetailModal: React.FC<ServiceDetailModalProps> = ({
               {/* Client Info Inputs */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
                 <div>
-                  <label className="block text-[11px] text-[#2B2D2F] mb-0.5 font-medium">預約人姓名 *</label>
+                  <label className="block text-[11px] text-[#2B2D2F] mb-0.5 font-medium">姓名 *</label>
                   <input
                     type="text"
                     required
@@ -266,7 +426,7 @@ export const ServiceDetailModal: React.FC<ServiceDetailModalProps> = ({
                   />
                 </div>
                 <div>
-                  <label className="block text-[11px] text-[#2B2D2F] mb-0.5 font-medium">電郵地址 *</label>
+                  <label className="block text-[11px] text-[#2B2D2F] mb-0.5 font-medium">電郵地址 (接收報告) *</label>
                   <input
                     type="email"
                     required
@@ -303,11 +463,61 @@ export const ServiceDetailModal: React.FC<ServiceDetailModalProps> = ({
                 </div>
               </div>
 
+              {/* Extra fields for Synastry (雙人合盤) */}
+              {isSynastry && (
+                <div className="p-3 bg-white/80 rounded border border-[#1E3A5F]/20 space-y-2">
+                  <div className="text-xs font-bold text-[#1E3A5F]">對方（伴侶／合盤對象）生辰資料</div>
+                  <div>
+                    <label className="block text-[11px] text-[#2B2D2F] mb-0.5">對方出生年月日時 (陽曆)</label>
+                    <input
+                      type="text"
+                      placeholder="YYYY-MM-DD HH:mm"
+                      value={`${partnerBirthDate} ${partnerBirthTime}`}
+                      onChange={(e) => {
+                        const [d, t] = e.target.value.split(' ');
+                        setPartnerBirthDate(d || '');
+                        setPartnerBirthTime(t || '');
+                      }}
+                      className="w-full bg-white border border-[#1E3A5F]/30 rounded px-2.5 py-1.5 text-xs focus:outline-none focus:border-[#D97706]"
+                    />
+                  </div>
+                </div>
+              )}
+
+              {/* Extra fields for Fengshui 5yr (住宅風水) */}
+              {isFengshui5yr && (
+                <div className="p-3 bg-white/80 rounded border border-[#1E3A5F]/20 space-y-2">
+                  <div className="text-xs font-bold text-[#1E3A5F]">住宅物業基本資料</div>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                    <div>
+                      <label className="block text-[11px] text-[#2B2D2F] mb-0.5">物業地址／大廈名稱</label>
+                      <input
+                        type="text"
+                        placeholder="例：香港九龍尖沙咀..."
+                        value={propertyAddress}
+                        onChange={(e) => setPropertyAddress(e.target.value)}
+                        className="w-full bg-white border border-[#1E3A5F]/30 rounded px-2.5 py-1.5 text-xs focus:outline-none focus:border-[#D97706]"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-[11px] text-[#2B2D2F] mb-0.5">入住年份</label>
+                      <input
+                        type="text"
+                        placeholder="例：2024"
+                        value={moveInYear}
+                        onChange={(e) => setMoveInYear(e.target.value)}
+                        className="w-full bg-white border border-[#1E3A5F]/30 rounded px-2.5 py-1.5 text-xs focus:outline-none focus:border-[#D97706]"
+                      />
+                    </div>
+                  </div>
+                </div>
+              )}
+
               <div>
-                <label className="block text-[11px] text-[#2B2D2F] mb-0.5 font-medium">備註 / 諮詢需求說明</label>
+                <label className="block text-[11px] text-[#2B2D2F] mb-0.5 font-medium">備註說明</label>
                 <textarea
                   rows={2}
-                  placeholder="簡述你想探討的具體事項或近期面臨之重大決策…"
+                  placeholder="可補充你想了解的具體事項…"
                   value={notes}
                   onChange={(e) => setNotes(e.target.value)}
                   className="w-full bg-white border border-[#1E3A5F]/30 rounded px-2.5 py-1.5 text-xs focus:outline-none focus:border-[#D97706]"
@@ -326,7 +536,7 @@ export const ServiceDetailModal: React.FC<ServiceDetailModalProps> = ({
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="bg-[#D97706] hover:bg-[#1E3A5F] text-[#F4EFEA] px-6 py-2 rounded-[2px] font-serif text-sm font-bold transition-colors shadow"
+                  className="bg-[#D97706] hover:bg-[#b45309] text-[#F4EFEA] px-6 py-2 rounded-[2px] font-serif text-sm font-bold transition-colors shadow"
                 >
                   {isSubmitting ? '處理中…' : `確認並付款 (${service.price_display})`}
                 </button>
