@@ -34,21 +34,52 @@ export function App() {
   const [paymentSessionId, setPaymentSessionId] = useState<string | null>(null);
   const [paymentServiceId, setPaymentServiceId] = useState<string | null>(null);
 
-  // Check URL search params for payment return
+  // Check URL search params, pathname and hash for routing
   useEffect(() => {
     try {
       const searchParams = new URLSearchParams(window.location.search);
       const paymentStatus = searchParams.get('payment_status');
       const sessionId = searchParams.get('session_id');
       const serviceId = searchParams.get('service_id');
+      const pageParam = searchParams.get('page');
+      const pathname = window.location.pathname.toLowerCase();
+      const hash = window.location.hash.toLowerCase();
 
       if (paymentStatus === 'success' || sessionId) {
         setPaymentSuccess(true);
         if (sessionId) setPaymentSessionId(sessionId);
         if (serviceId) setPaymentServiceId(serviceId);
       }
+
+      // Check Direct Legal & Service Links
+      if (
+        pageParam === 'privacy' ||
+        pageParam === 'privacy-policy' ||
+        pathname.includes('privacy') ||
+        hash.includes('privacy')
+      ) {
+        setCurrentView('privacy-policy');
+      } else if (
+        pageParam === 'terms' ||
+        pageParam === 'terms-of-service' ||
+        pathname.includes('terms') ||
+        hash.includes('terms')
+      ) {
+        setCurrentView('terms-of-service');
+      } else if (
+        pageParam === 'contact' ||
+        pageParam === 'contact-us' ||
+        pathname.includes('contact') ||
+        hash.includes('contact')
+      ) {
+        setCurrentView('contact-us');
+      } else if (pageParam === 'online' || pageParam === 'online-services' || pathname.includes('online')) {
+        setCurrentView('online-services');
+      } else if (pageParam === 'booking' || pageParam === 'booking-services' || pathname.includes('booking')) {
+        setCurrentView('booking-services');
+      }
     } catch (e) {
-      console.error('Error parsing payment URL params', e);
+      console.error('Error parsing URL routing params', e);
     }
   }, []);
 
@@ -107,6 +138,26 @@ export function App() {
     setPreviousView(currentView);
     setCurrentView(view);
     window.scrollTo({ top: 0, behavior: 'smooth' });
+
+    try {
+      const url = new URL(window.location.href);
+      if (view === 'home') {
+        url.searchParams.delete('page');
+      } else if (view === 'privacy-policy') {
+        url.searchParams.set('page', 'privacy');
+      } else if (view === 'terms-of-service') {
+        url.searchParams.set('page', 'terms');
+      } else if (view === 'contact-us') {
+        url.searchParams.set('page', 'contact');
+      } else if (view === 'online-services') {
+        url.searchParams.set('page', 'online');
+      } else if (view === 'booking-services') {
+        url.searchParams.set('page', 'booking');
+      }
+      window.history.pushState({}, document.title, url.pathname + (url.search ? url.search : ''));
+    } catch (e) {
+      console.error('Error syncing navigation URL', e);
+    }
   };
 
   const handleSelectServiceSolo = (service: ServiceItem) => {
