@@ -31,7 +31,7 @@ export async function onRequestPost(context) {
     } = body;
 
     // Calculate official amount
-    let finalAmount = amount_hkd || 2800;
+    let finalAmount = amount_hkd !== undefined && amount_hkd !== null ? amount_hkd : 2800;
     let productName = `丁蔓山 · ${service_title}`;
     let productDesc = `預約人：${client_name || "客人"} (${client_phone || ""})`;
 

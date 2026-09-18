@@ -97,6 +97,40 @@ export function App() {
     }
   };
 
+  // Dynamic SEO Title & Description per View
+  useEffect(() => {
+    try {
+      let title = "丁蔓山｜命理誌 — 現代極簡命理、專業八字排盤與風水環境哲學";
+      let desc = "丁蔓山命理誌（tingmanshan.com）為生活提供清晰、冷靜與務實的命理與環境哲學指引。提供精確八字排盤、一對一專業論命諮詢、流年問事、家居與公司風水佈局。";
+
+      if (currentView === 'online-services') {
+        title = "線上服務清單 — 丁蔓山｜命理誌 (五行分析、流月吉凶、合盤)";
+        desc = "探索丁蔓山線上命理服務：五行生活指南、感情與事業三年運勢、十二流月吉凶、雙人合盤及相片風水分析。";
+      } else if (currentView === 'booking-services') {
+        title = "線上一對一預約服務 — 丁蔓山｜命理誌 (八字論命、流年問事、風水勘察)";
+        desc = "預約丁蔓山老師線上一對一視訊諮詢與風水規劃：八字論命前事排查、流年問事、問事求謀、家居風水佈局與查宅。";
+      } else if (currentView === 'service-solo' && selectedService) {
+        title = `${selectedService.title} — 丁蔓山｜命理誌 專業服務預約`;
+        desc = `${selectedService.description || ''} 專業一對一解答與環境規劃。`;
+      } else if (currentView === 'privacy-policy') {
+        title = "隱私權政策 (Privacy Policy) — 丁蔓山｜命理誌";
+        desc = "丁蔓山命理誌（tingmanshan.com）隱私權政策，說明我們如何保護您的八字資料、排盤數據與付款資訊安全。";
+      } else if (currentView === 'terms-of-service') {
+        title = "服務條款 (Terms of Service) — 丁蔓山｜命理誌";
+        desc = "丁蔓山命理誌（tingmanshan.com）服務條款、八字排盤使用規範、預約付款與電子收據說明。";
+      } else if (currentView === 'contact-us') {
+        title = "聯絡我們 (Contact Us) — 丁蔓山｜命理誌 (inquiry@tingmanshan.com)";
+        desc = "聯絡丁蔓山命理誌官方客戶支援與商務合作，電郵：inquiry@tingmanshan.com，週一至週五 09:00-18:00。";
+      }
+
+      document.title = title;
+      const metaDesc = document.querySelector('meta[name="description"]');
+      if (metaDesc) metaDesc.setAttribute('content', desc);
+    } catch (e) {
+      console.error('Error updating SEO title', e);
+    }
+  }, [currentView, selectedService]);
+
   // Initial calculation on load
   useEffect(() => {
     handleCalculate({
