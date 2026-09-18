@@ -41,8 +41,8 @@ export const BOOKING_SERVICES: ServiceItem[] = [
   {
     id: "srv-annual-inquiry",
     title: "流年問事",
-    price_hkd: 1.00,
-    price_display: "HK$1.00",
+    price_hkd: 4,
+    price_display: "HK$4.00",
     turnaround: "30分鐘視像/語音諮詢",
     description: "針對當前或即將到來之一年進行批算，涵蓋十二流月動態、太歲關係與生活起居調和。",
     indexFeatures: [
