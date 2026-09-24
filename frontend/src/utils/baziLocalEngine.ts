@@ -146,8 +146,7 @@ export function calculateLocalBazi(birthDate: string, birthTime: string, gender:
   const monthStem = STEMS[(tigerIdx + mOffset) % 10];
 
   // Day Pillar:
-  // Under standard 早子時 (00:00-00:59) / 夜子時 (23:00-23:59):
-  // Day remains the calendar day.
+  // 日柱維持當日計算（不需改動）
   const jd = getJulianDay(year, month, day, 12, 0);
   const dayStemIdx = Math.floor((Math.floor(jd + 0.5) + 49) % 10);
   const dayBranchIdx = Math.floor((Math.floor(jd + 0.5) + 49) % 12);
@@ -155,21 +154,29 @@ export function calculateLocalBazi(birthDate: string, birthTime: string, gender:
   const dayBranch = BRANCHES[dayBranchIdx];
 
   // Hour Branch & Stem:
+  // 晚子時 (23:00-23:59) 時柱按照翌日計算 (以翌日日干起五鼠遁)；早子時 (00:00-00:59) 與其他時辰按當日計算
   let hBranch = "子";
   let ziLabel = "";
+  let hourCalcDayStem = dayStem;
+
   if (hour === 0) {
     hBranch = "子";
     ziLabel = "早子時 (00:00-00:59)";
   } else if (hour === 23) {
     hBranch = "子";
-    ziLabel = "夜子時 (23:00-23:59)";
+    ziLabel = "晚子時 (23:00-23:59)";
+    const nextDate = new Date(year, month - 1, day + 1);
+    const jdNext = getJulianDay(nextDate.getFullYear(), nextDate.getMonth() + 1, nextDate.getDate(), 12, 0);
+    const nextDayStemIdx = Math.floor((Math.floor(jdNext + 0.5) + 49) % 10);
+    hourCalcDayStem = STEMS[nextDayStemIdx];
   } else {
     const totalMins = hour * 60 + min;
     const bIdx = Math.floor((totalMins + 60) / 120);
     hBranch = BRANCHES[bIdx % 12];
   }
 
-  const ratBase = FIVE_RAT_BASE[dayStem];
+  // 時干按 hourCalcDayStem 配合五鼠遁計算
+  const ratBase = FIVE_RAT_BASE[hourCalcDayStem];
   const ratIdx = STEMS.indexOf(ratBase);
   const hOffset = BRANCHES.indexOf(hBranch);
   const hourStem = STEMS[(ratIdx + hOffset) % 10];
