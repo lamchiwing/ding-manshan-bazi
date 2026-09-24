@@ -8,6 +8,7 @@ interface OnlineServicesIndexPageProps {
 }
 
 export const OnlineServicesIndexPage: React.FC<OnlineServicesIndexPageProps> = ({
+  onSelectService,
   onNavigateHome,
   onNavigateBooking
 }) => {
@@ -40,7 +41,7 @@ export const OnlineServicesIndexPage: React.FC<OnlineServicesIndexPageProps> = (
         </p>
       </div>
 
-      {/* Cards Grid (No 01-09 numbers, all 9 marked as 即將登場) */}
+      {/* Cards Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
         {SIDEBAR_PRICE_LIST.map((service) => (
           <div
@@ -48,10 +49,14 @@ export const OnlineServicesIndexPage: React.FC<OnlineServicesIndexPageProps> = (
             className="bg-[#F4EFEA] text-[#2B2D2F] rounded-[4px] border border-[#1E3A5F]/20 p-6 md:p-7 flex flex-col justify-between hover:border-[#D97706] transition-all shadow-sm group hover:-translate-y-0.5"
           >
             <div>
-              {/* Top Tag: 即將登場 */}
+              {/* Top Tag */}
               <div className="flex items-center justify-end mb-3">
-                <span className="text-xs bg-[#D97706]/15 text-[#D97706] px-2.5 py-0.5 rounded font-bold border border-[#D97706]/30">
-                  即將登場
+                <span className={`text-xs px-2.5 py-0.5 rounded font-bold border ${
+                  service.isComingSoon
+                    ? 'bg-[#D97706]/15 text-[#D97706] border-[#D97706]/30'
+                    : 'bg-[#1E3A5F] text-[#F4EFEA] border-[#1E3A5F]'
+                }`}>
+                  {service.isComingSoon ? "即將登場" : "現已開放"}
                 </span>
               </div>
 
@@ -62,7 +67,7 @@ export const OnlineServicesIndexPage: React.FC<OnlineServicesIndexPageProps> = (
 
               {/* Price / Status */}
               <div className="font-serif text-xl font-bold text-[#D97706] mb-3">
-                即將登場
+                {service.isComingSoon ? "即將登場" : service.price_display}
               </div>
 
               {/* Description */}
@@ -88,14 +93,25 @@ export const OnlineServicesIndexPage: React.FC<OnlineServicesIndexPageProps> = (
               )}
             </div>
 
-            {/* Action Button: Disabled 即將登場 · 敬請期待 */}
+            {/* Action Button */}
             <div className="pt-4 border-t border-[#2B2D2F]/10">
-              <button
-                disabled
-                className="w-full bg-[#A4B3C6]/60 text-[#2B2D2F]/70 text-sm font-serif font-bold py-3 rounded-[2px] cursor-not-allowed border border-[#A4B3C6]/40"
-              >
-                即將登場 · 敬請期待
-              </button>
+              {service.isComingSoon ? (
+                <button
+                  disabled
+                  className="w-full bg-[#A4B3C6]/60 text-[#2B2D2F]/70 text-sm font-serif font-bold py-3 rounded-[2px] cursor-not-allowed border border-[#A4B3C6]/40"
+                >
+                  即將登場 · 敬請期待
+                </button>
+              ) : (
+                <button
+                  type="button"
+                  onClick={() => onSelectService(service)}
+                  className="w-full bg-[#D97706] hover:bg-[#b45309] text-white text-sm font-serif font-bold py-3 rounded-[2px] transition-colors shadow-md flex items-center justify-center space-x-1 cursor-pointer"
+                >
+                  <span>立即推演報告 ({service.price_display})</span>
+                  <span>→</span>
+                </button>
+              )}
             </div>
           </div>
         ))}
