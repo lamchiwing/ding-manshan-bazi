@@ -4,12 +4,14 @@ interface ChartResultProps {
   baziData: any;
   onOpenOnlineServices?: () => void;
   onOpenOneOnOneBooking?: () => void;
+  onOpenFiveElementsReport?: () => void;
 }
 
 export const ChartResult: React.FC<ChartResultProps> = ({
   baziData,
   onOpenOnlineServices,
-  onOpenOneOnOneBooking
+  onOpenOneOnOneBooking,
+  onOpenFiveElementsReport
 }) => {
   if (!baziData) return null;
 
@@ -221,20 +223,30 @@ export const ChartResult: React.FC<ChartResultProps> = ({
             </div>
           )}
 
-          {/* Action Buttons: 2 Buttons side-by-side */}
-          <div className="mt-4 pt-3 border-t border-[#2B2D2F]/10 flex flex-wrap items-center justify-end gap-2.5">
-            <button
-              onClick={onOpenOnlineServices}
-              className="bg-[#1E3A5F] hover:bg-[#2B2D2F] text-[#F4EFEA] px-4 py-2 text-xs font-sans rounded transition-colors font-medium"
-            >
-              線上命理服務 →
-            </button>
-            <button
-              onClick={onOpenOneOnOneBooking}
-              className="bg-[#D97706] hover:bg-[#b45309] text-white px-4 py-2 text-xs font-sans rounded transition-colors font-semibold shadow-xs"
-            >
-              線上一對一預約 →
-            </button>
+          {/* Action Buttons */}
+          <div className="mt-4 pt-3 border-t border-[#2B2D2F]/10 flex flex-wrap items-center justify-between gap-2.5">
+            {onOpenFiveElementsReport && (
+              <button
+                onClick={onOpenFiveElementsReport}
+                className="bg-[#D97706] hover:bg-[#b45309] text-white px-4 py-2 text-xs font-sans rounded transition-colors font-bold shadow-sm flex items-center space-x-1.5 cursor-pointer"
+              >
+                <span>📜 查看五行喜忌指南報告 (HK$128)</span>
+              </button>
+            )}
+            <div className="flex items-center space-x-2 ml-auto">
+              <button
+                onClick={onOpenOnlineServices}
+                className="bg-[#1E3A5F] hover:bg-[#2B2D2F] text-[#F4EFEA] px-4 py-2 text-xs font-sans rounded transition-colors font-medium"
+              >
+                線上命理服務 →
+              </button>
+              <button
+                onClick={onOpenOneOnOneBooking}
+                className="bg-[#2B2D2F] hover:bg-[#1E3A5F] text-white px-4 py-2 text-xs font-sans rounded transition-colors font-semibold shadow-xs"
+              >
+                線上一對一預約 →
+              </button>
+            </div>
           </div>
         </div>
       </div>

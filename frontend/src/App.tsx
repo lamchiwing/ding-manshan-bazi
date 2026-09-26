@@ -9,6 +9,7 @@ import { ServiceSoloPage } from './components/ServiceSoloPage';
 import { LibrarySection } from './components/LibrarySection';
 import { LegalPage } from './components/LegalPages';
 import { Footer } from './components/Footer';
+import { FiveElementsReportModal } from './components/FiveElementsReportModal';
 import { calculateLocalBazi } from './utils/baziLocalEngine';
 import { ServiceItem } from './data/services';
 
@@ -28,6 +29,12 @@ export function App() {
 
   const [baziData, setBaziData] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [isFiveElementsModalOpen, setIsFiveElementsModalOpen] = useState(false);
+  const [currentInputParams, setCurrentInputParams] = useState({
+    birthDate: '2008-11-14',
+    birthTime: '10:00',
+    gender: 'female'
+  });
 
   // Payment Return State
   const [paymentSuccess, setPaymentSuccess] = useState<boolean>(false);
@@ -131,16 +138,17 @@ export function App() {
     }
   }, [currentView, selectedService]);
 
-  // Initial calculation on load
+  // Initial calculation on load (Default to 2008-11-14 10:00 female)
   useEffect(() => {
     handleCalculate({
-      birthDate: '1990-05-20',
-      birthTime: '22:00',
-      gender: 'male'
+      birthDate: '2008-11-14',
+      birthTime: '10:00',
+      gender: 'female'
     });
   }, []);
 
   const handleCalculate = async (params: { birthDate: string; birthTime: string; gender: string }) => {
+    setCurrentInputParams(params);
     setIsLoading(true);
     try {
       const res = await fetch('/api/v1/bazi/calculate', {
@@ -271,6 +279,7 @@ export function App() {
                     baziData={baziData} 
                     onOpenOnlineServices={() => handleNavigate('online-services')}
                     onOpenOneOnOneBooking={() => handleNavigate('booking-services')}
+                    onOpenFiveElementsReport={() => setIsFiveElementsModalOpen(true)}
                   />
                 )}
 
@@ -317,6 +326,8 @@ export function App() {
               window.scrollTo({ top: 0, behavior: 'smooth' });
             }}
             onNavigateHome={() => handleNavigate('home')}
+            onOpenFiveElementsReport={() => setIsFiveElementsModalOpen(true)}
+            baziData={baziData}
           />
         )}
 
@@ -362,6 +373,16 @@ export function App() {
           />
         )}
       </main>
+
+      {/* Five Elements Report Modal (HK$128) */}
+      <FiveElementsReportModal
+        isOpen={isFiveElementsModalOpen}
+        onClose={() => setIsFiveElementsModalOpen(false)}
+        baziData={baziData}
+        birthDate={currentInputParams.birthDate}
+        birthTime={currentInputParams.birthTime}
+        gender={currentInputParams.gender}
+      />
 
       {/* Footer */}
       <Footer onNavigate={handleNavigate} />

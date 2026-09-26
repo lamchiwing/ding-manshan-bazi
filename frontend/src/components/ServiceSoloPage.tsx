@@ -13,12 +13,16 @@ interface ServiceSoloPageProps {
   service: ServiceItem;
   onBack: () => void;
   onNavigateHome: () => void;
+  onOpenFiveElementsReport?: () => void;
+  baziData?: any;
 }
 
 export const ServiceSoloPage: React.FC<ServiceSoloPageProps> = ({
   service,
   onBack,
-  onNavigateHome
+  onNavigateHome,
+  onOpenFiveElementsReport,
+  baziData
 }) => {
   const reader = MASTERS_LIST[0]; // 丁蔓山
   const isConsultationOrOnsite = service.requires_booking;
@@ -343,6 +347,32 @@ export const ServiceSoloPage: React.FC<ServiceSoloPageProps> = ({
                   所有項目均由丁蔓山親自批查，透過線上視像或語音解讀。請填寫以下預約資料：
                 </p>
               </div>
+
+              {/* Special Instant Preview Box for Five Elements Guide */}
+              {service.id === 'srv-five-elements' && onOpenFiveElementsReport && (
+                <div className="bg-[#1E3A5F]/5 border-2 border-[#D97706]/70 rounded-[4px] p-5 shadow-sm space-y-3">
+                  <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+                    <div>
+                      <div className="inline-block bg-[#D97706] text-white text-[10px] font-bold px-2 py-0.5 rounded tracking-wide mb-1">
+                        確定性官方標準報告
+                      </div>
+                      <h4 className="font-serif text-base font-bold text-[#1E3A5F]">
+                        即時查看【五行生活指南】完整推演報告
+                      </h4>
+                      <p className="text-xs text-[#2B2D2F]/80 mt-0.5">
+                        依據 100 分制量化得分與五大古籍精準引證，即時呈現專屬六類五行與 32 商業生活維度。
+                      </p>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={onOpenFiveElementsReport}
+                      className="px-5 py-2.5 bg-[#D97706] hover:bg-[#b45309] text-white text-xs font-serif font-bold rounded shadow transition-all cursor-pointer whitespace-nowrap self-stretch sm:self-auto text-center"
+                    >
+                      📜 立即預覽完整報告 (HK$128) →
+                    </button>
+                  </div>
+                </div>
+              )}
 
               {/* 1. Date & Time Selection (1 week after today to 1 year) */}
               {isConsultationOrOnsite && (

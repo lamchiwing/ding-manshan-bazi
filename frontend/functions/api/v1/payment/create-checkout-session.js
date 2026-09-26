@@ -35,7 +35,11 @@ export async function onRequestPost(context) {
     let productName = `丁蔓山 · ${service_title}`;
     let productDesc = `預約人：${client_name || "客人"} (${client_phone || ""})`;
 
-    if (service_id === "srv-master-bazi") {
+    if (service_id === "srv-five-elements") {
+      finalAmount = 128;
+      productName = "丁蔓山 · 五行喜忌指南";
+      productDesc = "個人專屬五行生活指南與開運全覽報告";
+    } else if (service_id === "srv-master-bazi") {
       finalAmount = 2400;
       productName = "丁蔓山 · 八字論命（前事排查訂金）";
       productDesc = "先判前事，若資料有誤續談不果只收訂金。餘額 HK$2,400 於收取前事報告後 7 天內繳付。";

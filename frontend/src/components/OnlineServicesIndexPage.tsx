@@ -8,7 +8,6 @@ interface OnlineServicesIndexPageProps {
 }
 
 export const OnlineServicesIndexPage: React.FC<OnlineServicesIndexPageProps> = ({
-  onSelectService,
   onNavigateHome,
   onNavigateBooking
 }) => {
@@ -41,7 +40,7 @@ export const OnlineServicesIndexPage: React.FC<OnlineServicesIndexPageProps> = (
         </p>
       </div>
 
-      {/* Cards Grid */}
+      {/* Cards Grid (No 01-09 numbers, all 9 marked as 即將登場) */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
         {SIDEBAR_PRICE_LIST.map((service) => (
           <div
@@ -104,9 +103,8 @@ export const OnlineServicesIndexPage: React.FC<OnlineServicesIndexPageProps> = (
                 </button>
               ) : (
                 <button
-                  type="button"
                   onClick={() => onSelectService(service)}
-                  className="w-full bg-[#D97706] hover:bg-[#b45309] text-white text-sm font-serif font-bold py-3 rounded-[2px] transition-colors shadow-md flex items-center justify-center space-x-1 cursor-pointer"
+                  className="w-full bg-[#D97706] hover:bg-[#b45309] text-white text-sm font-serif font-bold py-3 rounded-[2px] transition-colors shadow-md flex items-center justify-center space-x-1"
                 >
                   <span>立即推演報告 ({service.price_display})</span>
                   <span>→</span>

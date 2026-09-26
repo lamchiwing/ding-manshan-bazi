@@ -53,10 +53,14 @@ export const ServicesSidebar: React.FC<ServicesSidebarProps> = ({
                 </div>
               </div>
 
-              {/* Right: 即將登場 Badge */}
+              {/* Right: Badge */}
               <div className="flex items-center space-x-2 shrink-0 text-right">
-                <span className="text-[11px] font-serif font-bold text-[#D97706] bg-[#D97706]/10 px-2 py-0.5 rounded border border-[#D97706]/30">
-                  即將登場
+                <span className={`text-[11px] font-serif font-bold px-2 py-0.5 rounded border ${
+                  service.isComingSoon
+                    ? 'text-[#D97706] bg-[#D97706]/10 border-[#D97706]/30'
+                    : 'text-[#F4EFEA] bg-[#D97706] border-[#D97706] shadow-sm'
+                }`}>
+                  {service.isComingSoon ? "即將登場" : service.price_display}
                 </span>
                 <span className="text-xs text-[#A4B3C6] group-hover:text-[#D97706] group-hover:translate-x-0.5 transition-transform">
                   ›

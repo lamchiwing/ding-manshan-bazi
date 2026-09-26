@@ -6,11 +6,11 @@ interface HeroChartInputProps {
 }
 
 export const HeroChartInput: React.FC<HeroChartInputProps> = ({ onCalculate, isLoading }) => {
-  const [gender, setGender] = useState<'male' | 'female'>('male');
-  const [birthYear, setBirthYear] = useState('1990');
-  const [birthMonth, setBirthMonth] = useState('05');
-  const [birthDay, setBirthDay] = useState('20');
-  const [birthTimeSlot, setBirthTimeSlot] = useState('21');
+  const [gender, setGender] = useState<'male' | 'female'>('female');
+  const [birthYear, setBirthYear] = useState('2008');
+  const [birthMonth, setBirthMonth] = useState('11');
+  const [birthDay, setBirthDay] = useState('14');
+  const [birthTimeSlot, setBirthTimeSlot] = useState('09');
 
   // Time slots with explicit 早子時 (00:00 - 00:59) and 夜子時 (23:00 - 23:59)
   const timeSlots = [
