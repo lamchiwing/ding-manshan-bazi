@@ -203,6 +203,11 @@ export function App() {
   };
 
   const handleSelectServiceSolo = (service: ServiceItem) => {
+    // Five Elements Guide: skip payment, directly open report modal
+    if (service.id === 'srv-five-elements') {
+      setIsFiveElementsModalOpen(true);
+      return;
+    }
     setPreviousView(currentView === 'service-solo' ? 'home' : currentView);
     setSelectedService(service);
     setCurrentView('service-solo');

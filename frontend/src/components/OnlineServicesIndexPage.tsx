@@ -104,9 +104,9 @@ export const OnlineServicesIndexPage: React.FC<OnlineServicesIndexPageProps> = (
               ) : (
                 <button
                   onClick={() => onSelectService(service)}
-                  className="w-full bg-[#D97706] hover:bg-[#b45309] text-white text-sm font-serif font-bold py-3 rounded-[2px] transition-colors shadow-md flex items-center justify-center space-x-1"
+                  className="w-full bg-[#D97706] hover:bg-[#b45309] text-white text-sm font-serif font-bold py-3 rounded-[2px] transition-colors shadow-md flex items-center justify-center space-x-1 cursor-pointer"
                 >
-                  <span>立即推演報告 ({service.price_display})</span>
+                  <span>📜 即時免費查看完整報告</span>
                   <span>→</span>
                 </button>
               )}
