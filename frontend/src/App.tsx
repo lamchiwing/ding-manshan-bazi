@@ -31,9 +31,9 @@ export function App() {
   const [isLoading, setIsLoading] = useState(false);
   const [isFiveElementsModalOpen, setIsFiveElementsModalOpen] = useState(false);
   const [currentInputParams, setCurrentInputParams] = useState({
-    birthDate: '2008-11-14',
-    birthTime: '10:00',
-    gender: 'female'
+    birthDate: '1990-05-20',
+    birthTime: '22:00',
+    gender: 'male'
   });
 
   // Payment Return State
@@ -92,7 +92,6 @@ export function App() {
 
   const handleDismissPaymentSuccess = () => {
     setPaymentSuccess(false);
-    // Clean URL query parameters smoothly without reloading
     try {
       const url = new URL(window.location.href);
       url.searchParams.delete('payment_status');
@@ -138,12 +137,12 @@ export function App() {
     }
   }, [currentView, selectedService]);
 
-  // Initial calculation on load (Default to 2008-11-14 10:00 female)
+  // Initial calculation on load
   useEffect(() => {
     handleCalculate({
-      birthDate: '2008-11-14',
-      birthTime: '10:00',
-      gender: 'female'
+      birthDate: '1990-05-20',
+      birthTime: '22:00',
+      gender: 'male'
     });
   }, []);
 
@@ -203,7 +202,7 @@ export function App() {
   };
 
   const handleSelectServiceSolo = (service: ServiceItem) => {
-    // Five Elements Guide: skip payment, directly open report modal
+    // 五行喜忌指南：直接彈窗看報告，跳過付款流程
     if (service.id === 'srv-five-elements') {
       setIsFiveElementsModalOpen(true);
       return;
