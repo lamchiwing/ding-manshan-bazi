@@ -98,6 +98,29 @@ export const ChartResult: React.FC<ChartResultProps> = ({
           })}
         </div>
 
+        {/* Quick Report Banner directly below Four Pillars */}
+        {onOpenFiveElementsReport && (
+          <div className="mb-6 p-4 bg-[#1E3A5F]/20 border border-[#D97706]/60 rounded-[4px] flex flex-col sm:flex-row items-center justify-between gap-3 shadow-sm">
+            <div className="flex items-center space-x-3">
+              <span className="text-2xl">📜</span>
+              <div>
+                <h4 className="font-serif font-bold text-[#F4EFEA] text-sm sm:text-base">
+                  專屬個人【五行喜忌指南】完整量化報告 (HK$128)
+                </h4>
+                <p className="text-xs text-[#A4B3C6]">
+                  100分制 DataBasic 量化模型 · 5大古籍精準引證 · 32商業生活維度
+                </p>
+              </div>
+            </div>
+            <button
+              onClick={onOpenFiveElementsReport}
+              className="bg-[#D97706] hover:bg-[#b45309] text-white px-5 py-2.5 text-xs font-serif font-bold rounded transition-all shadow-md cursor-pointer whitespace-nowrap self-stretch sm:self-auto text-center"
+            >
+              📜 立即查看五行喜忌報告 →
+            </button>
+          </div>
+        )}
+
         {/* Da Yun & Liu Nian Main Box (Cleaned: No Shen Sha or prompt text) */}
         <div className="bg-[#F4EFEA] text-[#2B2D2F] p-4 md:p-5 rounded-[3px] border border-[#1E3A5F]/20 mb-6">
           {/* Cycle Tabs Navigation */}
@@ -228,9 +251,9 @@ export const ChartResult: React.FC<ChartResultProps> = ({
             {onOpenFiveElementsReport && (
               <button
                 onClick={onOpenFiveElementsReport}
-                className="bg-[#D97706] hover:bg-[#b45309] text-white px-4 py-2 text-xs font-sans rounded transition-colors font-bold shadow-sm flex items-center space-x-1.5 cursor-pointer"
+                className="bg-[#1E3A5F] hover:bg-[#2B2D2F] text-[#F4EFEA] px-4 py-2 text-xs font-sans rounded transition-colors font-bold shadow-sm flex items-center space-x-1.5 cursor-pointer"
               >
-                <span>📜 查看五行喜忌指南報告 (HK$128)</span>
+                <span>📜 查看五行喜忌指南報告</span>
               </button>
             )}
             <div className="flex items-center space-x-2 ml-auto">
@@ -242,7 +265,7 @@ export const ChartResult: React.FC<ChartResultProps> = ({
               </button>
               <button
                 onClick={onOpenOneOnOneBooking}
-                className="bg-[#2B2D2F] hover:bg-[#1E3A5F] text-white px-4 py-2 text-xs font-sans rounded transition-colors font-semibold shadow-xs"
+                className="bg-[#D97706] hover:bg-[#b45309] text-white px-4 py-2 text-xs font-sans rounded transition-colors font-semibold shadow-xs"
               >
                 線上一對一預約 →
               </button>

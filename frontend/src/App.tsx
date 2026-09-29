@@ -92,6 +92,7 @@ export function App() {
 
   const handleDismissPaymentSuccess = () => {
     setPaymentSuccess(false);
+    // Clean URL query parameters smoothly without reloading
     try {
       const url = new URL(window.location.href);
       url.searchParams.delete('payment_status');
@@ -202,7 +203,7 @@ export function App() {
   };
 
   const handleSelectServiceSolo = (service: ServiceItem) => {
-    // 五行喜忌指南：直接彈窗看報告，跳過付款流程
+    // Five Elements Guide: skip payment, directly open report modal
     if (service.id === 'srv-five-elements') {
       setIsFiveElementsModalOpen(true);
       return;
