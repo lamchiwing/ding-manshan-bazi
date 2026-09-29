@@ -93,3 +93,25 @@ def api_bazi_ai_chat(payload: AIChatInput):
         "dominant_element": dominant_elem,
         "conversion": conversion_card
     }
+
+@router.post("/five-elements-guide", response_model=Dict[str, Any])
+def api_five_elements_guide(payload: BaziInput):
+    """
+    Generate the full 100-point DataBasic Five Elements Lifestyle Guide report (HK$128).
+    """
+    try:
+        from app.engine.five_elements_guide import generate_five_elements_guide_report
+        bazi = calculate_bazi(
+            birth_date_str=payload.birth_date,
+            birth_time_str=payload.birth_time,
+            gender=payload.gender,
+            day_boundary_rule=payload.day_boundary_rule or "ZI_START_NEXT_DAY"
+        )
+        report = generate_five_elements_guide_report(bazi)
+        return {
+            "success": True,
+            "bazi": bazi,
+            "report_markdown": report
+        }
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=f"Five Elements Guide Error: {str(e)}")

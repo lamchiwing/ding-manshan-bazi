@@ -17,6 +17,7 @@ from .ten_gods import get_ten_god
 from .changsheng import get_changsheng_stage
 from .combinations import analyze_stem_relations, analyze_branch_relations
 from .shensha import calculate_shen_sha
+from .knowledge_retriever import retrieve_classical_insights
 
 RULE_SET_VERSION = "1.0.0"
 ENGINE_VERSION = "1.0.0"
@@ -36,19 +37,19 @@ def get_zi_type_label(hour: int) -> str:
     if hour == 0:
         return "早子時 (00:00-00:59)"
     elif hour == 23:
-        return "夜子時 (23:00-23:59)"
+        return "晚子時 (23:00-23:59)"
     return ""
 
 def calculate_bazi(
     birth_date_str: str,
     birth_time_str: str,
     gender: str,
-    day_boundary_rule: str = "EARLY_LATE_ZI",
+    day_boundary_rule: str = "ZI_START_NEXT_DAY",
     tz_offset_hours: float = 8.0
 ) -> dict:
     """
     Main deterministic calculation function.
-    Supports 早子時 (00:00-00:59) and 夜子時 (23:00-23:59) distinction.
+    Strictly follows 子初換日法 (23:00 一到即換日，晚子時日柱與時柱均依翌日計算).
     """
     tz = timezone(timedelta(hours=tz_offset_hours))
     
@@ -110,12 +111,8 @@ def calculate_bazi(
     m_offset = month_branch_order.index(month_branch)
     month_stem = STEMS[(tiger_stem_idx + m_offset) % 10]
 
-    # 4. Day Pillar Calculation (Sexagenary calculation using JDN)
+    # 4. Day Pillar Calculation (日柱不需改動，依出生當日計算)
     calc_date = date(dt_parts[0], dt_parts[1], dt_parts[2])
-    
-    if day_boundary_rule == "ZI_START_NEXT_DAY" and tm_parts[0] >= 23:
-        calc_date = calc_date + timedelta(days=1)
-        
     calc_dt_noon = datetime(calc_date.year, calc_date.month, calc_date.day, 12, 0, 0, tzinfo=timezone.utc)
     jd_day = julian_day(calc_dt_noon)
     day_stem_idx = int((math.floor(jd_day + 0.5) + 49) % 10)
@@ -124,8 +121,18 @@ def calculate_bazi(
     day_branch = BRANCHES[day_branch_idx]
 
     # 5. Hour Pillar Calculation
+    # 晚子時 (23:00-23:59) 時柱按照翌日計算 (以翌日日干起五鼠遁)；早子時 (00:00-00:59) 與其他時辰按當日計算
     hour_branch = get_hour_branch(tm_parts[0], tm_parts[1])
-    rat_base_stem = FIVE_RAT_BASE[day_stem]
+    
+    hour_calc_day_stem = day_stem
+    if tm_parts[0] >= 23:
+        next_calc_date = calc_date + timedelta(days=1)
+        next_dt_noon = datetime(next_calc_date.year, next_calc_date.month, next_calc_date.day, 12, 0, 0, tzinfo=timezone.utc)
+        jd_next = julian_day(next_dt_noon)
+        next_day_stem_idx = int((math.floor(jd_next + 0.5) + 49) % 10)
+        hour_calc_day_stem = STEMS[next_day_stem_idx]
+
+    rat_base_stem = FIVE_RAT_BASE[hour_calc_day_stem]
     rat_stem_idx = STEMS.index(rat_base_stem)
     h_offset = BRANCHES.index(hour_branch)
     hour_stem = STEMS[(rat_stem_idx + h_offset) % 10]
@@ -333,5 +340,6 @@ def calculate_bazi(
             "stems": stem_relations,
             "branches": branch_relations
         },
-        "shen_sha": shen_sha_result
+        "shen_sha": shen_sha_result,
+        "classical_citations": retrieve_classical_insights(day_stem, month_branch, f"{hour_stem}{hour_branch}")
     }

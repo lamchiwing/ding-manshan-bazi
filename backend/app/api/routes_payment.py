@@ -183,6 +183,10 @@ async def create_checkout_session(request_data: CreateCheckoutRequest):
             ],
             mode="payment",
             customer_email=request_data.client_email,
+            payment_intent_data={
+                "receipt_email": request_data.client_email,
+                "description": f"{product_title} - 預約人: {request_data.client_name}",
+            } if request_data.client_email else {},
             client_reference_id=f"bk_{request_data.service_id}_{request_data.client_phone[-4:] if request_data.client_phone else '0000'}",
             metadata=metadata,
             success_url=f"{frontend_base}/?payment_status=success&session_id={{CHECKOUT_SESSION_ID}}&service_id={request_data.service_id}",
