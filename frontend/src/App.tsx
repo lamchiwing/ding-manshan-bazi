@@ -11,7 +11,7 @@ import { LegalPage } from './components/LegalPages';
 import { Footer } from './components/Footer';
 import { FiveElementsReportModal } from './components/FiveElementsReportModal';
 import { calculateLocalBazi } from './utils/baziLocalEngine';
-import { ServiceItem } from './data/services';
+import { ServiceItem, SIDEBAR_PRICE_LIST } from './data/services';
 
 type ViewMode =
   | 'home'
@@ -35,6 +35,15 @@ export function App() {
     birthTime: '22:00',
     gender: 'male'
   });
+
+  // 方案 A：環境隔離判斷（僅在 *.pages.dev 或本地開放免費測試彈窗；正式域名 www.tingmanshan.com 保持收費）
+  const isPreviewDomain = typeof window !== 'undefined' && (
+    window.location.hostname.includes('pages.dev') ||
+    window.location.hostname.includes('localhost') ||
+    window.location.hostname.includes('127.0.0.1')
+  );
+
+  const fiveElementsService = SIDEBAR_PRICE_LIST.find(s => s.id === 'srv-five-elements');
 
   // Payment Return State
   const [paymentSuccess, setPaymentSuccess] = useState<boolean>(false);
@@ -203,8 +212,8 @@ export function App() {
   };
 
   const handleSelectServiceSolo = (service: ServiceItem) => {
-    // Five Elements Guide: skip payment, directly open report modal
-    if (service.id === 'srv-five-elements') {
+    // 方案 A：僅在測試網域 (*.pages.dev / localhost) 直接彈窗看報告；正式網址 (tingmanshan.com) 走標準付款流程
+    if (service.id === 'srv-five-elements' && isPreviewDomain) {
       setIsFiveElementsModalOpen(true);
       return;
     }
@@ -284,7 +293,8 @@ export function App() {
                     baziData={baziData} 
                     onOpenOnlineServices={() => handleNavigate('online-services')}
                     onOpenOneOnOneBooking={() => handleNavigate('booking-services')}
-                    onOpenFiveElementsReport={() => setIsFiveElementsModalOpen(true)}
+                    onOpenFiveElementsReport={isPreviewDomain ? () => setIsFiveElementsModalOpen(true) : undefined}
+                    onSelectFiveElementsService={() => fiveElementsService && handleSelectServiceSolo(fiveElementsService)}
                   />
                 )}
 
@@ -331,7 +341,7 @@ export function App() {
               window.scrollTo({ top: 0, behavior: 'smooth' });
             }}
             onNavigateHome={() => handleNavigate('home')}
-            onOpenFiveElementsReport={() => setIsFiveElementsModalOpen(true)}
+            onOpenFiveElementsReport={isPreviewDomain ? () => setIsFiveElementsModalOpen(true) : undefined}
             baziData={baziData}
           />
         )}

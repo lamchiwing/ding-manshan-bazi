@@ -8,9 +8,15 @@ interface OnlineServicesIndexPageProps {
 }
 
 export const OnlineServicesIndexPage: React.FC<OnlineServicesIndexPageProps> = ({
+  onSelectService,
   onNavigateHome,
   onNavigateBooking
 }) => {
+  const isPreviewDomain = typeof window !== 'undefined' && (
+    window.location.hostname.includes('pages.dev') ||
+    window.location.hostname.includes('localhost') ||
+    window.location.hostname.includes('127.0.0.1')
+  );
   return (
     <div className="w-full max-w-[1440px] mx-auto px-4 sm:px-8 md:px-12 lg:px-16 py-8 md:py-10 animate-fade-in-up font-sans">
       {/* Breadcrumb & Navigation */}
@@ -106,7 +112,7 @@ export const OnlineServicesIndexPage: React.FC<OnlineServicesIndexPageProps> = (
                   onClick={() => onSelectService(service)}
                   className="w-full bg-[#D97706] hover:bg-[#b45309] text-white text-sm font-serif font-bold py-3 rounded-[2px] transition-colors shadow-md flex items-center justify-center space-x-1 cursor-pointer"
                 >
-                  <span>{service.id === 'srv-five-elements' ? '📜 即時免費查看完整報告' : `立即推演報告 (${service.price_display})`}</span>
+                  <span>{service.id === 'srv-five-elements' && isPreviewDomain ? '📜 即時預覽完整報告 (測試版)' : `立即推演報告 (${service.price_display})`}</span>
                   <span>→</span>
                 </button>
               )}

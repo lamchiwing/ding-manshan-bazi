@@ -5,13 +5,15 @@ interface ChartResultProps {
   onOpenOnlineServices?: () => void;
   onOpenOneOnOneBooking?: () => void;
   onOpenFiveElementsReport?: () => void;
+  onSelectFiveElementsService?: () => void;
 }
 
 export const ChartResult: React.FC<ChartResultProps> = ({
   baziData,
   onOpenOnlineServices,
   onOpenOneOnOneBooking,
-  onOpenFiveElementsReport
+  onOpenFiveElementsReport,
+  onSelectFiveElementsService
 }) => {
   if (!baziData) return null;
 
@@ -99,7 +101,7 @@ export const ChartResult: React.FC<ChartResultProps> = ({
         </div>
 
         {/* Quick Report Banner directly below Four Pillars */}
-        {onOpenFiveElementsReport && (
+        {(onOpenFiveElementsReport || onSelectFiveElementsService) && (
           <div className="mb-6 p-4 bg-[#1E3A5F]/20 border border-[#D97706]/60 rounded-[4px] flex flex-col sm:flex-row items-center justify-between gap-3 shadow-sm">
             <div className="flex items-center space-x-3">
               <span className="text-2xl">📜</span>
@@ -112,12 +114,21 @@ export const ChartResult: React.FC<ChartResultProps> = ({
                 </p>
               </div>
             </div>
-            <button
-              onClick={onOpenFiveElementsReport}
-              className="bg-[#D97706] hover:bg-[#b45309] text-white px-5 py-2.5 text-xs font-serif font-bold rounded transition-all shadow-md cursor-pointer whitespace-nowrap self-stretch sm:self-auto text-center"
-            >
-              📜 立即查看五行喜忌報告 →
-            </button>
+            {onOpenFiveElementsReport ? (
+              <button
+                onClick={onOpenFiveElementsReport}
+                className="bg-[#D97706] hover:bg-[#b45309] text-white px-5 py-2.5 text-xs font-serif font-bold rounded transition-all shadow-md cursor-pointer whitespace-nowrap self-stretch sm:self-auto text-center"
+              >
+                📜 立即查看五行喜忌報告（測試預覽）→
+              </button>
+            ) : (
+              <button
+                onClick={onSelectFiveElementsService}
+                className="bg-[#D97706] hover:bg-[#b45309] text-white px-5 py-2.5 text-xs font-serif font-bold rounded transition-all shadow-md cursor-pointer whitespace-nowrap self-stretch sm:self-auto text-center"
+              >
+                📜 獲取專屬五行生活指南 (HK$128) →
+              </button>
+            )}
           </div>
         )}
 
