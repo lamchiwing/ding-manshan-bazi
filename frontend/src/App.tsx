@@ -28,7 +28,6 @@ export function App() {
   const [previousView, setPreviousView] = useState<ViewMode>('home');
   const [selectedService, setSelectedService] = useState<ServiceItem | null>(null);
 
-  // Core Bazi State
   const [baziData, setBaziData] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [isFiveElementsModalOpen, setIsFiveElementsModalOpen] = useState(false);
@@ -50,98 +49,103 @@ export function App() {
 
   // Payment Return State
   const [paymentSuccess, setPaymentSuccess] = useState<boolean>(false);
-  const [paymentCanceled, setPaymentCanceled] = useState<boolean>(false);
+  const [paymentSessionId, setPaymentSessionId] = useState<string | null>(null);
+  const [paymentServiceId, setPaymentServiceId] = useState<string | null>(null);
 
-  // Check URL query parameters for payment return or direct routing
+  // Check URL search params, pathname and hash for routing
   useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    if (params.get('payment_success') === 'true') {
-      setPaymentSuccess(true);
-      const serviceId = params.get('service_id');
-      if (serviceId) {
-        const matched = SIDEBAR_PRICE_LIST.find(s => s.id === serviceId);
-        if (matched) {
-          setSelectedService(matched);
-          setCurrentView('service-solo');
-        }
+    try {
+      const searchParams = new URLSearchParams(window.location.search);
+      const paymentStatus = searchParams.get('payment_status');
+      const sessionId = searchParams.get('session_id');
+      const serviceId = searchParams.get('service_id');
+      const pageParam = searchParams.get('page');
+      const pathname = window.location.pathname.toLowerCase();
+      const hash = window.location.hash.toLowerCase();
+
+      if (paymentStatus === 'success' || sessionId) {
+        setPaymentSuccess(true);
+        if (sessionId) setPaymentSessionId(sessionId);
+        if (serviceId) setPaymentServiceId(serviceId);
       }
-    } else if (params.get('payment_canceled') === 'true') {
-      setPaymentCanceled(true);
-      const serviceId = params.get('service_id');
-      if (serviceId) {
-        const matched = SIDEBAR_PRICE_LIST.find(s => s.id === serviceId);
-        if (matched) {
-          setSelectedService(matched);
-          setCurrentView('service-solo');
-        }
+
+      // Check Direct Legal & Service Links
+      if (
+        pageParam === 'privacy' ||
+        pageParam === 'privacy-policy' ||
+        pathname.includes('privacy') ||
+        hash.includes('privacy')
+      ) {
+        setCurrentView('privacy-policy');
+      } else if (
+        pageParam === 'terms' ||
+        pageParam === 'terms-of-service' ||
+        pathname.includes('terms') ||
+        hash.includes('terms')
+      ) {
+        setCurrentView('terms-of-service');
+      } else if (
+        pageParam === 'contact' ||
+        pageParam === 'contact-us' ||
+        pathname.includes('contact') ||
+        hash.includes('contact')
+      ) {
+        setCurrentView('contact-us');
+      } else if (pageParam === 'online' || pageParam === 'online-services' || pathname.includes('online')) {
+        setCurrentView('online-services');
+      } else if (pageParam === 'booking' || pageParam === 'booking-services' || pathname.includes('booking')) {
+        setCurrentView('booking-services');
       }
+    } catch (e) {
+      console.error('Error parsing URL routing params', e);
     }
   }, []);
 
-  // Update Browser URL & History without reloading
-  const updateUrl = (path: string, searchParams?: Record<string, string>) => {
-    const url = new URL(window.location.href);
-    url.pathname = path;
-    if (searchParams) {
-      Object.entries(searchParams).forEach(([k, v]) => {
-        if (v) url.searchParams.set(k, v);
-        else url.searchParams.delete(k);
-      });
-    } else {
-      url.search = '';
+  const handleDismissPaymentSuccess = () => {
+    setPaymentSuccess(false);
+    // Clean URL query parameters smoothly without reloading
+    try {
+      const url = new URL(window.location.href);
+      url.searchParams.delete('payment_status');
+      url.searchParams.delete('session_id');
+      url.searchParams.delete('service_id');
+      window.history.replaceState({}, document.title, url.pathname + (url.search ? url.search : ''));
+    } catch (e) {
+      console.error('Error updating URL', e);
     }
-    window.history.pushState({}, '', url.toString());
   };
 
-  // Sync state with Browser Back/Forward navigation
+  // Dynamic SEO Title & Description per View
   useEffect(() => {
-    const handlePopState = () => {
-      const path = window.location.pathname;
-      if (path === '/' || path === '') {
-        setCurrentView('home');
-        setSelectedService(null);
-      } else if (path === '/services' || path === '/services/') {
-        setCurrentView('online-services');
-        setSelectedService(null);
-      } else if (path === '/booking' || path === '/booking/') {
-        setCurrentView('booking-services');
-        setSelectedService(null);
-      } else if (path.startsWith('/services/')) {
-        const slug = path.replace('/services/', '').replace('/', '');
-        const matched = SIDEBAR_PRICE_LIST.find(s => s.slug === slug || s.id === slug);
-        if (matched) {
-          setSelectedService(matched);
-          setCurrentView('service-solo');
-        }
-      } else if (path === '/privacy') {
-        setCurrentView('privacy-policy');
-      } else if (path === '/terms') {
-        setCurrentView('terms-of-service');
-      } else if (path === '/contact') {
-        setCurrentView('contact-us');
+    try {
+      let title = "丁蔓山｜命理誌 — 現代極簡命理、專業八字排盤與風水環境哲學";
+      let desc = "丁蔓山命理誌（tingmanshan.com）為生活提供清晰、冷靜與務實的命理與環境哲學指引。提供精確八字排盤、一對一專業論命諮詢、流年問事、家居與公司風水佈局。";
+
+      if (currentView === 'online-services') {
+        title = "線上服務清單 — 丁蔓山｜命理誌 (五行分析、流月吉凶、合盤)";
+        desc = "探索丁蔓山線上命理服務：五行生活指南、感情與事業三年運勢、十二流月吉凶、雙人合盤及相片風水分析。";
+      } else if (currentView === 'booking-services') {
+        title = "線上一對一預約服務 — 丁蔓山｜命理誌 (八字論命、流年問事、風水勘察)";
+        desc = "預約丁蔓山老師線上一對一視訊諮詢與風水規劃：八字論命前事排查、流年問事、問事求謀、家居風水佈局與查宅。";
+      } else if (currentView === 'service-solo' && selectedService) {
+        title = `${selectedService.title} — 丁蔓山｜命理誌 專業服務預約`;
+        desc = `${selectedService.description || ''} 專業一對一解答與環境規劃。`;
+      } else if (currentView === 'privacy-policy') {
+        title = "隱私權政策 (Privacy Policy) — 丁蔓山｜命理誌";
+        desc = "丁蔓山命理誌（tingmanshan.com）隱私權政策，說明我們如何保護您的八字資料、排盤數據與付款資訊安全。";
+      } else if (currentView === 'terms-of-service') {
+        title = "服務條款 (Terms of Service) — 丁蔓山｜命理誌";
+        desc = "丁蔓山命理誌（tingmanshan.com）服務條款、八字排盤使用規範、預約付款與電子收據說明。";
+      } else if (currentView === 'contact-us') {
+        title = "聯絡我們 (Contact Us) — 丁蔓山｜命理誌 (inquiry@tingmanshan.com)";
+        desc = "聯絡丁蔓山命理誌官方客戶支援與商務合作，電郵：inquiry@tingmanshan.com，週一至週五 09:00-18:00。";
       }
-    };
 
-    window.addEventListener('popstate', handlePopState);
-    return () => window.removeEventListener('popstate', handlePopState);
-  }, []);
-
-  // Sync URL when currentView / selectedService changes
-  useEffect(() => {
-    if (currentView === 'home') {
-      updateUrl('/');
-    } else if (currentView === 'online-services') {
-      updateUrl('/services');
-    } else if (currentView === 'booking-services') {
-      updateUrl('/booking');
-    } else if (currentView === 'service-solo' && selectedService) {
-      updateUrl(`/services/${selectedService.slug || selectedService.id}`);
-    } else if (currentView === 'privacy-policy') {
-      updateUrl('/privacy');
-    } else if (currentView === 'terms-of-service') {
-      updateUrl('/terms');
-    } else if (currentView === 'contact-us') {
-      updateUrl('/contact');
+      document.title = title;
+      const metaDesc = document.querySelector('meta[name="description"]');
+      if (metaDesc) metaDesc.setAttribute('content', desc);
+    } catch (e) {
+      console.error('Error updating SEO title', e);
     }
   }, [currentView, selectedService]);
 
@@ -155,35 +159,29 @@ export function App() {
   }, []);
 
   const handleCalculate = async (params: { birthDate: string; birthTime: string; gender: string }) => {
+    setCurrentInputParams(params);
     setIsLoading(true);
-    setCurrentInputParams({
-      birthDate: params.birthDate,
-      birthTime: params.birthTime,
-      gender: params.gender as any
-    });
-
     try {
-      const response = await fetch('/api/v1/bazi/calculate', {
+      const res = await fetch('/api/v1/bazi/calculate', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          solar_date: params.birthDate,
-          solar_time: params.birthTime,
-          gender: params.gender === 'female' ? 0 : 1,
-          sect: 2
-        }),
+          birth_date: params.birthDate,
+          birth_time: params.birthTime,
+          gender: params.gender,
+          day_boundary_rule: "ZI_START_NEXT_DAY"
+        })
       });
 
-      if (response.ok) {
-        const data = await response.json();
-        setBaziData(data.data || data);
+      if (res.ok) {
+        const data = await res.json();
+        setBaziData(data);
       } else {
-        const localData = calculateLocalBazi(params.birthDate, params.birthTime, params.gender);
-        setBaziData(localData);
+        throw new Error('API Calculation fallback to local');
       }
     } catch (err) {
-      const localData = calculateLocalBazi(params.birthDate, params.birthTime, params.gender);
-      setBaziData(localData);
+      const localResult = calculateLocalBazi(params.birthDate, params.birthTime, params.gender);
+      setBaziData(localResult);
     } finally {
       setIsLoading(false);
     }
@@ -192,11 +190,31 @@ export function App() {
   const handleNavigate = (view: ViewMode) => {
     setPreviousView(currentView);
     setCurrentView(view);
-    setSelectedService(null);
     window.scrollTo({ top: 0, behavior: 'smooth' });
+
+    try {
+      const url = new URL(window.location.href);
+      if (view === 'home') {
+        url.searchParams.delete('page');
+      } else if (view === 'privacy-policy') {
+        url.searchParams.set('page', 'privacy');
+      } else if (view === 'terms-of-service') {
+        url.searchParams.set('page', 'terms');
+      } else if (view === 'contact-us') {
+        url.searchParams.set('page', 'contact');
+      } else if (view === 'online-services') {
+        url.searchParams.set('page', 'online');
+      } else if (view === 'booking-services') {
+        url.searchParams.set('page', 'booking');
+      }
+      window.history.pushState({}, document.title, url.pathname + (url.search ? url.search : ''));
+    } catch (e) {
+      console.error('Error syncing navigation URL', e);
+    }
   };
 
   const handleSelectServiceSolo = (service: ServiceItem) => {
+    // 方案 A：僅在測試網域 (*.pages.dev / localhost) 直接彈窗看報告；正式網址 (tingmanshan.com) 走標準付款流程
     if (service.id === 'srv-five-elements' && isPreviewDomain) {
       setIsFiveElementsModalOpen(true);
       return;
@@ -212,46 +230,70 @@ export function App() {
   };
 
   return (
-    <div className="min-h-screen bg-[#F4EFEA] text-[#2B2D2F] font-sans antialiased selection:bg-[#D97706]/20 selection:text-[#2B2D2F] flex flex-col justify-between">
+    <div className="min-h-screen bg-charcoal text-ivory flex flex-col font-sans selection:bg-amber selection:text-white">
       {/* Top Header */}
-      <Header onNavigate={handleNavigate} />
+      <Header
+        currentView={currentView}
+        onNavigate={handleNavigate}
+      />
 
-      {/* Main Content Area */}
-      <main className="flex-1">
-        {/* Payment Return Notification Banners */}
-        {paymentSuccess && (
-          <div className="bg-[#1E3A5F] text-[#F4EFEA] py-3.5 px-4 text-center text-sm font-medium border-b border-[#D97706]/30 flex items-center justify-center space-x-2">
-            <span>✨ 感謝您的信任。訂單已支付成功！丁蔓山大師團隊將於承諾時間內為您完成推演。</span>
-            <button 
-              onClick={() => setPaymentSuccess(false)}
-              className="text-xs bg-[#FAF7F2]/10 hover:bg-[#FAF7F2]/20 px-2 py-0.5 rounded cursor-pointer ml-2"
+      {/* Payment Success Notification Banner */}
+      {paymentSuccess && (
+        <div className="w-full bg-[#1E3A5F]/40 border-b border-[#D97706]/40 text-[#F4EFEA] py-4 px-4 sm:px-8 transition-all animate-fadeIn">
+          <div className="max-w-[1440px] mx-auto flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+            <div className="flex items-start space-x-3">
+              <div className="w-8 h-8 rounded-full bg-[#D97706]/20 border border-[#D97706] flex items-center justify-center text-[#D97706] text-lg font-bold shrink-0 mt-0.5">
+                ✓
+              </div>
+              <div className="space-y-1">
+                <div className="flex items-center space-x-2">
+                  <span className="font-serif font-bold text-[#F4EFEA] text-base sm:text-lg">
+                    預約付款已成功完成！
+                  </span>
+                  <span className="text-xs bg-[#D97706]/20 text-[#D97706] px-2 py-0.5 rounded border border-[#D97706]/40 font-mono">
+                    Payment Confirmed
+                  </span>
+                </div>
+                <p className="text-xs sm:text-sm text-[#A4B3C6] leading-relaxed">
+                  📧 <strong className="text-[#F4EFEA]">官方電子收據與預約確認信</strong> 已自動發送至您於付款時填寫的電子郵件信箱。
+                </p>
+                <p className="text-xs text-[#8A99AD] leading-relaxed">
+                  💡 提示：若數分鐘內未見郵件，請留意檢查「<span className="text-[#F4EFEA]">垃圾郵件匣 (Spam)</span>」或「<span className="text-[#F4EFEA]">宣傳/促銷郵件匣</span>」。
+                  {paymentSessionId && (
+                    <span className="ml-2 font-mono text-[11px] text-[#A4B3C6]">
+                      [ 訂單編號: {paymentSessionId.slice(0, 16)}... ]
+                    </span>
+                  )}
+                </p>
+                {paymentServiceId === 'srv-master-bazi' && (
+                  <div className="mt-1 text-xs text-[#D97706] bg-[#D97706]/10 px-2.5 py-1.5 rounded border border-[#D97706]/30">
+                    🔔 本次收取為預約訂金 HK$2,400；餘款 HK$1,400 將於正式論命會面前 7 天透過電郵通知繳付。
+                  </div>
+                )}
+              </div>
+            </div>
+
+            <button
+              onClick={handleDismissPaymentSuccess}
+              className="self-end md:self-center px-4 py-1.5 rounded bg-[#2A3B4C] hover:bg-[#34495E] text-xs text-[#F4EFEA] border border-[#4B5E71] transition-colors whitespace-nowrap cursor-pointer shadow-sm"
             >
-              關閉
+              ✕ 關閉提醒
             </button>
           </div>
-        )}
-        {paymentCanceled && (
-          <div className="bg-[#D97706]/10 text-[#2B2D2F] py-3 px-4 text-center text-sm font-medium border-b border-[#D97706]/20 flex items-center justify-center space-x-2">
-            <span>您已取消付款。如有任何疑問，歡迎隨時洽詢客服。</span>
-            <button 
-              onClick={() => setPaymentCanceled(false)}
-              className="text-xs bg-[#2B2D2F]/10 hover:bg-[#2B2D2F]/20 px-2 py-0.5 rounded cursor-pointer ml-2"
-            >
-              關閉
-            </button>
-          </div>
-        )}
-
-        {/* 1. Home View */}
+        </div>
+      )}
+      
+      {/* Main Views Container (All Full-Page Views, ZERO Pop-ups) */}
+      <main className="flex-1 w-full flex flex-col">
+        {/* 1. Home Page View */}
         {currentView === 'home' && (
-          <div className="w-full max-w-[1440px] mx-auto px-4 sm:px-8 md:px-12 lg:px-16 py-8 md:py-12">
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
-              {/* Left Main Column: Form + Four Pillars + Da Yun / Liu Nian */}
-              <div className="lg:col-span-8 space-y-8">
-                {/* Hero Form */}
+          <div className="max-w-[1440px] w-full mx-auto px-4 sm:px-8 md:px-12 lg:px-16 py-6 md:py-8">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+              
+              {/* Left Column: Birth Input + Chart Result + Magazine */}
+              <div className="lg:col-span-7 xl:col-span-8 space-y-6">
                 <HeroChartInput onCalculate={handleCalculate} isLoading={isLoading} />
 
-                {/* Four Pillars Chart + Banner + Da Yun Tables */}
                 {baziData && (
                   <ChartResult 
                     baziData={baziData} 
@@ -263,57 +305,95 @@ export function App() {
                   />
                 )}
 
-                {/* Library Articles Showcase */}
                 <LibrarySection />
               </div>
 
-              {/* Right Column: Sticky Services Sidebar */}
-              <div className="lg:col-span-4 lg:sticky lg:top-24">
-                <ServicesSidebar 
+              {/* Right Sidebar: Services Quick List (Clicking opens Solo Page) */}
+              <div className="lg:col-span-5 xl:col-span-4 sticky top-24">
+                <ServicesSidebar
                   onSelectService={handleSelectServiceSolo}
-                  onOpenOnlineServices={() => handleNavigate('online-services')}
-                  onOpenBookingServices={() => handleNavigate('booking-services')}
+                  onOpenBookingCards={() => handleNavigate('booking-services')}
+                  selectedServiceId={selectedService?.id}
                 />
               </div>
+
             </div>
           </div>
         )}
 
-        {/* 2. Online Services Index View */}
+        {/* 2. Online Services Index Page View */}
         {currentView === 'online-services' && (
-          <OnlineServicesIndexPage 
+          <OnlineServicesIndexPage
             onSelectService={handleSelectServiceSolo}
             onNavigateHome={() => handleNavigate('home')}
             onNavigateBooking={() => handleNavigate('booking-services')}
           />
         )}
 
-        {/* 3. Booking Services Index View */}
+        {/* 3. Booking Services Index Page View */}
         {currentView === 'booking-services' && (
-          <BookingServicesIndexPage 
+          <BookingServicesIndexPage
             onSelectService={handleSelectServiceSolo}
             onNavigateHome={() => handleNavigate('home')}
+            onNavigateOnlineServices={() => handleNavigate('online-services')}
           />
         )}
 
-        {/* 4. Single Service Solo View */}
+        {/* 4. Solo Service Page View (Full Page with A-E breakdowns, direct booking & payment) */}
         {currentView === 'service-solo' && selectedService && (
           <ServiceSoloPage
             service={selectedService}
             onBack={() => {
-              setCurrentView(previousView);
+              setCurrentView(previousView || 'home');
               window.scrollTo({ top: 0, behavior: 'smooth' });
             }}
             onNavigateHome={() => handleNavigate('home')}
             onOpenFiveElementsReport={isPreviewDomain ? () => setIsFiveElementsModalOpen(true) : undefined}
-            onOpenLoveNavigationReport={isPreviewDomain ? () => setIsLoveNavigationModalOpen(true) : undefined}
+                    onOpenLoveNavigationReport={isPreviewDomain ? () => setIsLoveNavigationModalOpen(true) : undefined}
             baziData={baziData}
           />
         )}
 
-        {/* 5. Legal Pages */}
-        {(currentView === 'privacy-policy' || currentView === 'terms-of-service' || currentView === 'contact-us') && (
-          <LegalPage type={currentView} onBack={() => handleNavigate('home')} />
+        {/* 5. Privacy Policy Page View */}
+        {currentView === 'privacy-policy' && (
+          <LegalPage
+            type="privacy"
+            onNavigateHome={() => handleNavigate('home')}
+            onNavigateBooking={() => handleNavigate('booking-services')}
+            onSwitchLegalTab={(tab) => {
+              if (tab === 'privacy') handleNavigate('privacy-policy');
+              else if (tab === 'terms') handleNavigate('terms-of-service');
+              else if (tab === 'contact') handleNavigate('contact-us');
+            }}
+          />
+        )}
+
+        {/* 6. Terms of Service Page View */}
+        {currentView === 'terms-of-service' && (
+          <LegalPage
+            type="terms"
+            onNavigateHome={() => handleNavigate('home')}
+            onNavigateBooking={() => handleNavigate('booking-services')}
+            onSwitchLegalTab={(tab) => {
+              if (tab === 'privacy') handleNavigate('privacy-policy');
+              else if (tab === 'terms') handleNavigate('terms-of-service');
+              else if (tab === 'contact') handleNavigate('contact-us');
+            }}
+          />
+        )}
+
+        {/* 7. Contact Us Page View */}
+        {currentView === 'contact-us' && (
+          <LegalPage
+            type="contact"
+            onNavigateHome={() => handleNavigate('home')}
+            onNavigateBooking={() => handleNavigate('booking-services')}
+            onSwitchLegalTab={(tab) => {
+              if (tab === 'privacy') handleNavigate('privacy-policy');
+              else if (tab === 'terms') handleNavigate('terms-of-service');
+              else if (tab === 'contact') handleNavigate('contact-us');
+            }}
+          />
         )}
       </main>
 
@@ -336,7 +416,6 @@ export function App() {
         birthTime={currentInputParams.birthTime}
         gender={currentInputParams.gender}
       />
-
       {/* Footer */}
       <Footer onNavigate={handleNavigate} />
     </div>
