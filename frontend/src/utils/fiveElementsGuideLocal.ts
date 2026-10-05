@@ -1,9 +1,10 @@
 /**
  * Client-Side Local Five Elements Guide Report Generator
  * 100% Dynamic Quantitative 100-Point Model + 6 Element DataBasic Matrix
+ * Strictly aligned with official DataBasic PDF specification & Supabase schema
  */
 
-const BRANCH_HIDDEN_ELEMENTS: Record<string, [string, string][]> = {
+export const BRANCH_HIDDEN_ELEMENTS: Record<string, [string, string][]> = {
   子: [["水", "本氣"]],
   丑: [["濕土", "本氣"], ["水", "中氣"], ["金", "餘氣"]],
   寅: [["木", "本氣"], ["火", "中氣"], ["乾土", "餘氣"]],
@@ -18,7 +19,7 @@ const BRANCH_HIDDEN_ELEMENTS: Record<string, [string, string][]> = {
   亥: [["水", "本氣"], ["木", "中氣"]]
 };
 
-const STEM_ELEMENT_MAP: Record<string, string> = {
+export const STEM_ELEMENT_MAP: Record<string, string> = {
   甲: "木", 乙: "木",
   丙: "火", 丁: "火",
   戊: "乾土", 己: "濕土",
@@ -26,143 +27,171 @@ const STEM_ELEMENT_MAP: Record<string, string> = {
   壬: "水", 癸: "水"
 };
 
-const DAY_MASTER_QUOTES: Record<string, { dts: string; qtbj: string; zpzq: string }> = {
-  甲: {
-    dts: "甲木參天，脫胎要火，春不容金，秋不容土，火熾乘龍，水蕩騎虎，地潤天和，植立千古。",
-    qtbj: "甲木生春，木旺宜火秀；生秋金旺，喜火制金。四時配合，皆取中和為美。",
-    zpzq: "八字用神專求月令，甲生寅卯，木旺乘權，順生而化，富貴自顯。"
+export const FIVE_ELEMENTS_MATRIX: Record<string, any> = {
+  金: {
+    primaryHelper: "金、濕土（辰、丑）",
+    secondaryHelper: "乾土（戌、未）",
+    neutralHelper: "水",
+    secondaryAvoid: "木",
+    primaryAvoid: "火",
+    traits: "規則、結構、效率、判斷。重視秩序、標準和清晰界線，做事講求方法、流程和結果。擅長分析問題、控制風險及作出精準決定。適合處理需要紀律、專業判斷的事情，不太適應長期處於混亂、無章法或反覆變動的環境。",
+    majorColors: "純白、冷銀、乳白、金屬灰、雪白；白色系、金屬色系",
+    minorColors: "淺灰、米白、冷米色、霧銀",
+    avoidColors: "大面積正紅、深紫、深綠、螢光暖色",
+    shapes: "圓形、半圓形、金屬多邊形、嚴整幾何形",
+    naturalElements: "金屬、礦石、晶體、岩石、精鋼、金屬表面",
+    industries: "金融投資、精密製造、高階硬體、法律合規、黃金珠寶、機械工程、管理諮詢",
+    roles: "財務總監、法務合規、首席風控、技術架構師、項目總監、高級管理",
+    workEnvironment: "需要高度精準、規則明確、重秩序、流程嚴密與專業風險控制的工作環境",
+    avoidWorkType: "環境混亂、缺乏明確流程或朝令夕改之工作",
+    directions: "西方、西北面",
+    neutralDirections: "北方、東北面",
+    avoidDirections: "正南面",
+    outdoorEnv: "現代都會、金融核心商圈、秩序分明之商業區、科技園區",
+    indoorEnv: "整潔俐落、現代簡約、明亮乾爽、富有高度秩序感之空間",
+    partnerPersonality: "理性、有原則、講信用、重承諾、界線清晰；合作時重視規則、效率及責任分工。",
+    partnerType: "做事有制度、重視數據及風險控制，能夠清晰分工且執行力極強的人。"
   },
-  乙: {
-    dts: "乙木雖柔，刲羊解牛，懷丁抱丙，跨鳳乘猴，虛濕之地，騎馬亦憂，藤蘿系甲，可春可秋。",
-    qtbj: "乙木如卉木，春喜向陽，夏喜潤澤，秋喜火煉金，冬喜向陽暖土。",
-    zpzq: "乙木用神，隨月而取，印綬生身，食傷吐秀，隨格成局。"
+  水: {
+    primaryHelper: "水、金",
+    secondaryHelper: "濕土（辰、丑）",
+    neutralHelper: "木",
+    secondaryAvoid: "火",
+    primaryAvoid: "乾土（戌、未）",
+    traits: "智慧、流動、適應、靈活。極具市場敏銳度與資訊整合力，善於應變與跨界連接，在不確定情況下快速尋找出路，追求自由度與全球化視野。",
+    majorColors: "純黑、深海藍、墨藍、藏青、午夜藍；深色冷系",
+    minorColors: "天藍、冷灰、灰藍、冰藍",
+    avoidColors: "大面積焦黃、深褐、正紅、燥土色",
+    shapes: "波浪形、水滴形、流線形、圓潤動態曲線",
+    naturalElements: "水、河流、海洋、雨露、水泉、冰川",
+    industries: "跨境貿易、現代物流、旅遊水產、資訊數據、電子商務、軟體平臺、策略顧問",
+    roles: "海外拓展、數據分析、商務外交、策略顧問、貿易採購、公關談判",
+    workEnvironment: "需要彈性、資訊流動迅速、溝通頻繁、跨領域多工協調的工作環境",
+    avoidWorkType: "封閉僵化、行動受限、資訊閉塞、無法彈性變通之傳統環境",
+    directions: "北方、西北面",
+    neutralDirections: "東方、東南面",
+    avoidDirections: "南方、西南面",
+    outdoorEnv: "靠海、臨湖水岸、港口城市、交通樞紐、資訊密集之自由貿易區",
+    indoorEnv: "視野開闊、親水近景、通風靈活、富有現代動態感與自由度之空間",
+    partnerPersonality: "靈活機智、反應迅速、懂得變通、消息靈通；善於協調溝通與應對突發變化。",
+    partnerType: "人脈網絡廣、市場觸角敏銳、反應迅速，能夠帶來前沿資訊與商業機會的人。"
   },
-  丙: {
-    dts: "丙火猛烈，欺霜侮雪，能煆庚金，逢辛反怯，土眾成慈，水猖顯節，虎馬犬鄉，甲來焚滅。",
-    qtbj: "丙為太陽之火，春令溫暖，夏令太燥，秋令柔和，冬令喜生扶以溫木。",
-    zpzq: "八字用神專求月令，丙火生於春月，木火通明；生於夏令，水濟為貴。"
+  木: {
+    primaryHelper: "木、水",
+    secondaryHelper: "濕土（辰、丑）",
+    neutralHelper: "火",
+    secondaryAvoid: "乾土（戌、未）",
+    primaryAvoid: "金",
+    traits: "生長、發展、創意、規劃。重視長期發展、學習和進步，通常較適合由零開始建立事情，逐步培養客戶、品牌、團隊或專業能力。思考著重未來方向及發展空間。",
+    majorColors: "墨綠、翠綠、森林綠、青綠、原木色、竹青；綠色系、青綠色系、木色系",
+    minorColors: "薄荷綠、淺木色、橄欖灰、米綠",
+    avoidColors: "大面積純白、亮金、金屬銀灰",
+    shapes: "長方形、長條形、向上延伸形、葉片形、自然曲線",
+    naturalElements: "樹木、植物、葉片、花草、森林、竹林、藤蔓",
+    industries: "文教出版、綠色農業、健康醫療、永續環保、軟體開發、品牌策劃、創意設計",
+    roles: "策劃總監、品牌管理、產品研發、內容創作、教育培訓、組織規劃",
+    workEnvironment: "需要創意、策劃、持續學習成長、建立品牌、文化陶冶及自主性強的工作環境",
+    avoidWorkType: "機械化重複、單一封閉、缺乏成長空間與文化感之工作",
+    directions: "東方、東南面",
+    neutralDirections: "北方、南方",
+    avoidDirections: "西方、西北面",
+    outdoorEnv: "綠化度高、林木公園旁、具文化氣息之學校、文教區、創意園區",
+    indoorEnv: "自然舒適、通風採光良好、綠意充足、帶溫潤木質感之學習與工作空間",
+    partnerPersonality: "重理念、重成長、開放溫和、願意互相支持；重視長遠發展及共同進步。",
+    partnerType: "有長期視野、願意共同成長，擅長策劃、創意及開拓新項目的人。"
   },
-  丁: {
-    dts: "丁火柔中，內性昭融，抱乙而孝，合壬而化，旺而不烈，衰而不窮，如有嫡母，可秋可冬。",
-    qtbj: "丁火昭融，喜甲木生扶，庚金劈甲引丁。四時無不相宜。",
-    zpzq: "丁火用神，隨氣推移，木生火旺，金水相停，格成富貴。"
+  火: {
+    primaryHelper: "火、木",
+    secondaryHelper: "乾土（戌、未）",
+    neutralHelper: "金",
+    secondaryAvoid: "濕土（辰、丑）",
+    primaryAvoid: "水",
+    traits: "活力、熱情、曝光、行動。重視表達、影響力和即時成果，思維敏捷，極具表現力與感召力，擅長主動出擊、接觸客戶、推廣品牌與快速決策。",
+    majorColors: "正紅、酒紅、暖紅、珊瑚橘、朱紅、活力橙；紅色系、橙色系、暖色系",
+    minorColors: "亮橘、暖粉、珊瑚色、杏橙",
+    avoidColors: "大面積深黑、深藍、冷暗灰黑",
+    shapes: "三角形、菱形、放射形、尖角多邊形、向上升騰形",
+    naturalElements: "太陽、火焰、燈光、陽光、晨曦、熱能",
+    industries: "人工智慧、新媒體傳播、餐飲能源、美妝影視、品牌公關、數字行銷、演藝展覽",
+    roles: "演講傳播、商務拓展、市場行銷、創意總監、公關發言人、活動統籌",
+    workEnvironment: "需要對外曝光、銷售推廣、快速行動、直接面對市場與擴大影響力的環境",
+    avoidWorkType: "陰暗封閉、節奏拖沓、缺乏人際互動與市場反饋之幕後環境",
+    directions: "正南方、東南面",
+    neutralDirections: "東北面、正西面",
+    avoidDirections: "正北方、西北面",
+    outdoorEnv: "陽光充足、採光極佳、熱鬧繁華之商業核心街區、娛樂文創區、展會中心",
+    indoorEnv: "光線明亮、熱鬧活躍、動線流暢、充滿活力、互動與藝術氣息之空間",
+    partnerPersonality: "熱情直率、思維活躍、富有感染力、主動果斷，合作時重視行動與效率。",
+    partnerType: "具市場敏銳度、敢於出手、擅長銷售推廣，能快速把項目引爆推向市場的人。"
   },
-  戊: {
-    dts: "戊土固重，既中且正，靜翕動闢，萬物司合，水旺物生，火燥喜潤，若在坤艮，怕沖宜靜。",
-    qtbj: "戊土城牆之土，春藉火以暖，夏喜水潤，秋喜金水相涵，冬喜火溫。",
-    zpzq: "八字用神專求月令，戊土厚重，水火既濟，造化得中，貴不可言。"
+  乾土: {
+    primaryHelper: "乾土（戌、未）、火",
+    secondaryHelper: "木",
+    neutralHelper: "金",
+    secondaryAvoid: "濕土（辰、丑）",
+    primaryAvoid: "水",
+    traits: "穩重、厚道、守成、承載力。原則性強，具備強大包容力與資產管理定力，擅長穩扎穩打、建立制度、經營長期生意，重視安全感與固定資產積累。",
+    majorColors: "暖駝、卡其、焦糖、磚紅、暖啡、土黃；大地色系、暖褐色系",
+    minorColors: "米黃、咖啡、沙色、暖灰",
+    avoidColors: "大面積墨黑、深藍、冷灰、鐵灰",
+    shapes: "厚實正方形、梯形、寬厚長方、平頂多邊形",
+    naturalElements: "高山、岩石、乾土平原、石牆、磚石建築",
+    industries: "房地產、基礎建設、倉儲物流、實體製造、資產託管、農業礦產、諮詢顧問",
+    roles: "運營總監、資產管理、風險控制、項目監理、供應鏈負責人、地產合夥人",
+    workEnvironment: "制度健全、著重長期資產經營、穩步推進、需要責任擔當與風險控制的環境",
+    avoidWorkType: "高頻投機、朝令夕改、毫無資產沈澱與制度規範之不穩定行業",
+    directions: "西南面、東北面",
+    neutralDirections: "正南面、正東面",
+    avoidDirections: "正北方",
+    outdoorEnv: "高地、乾爽平原、成熟穩定、生活配套完善之住宅區、建築與地產核心區",
+    indoorEnv: "乾爽穩定、厚實沉穩、方正大器、溫馨耐用之大地色調開闊空間",
+    partnerPersonality: "穩重可靠、重責任、重承諾、有承擔；做事穩健有耐性，重視實際成果。",
+    partnerType: "穩健踏實、信譽卓著、具備長期資源與責任感，適合共同經營重資產項目的人。"
   },
-  己: {
-    dts: "己土卑濕，中正蓄藏，不愁木盛，不畏水狂，火少火晦，金多金光，若要物旺，宜助宜幫。",
-    qtbj: "己土田園之土，生春喜丙火，生夏喜癸水，生秋冬喜暖以培養。",
-    zpzq: "己土柔和，隨令立格，生化有情，福澤綿長。"
-  },
-  庚: {
-    dts: "庚金帶殺，剛健為最，得水而清，得火而銳，土潤則生，土乾則脆，能贏甲兄，輸於乙妹。",
-    qtbj: "庚金剛健，喜丁火煆煉以成器，喜甲木引火，喜壬水淘洗。",
-    zpzq: "庚金用神，月令真機，火煉秋金，水清冬骨，格有清奇。"
-  },
-  辛: {
-    dts: "辛金軟弱，溫潤而清，畏土之疊，樂水之盈，能扶社稷，能救生靈，熱則喜母，寒則喜丁。",
-    qtbj: "辛金珠玉之質，最愛壬水淘洗，清白照人，不喜厚土埋沒。",
-    zpzq: "辛金取格，以清貴為上，食傷洩秀，財星相映，富貴自然。"
-  },
-  壬: {
-    dts: "壬水通河，能洩金氣，剛中之德，周流不滯，通根癸水，沖天奔地，化則有情，從則相濟。",
-    qtbj: "壬水汪洋，春喜土止，夏喜金生，秋喜流動，冬喜火暖以發其生機。",
-    zpzq: "壬水天河，得位逢生，格局清純，智勇雙全。"
-  },
-  癸: {
-    dts: "癸水至弱，達於津涯，得龍而運，功化斯神，不愁火土，不論庚辛，合戊見火，化象斯真。",
-    qtbj: "癸水雨露之水，春潤萬物，夏澤旱苗，秋承金秀，冬化甘霜，最喜清透。",
-    zpzq: "癸水純陰，潤澤四方，格局合和，大智若愚。"
+  濕土: {
+    primaryHelper: "濕土（辰、丑）、水",
+    secondaryHelper: "金",
+    neutralHelper: "火",
+    secondaryAvoid: "木",
+    primaryAvoid: "乾土（戌、未）",
+    traits: "包容、蓄藏、滋養、整合。擅長在複雜環境中調和多方利益與資源，善於後勤保障、資料整理、流程梳理與細水長流式維護，是平台運作的核心基石。",
+    majorColors: "米黃、淺褐、灰泥色、燕麥色、藕荷色；泥土色系、自然大地色系",
+    minorColors: "冷米色、灰藍、霧藍、灰白、淺灰",
+    avoidColors: "大面積焦糖深紫、大紅、強烈刺眼暖色",
+    shapes: "圓潤平緩形、圓方形、低重心厚實幾何形",
+    naturalElements: "水土交界、濕地、沃土、池塘、水田、天然石材",
+    industries: "倉儲物流、農業生技、生態保育、物業管理、供應鏈服務、自然護理、社工慈善",
+    roles: "運營經理、行政統籌、資產託管、後勤保障、供應鏈管理、客戶成功負責人",
+    workEnvironment: "重視後勤支援、資源整合、流程管理、數據資料處理與跨部門協同的環境",
+    avoidWorkType: "過度拋頭露面、爾虞我詐、缺乏後台支援機制之單打獨鬥崗位",
+    directions: "東南面、東北面",
+    neutralDirections: "正南面、正東面",
+    avoidDirections: "正西面、西北面",
+    outdoorEnv: "水土交界、濕潤平原、生態園區、資源集中且運作有序之物流與後勤園區",
+    indoorEnv: "安靜穩定、收納充足、通風良好、功能分區清晰且溫暖舒適之空間",
+    partnerPersonality: "溫和包容、細心耐性、善於協調溝通；不爭功諉過，默默在背後支持團隊。",
+    partnerType: "細心、配合度高、善於後勤梳理，能夠處理大量複雜細節與資源整合的人。"
   }
 };
 
-const LIFESTYLE_DIMENSIONS: Record<string, any> = {
-  木: {
-    helper: "木、水",
-    avoid: "金、燥火",
-    traits: "生長、發展、創意、規劃。重視長期發展、學習和進步，通常較適合由零開始建立事情，逐步培養客戶、品牌、團隊或專業能力。思考較著重未來方向及發展空間。",
-    colors: "翠綠、青綠、森林綠、橄欖綠、原木色、竹青；綠色系、青綠色系、木色系。",
-    avoidColors: "大面積銀白、金屬色、金黃色。",
-    shapes: "長方形、長條形、向上延伸形、葉片形、自然曲線。",
-    industries: "文化教育、創意設計、品牌策劃、傳播出版、環保綠色、醫療健康、高端諮詢。",
-    roles: "策劃、品牌管理、產品研發、內容創作、教育培訓、組織規劃。",
-    directions: "東面、東南面。",
-    avoidDirections: "西面、西北面。",
-    environment: "綠意充足、自然舒適、採光良好、富文化氣息之溫潤木質空間。",
-    partner: "清爽、自然、有朝氣，重視理念與共同成長，性格溫暖且具責任感的人。"
+export const STRENGTH_BUSINESS_PATTERNS = {
+  strong: {
+    workType: "前線操盤、戰略決策、開拓拓荒。適合扛業績指標、引領團隊擴張。",
+    careerDirection: "適合主動出擊、項目拓展，承擔適度波動以爭取高回報率。適合自己做主，以個人決策為主導、外部資源協同為輔。",
+    wealthMode: "適合按成果收費、項目抽成、高週轉業務。比起單純依靠固定收入，更適合透過主動業務拓展與超額成果獲利。",
+    entrepreneurshipFit: "適合自主創業、擔任核心操盤手或合夥領軍人物。",
+    riskWarning: "避免過快加槓桿、盲目擴張重資產或盲目追求規模導致現金流斷裂。",
+    cooperationMode: "「你定方向與規則，對方管執行落地」（權責清晰分明）。",
+    cooperationAdvantage: "執行推進力強、抗壓敢拼、具開拓號召力與戰略膽識。"
   },
-  火: {
-    helper: "火、木",
-    avoid: "水、濕土",
-    traits: "熱情、表達、傳播、影響力。思維敏捷，極具表現力與感召力，擅長打造公眾形象、品牌行銷與人際連接。行動迅速，追求明朗果斷之決策。",
-    colors: "暖紅、珊瑚橘、朱紅、粉紅、暖紫、活力橙；紅色系、橙色系、暖色系。",
-    avoidColors: "大面積深黑、冷藍、灰黑。",
-    shapes: "三角形、菱形、放射形、尖角多邊形、向上升騰形。",
-    industries: "能源科技、傳媒影視、演藝公關、數字行銷、互聯網、餐飲文創、品牌傳播。",
-    roles: "演講傳播、商務拓展、市場行銷、創意總監、公關發言人、活動統籌。",
-    directions: "正南面、東南面。",
-    avoidDirections: "正北面。",
-    environment: "光線明亮、熱鬧繁華、動線流暢、充滿活力與藝術氣息之空間。",
-    partner: "熱情直率、思維活躍、富有感染力，願意分享且積極進取的人。"
-  },
-  乾土: {
-    helper: "火、乾土",
-    avoid: "濕木、旺水",
-    traits: "穩重、厚道、誠信、承載力。原則性強，具備強大包容力與資產管理定力，擅長穩扎穩打、制度建設與中長線實體經營。",
-    colors: "暖駝、米黃、暖啡、沙色、赭石色、焦糖色；大地色系。",
-    avoidColors: "大面積墨黑、深綠、濃藍。",
-    shapes: "厚實正方形、梯形、寬厚長方、平頂多邊形。",
-    industries: "房地產、基建工程、倉儲物流、實體製造、資產託管、農業礦產。",
-    roles: "運營總監、資產管理、風險控制、項目監理、供應鏈負責人。",
-    directions: "西南面、東北面。",
-    avoidDirections: "正東面。",
-    environment: "沉穩扎實、方正大器、溫馨厚實之大地色調開闊空間。",
-    partner: "誠信守諾、沉穩可靠、注重長遠安定與信用的合作夥伴。"
-  },
-  濕土: {
-    helper: "火、乾土",
-    avoid: "水、木",
-    traits: "包容、蓄藏、滋養、潤化。擅長在複雜環境中調和多方利益，善於沉澱資源與細水長流式的經營。",
-    colors: "米黃、淺褐、灰泥色、燕麥色、藕荷色。",
-    avoidColors: "大面積純黑、深青。",
-    shapes: "圓潤平緩、飽滿厚實形。",
-    industries: "自然保育、農業生技、生態園區、醫養護理、社工慈善。",
-    roles: "人力資源、行政統籌、資產託管、後勤保障。",
-    directions: "東北面、東南面。",
-    avoidDirections: "正西面。",
-    environment: "溫暖乾燥、通風採光良好、整潔不潮濕之空間。",
-    partner: "性格溫和、細緻耐心、善於協調溝通的搭檔。"
-  },
-  金: {
-    helper: "金、土",
-    avoid: "火、燥熱",
-    traits: "規則、精準、效率、果斷。界線分明，注重制度、流程與執行力，具備卓越的分析決策能力與風險控制力。",
-    colors: "銀白、亮金、乳白、香檳金、金屬灰、雪白；白色系、金屬色系。",
-    avoidColors: "大面積大紅、亮橙、艷紫。",
-    shapes: "圓形、半圓形、金屬多邊形、嚴整幾何形。",
-    industries: "金融投資、法務審計、精密工程、高新硬科技、機械製造、管理諮詢。",
-    roles: "財務總監、法務合規、首席風控、技術架構師、高級管理。",
-    directions: "正西面、西北面。",
-    avoidDirections: "正南面。",
-    environment: "整齊俐落、現代簡約、高科技感、明亮開揚之秩序空間。",
-    partner: "重諾守信、講求效率、講道理且邊界清晰的成熟夥伴。"
-  },
-  水: {
-    helper: "水、金",
-    avoid: "燥土、燥火",
-    traits: "智慧、流動、適應、靈活。極具市場敏銳度與資訊整合力，善於應變與跨界連接，追求自由與國際化視野。",
-    colors: "純黑、深藍、藏青、海藍、墨色、霧灰；深色冷系。",
-    avoidColors: "大面積土黃、磚紅、焦糖棕。",
-    shapes: "波浪形、水滴形、流線形、動態曲線。",
-    industries: "跨國貿易、國際物流、軟體數據、互聯網平臺、傳播諮詢、航運旅遊。",
-    roles: "海外拓展、數據分析、商務外交、策略顧問、貿易採購。",
-    directions: "正北面、西北面。",
-    avoidDirections: "西南面、正南面。",
-    environment: "視野開闊、親水近景、通風靈活、富有現代動態感之空間。",
-    partner: "反應敏銳、思維靈活、消息靈通且視野開闊的搭檔。"
+  weak: {
+    workType: "幕後策劃、專業技術、體系架構。適合憑藉專業深度、借力大平台穩定輸出。",
+    careerDirection: "適合穩定累積、技能複利，依靠長期穩定資產與專業口碑持續增值。適合團隊合作，背靠強大平台與資源方，自己專注核心專業產出。",
+    wealthMode: "適合長期顧問合約制、穩定訂閱制、專業技術授權、諮詢費與版稅。適合透過專業能力、知識、技術專長與個人品牌建立穩定長遠收入。",
+    entrepreneurshipFit: "適合受僱於大型成熟機構、擔任核心智囊顧問或團隊專家合夥人。",
+    riskWarning: "嚴禁為他人人情作保、避免高風險短線投機、盲目槓桿與代持資產。",
+    cooperationMode: "「對方提供平台與資金，你提供專業與技術」（借力打力、互惠共贏）。",
+    cooperationAdvantage: "心思細密、專注專業深度、協調配合度高、風險控制與保護意識極強。"
   }
 };
 
@@ -173,23 +202,24 @@ export function generateLocalFiveElementsReport(
   gender: string = "male"
 ): string {
   const genderLabel = gender === "male" ? "乾造（男）" : "坤造（女）";
+  const pronoun = gender === "male" ? "你" : "妳";
   const p = baziData?.pillars || {};
 
   const yStem = p?.year?.stem || "甲";
   const yBranch = p?.year?.branch || "子";
   const mStem = p?.month?.stem || "丙";
   const mBranch = p?.month?.branch || "寅";
-  const dStem = p?.day?.stem || "戊";
-  const dBranch = p?.day?.branch || "午";
-  const hStem = p?.hour?.stem || "壬";
-  const hBranch = p?.hour?.branch || "戌";
+  const dStem = p?.day?.stem || "丙";
+  const dBranch = p?.day?.branch || "寅";
+  const hStem = p?.hour?.stem || "甲";
+  const hBranch = p?.hour?.branch || "午";
 
   const yGz = `${yStem}${yBranch}`;
   const mGz = `${mStem}${mBranch}`;
   const dGz = `${dStem}${dBranch}`;
   const hGz = `${hStem}${hBranch}`;
 
-  // 1. Calculate 100-point score dynamically
+  // Initialize scores
   const scores: Record<string, number> = {
     木: 0.0,
     火: 0.0,
@@ -199,17 +229,17 @@ export function generateLocalFiveElementsReport(
     水: 0.0
   };
 
-  // Stems (36 pts)
-  scores[STEM_ELEMENT_MAP[yStem] || "木"] += 8.0;
-  scores[STEM_ELEMENT_MAP[mStem] || "火"] += 10.0;
-  scores[STEM_ELEMENT_MAP[dStem] || "火"] += 10.0;
-  scores[STEM_ELEMENT_MAP[hStem] || "水"] += 8.0;
+  // Add Stem scores (36 total)
+  if (STEM_ELEMENT_MAP[yStem]) scores[STEM_ELEMENT_MAP[yStem]] += 8.0;
+  if (STEM_ELEMENT_MAP[mStem]) scores[STEM_ELEMENT_MAP[mStem]] += 10.0;
+  if (STEM_ELEMENT_MAP[dStem]) scores[STEM_ELEMENT_MAP[dStem]] += 10.0;
+  if (STEM_ELEMENT_MAP[hStem]) scores[STEM_ELEMENT_MAP[hStem]] += 8.0;
 
-  // Branches (64 pts)
-  const assignBranch = (branch: string, total: number, mode: string) => {
-    const list = BRANCH_HIDDEN_ELEMENTS[branch] || [["木", "本氣"]];
+  // Add Branch scores (64 total)
+  const assignBranch = (b: string, totalWeight: number, mode: "month" | "day" | "other") => {
+    const list = BRANCH_HIDDEN_ELEMENTS[b] || [["木", "本氣"]];
     if (list.length === 1) {
-      scores[list[0][0]] += total;
+      scores[list[0][0]] += totalWeight;
     } else if (list.length === 2) {
       if (mode === "month") {
         scores[list[0][0]] += 20.0;
@@ -260,67 +290,45 @@ export function generateLocalFiveElementsReport(
   for (const e of resources) sameScore += scores[e] || 0;
 
   const isStrong = sameScore >= 50.0;
-  const strengthLabel = isStrong ? "【身強型】" : "【身弱型】";
+  const strengthLabel = isStrong ? "身強" : "身弱";
+  const bizPattern = isStrong ? STRENGTH_BUSINESS_PATTERNS.strong : STRENGTH_BUSINESS_PATTERNS.weak;
 
-  // Determine helper elements (喜用神)
+  // Determine favorable elements (喜忌)
   let primaryHelper = "金";
-  let helperDesc = "";
-  let avoidDesc = "";
+  const isWinter = mBranch === "亥" || mBranch === "子" || mBranch === "丑";
+  const isSummer = mBranch === "巳" || mBranch === "午" || mBranch === "未";
 
-  if (dElem === "火") {
-    if (isStrong) {
-      primaryHelper = "金";
-      helperDesc = "金、濕土、水（原局木火太旺，喜金以制木、喜土以洩火、喜水以調候）";
-      avoidDesc = "木、火（原局木火已過旺，日常中不宜過度堆疊）";
-    } else {
-      primaryHelper = "木";
-      helperDesc = "木、火（原局火勢不足，喜木印生身、丙丁火比劫扶持）";
-      avoidDesc = "水、濕土（克洩交加，不宜過多）";
-    }
-  } else if (dElem === "木") {
-    if (isStrong) {
-      primaryHelper = "金";
-      helperDesc = "金、火、乾土（身強宜削克洩秀）";
-      avoidDesc = "水、木（不宜過盛）";
-    } else {
-      primaryHelper = "水";
-      helperDesc = "水、木（身弱宜生助）";
-      avoidDesc = "金、土";
-    }
-  } else if (dElem === "乾土" || dElem === "濕土") {
-    if (isStrong) {
-      primaryHelper = "金";
-      helperDesc = "金、水、木（身強喜洩秀生財、官殺疏土）";
-      avoidDesc = "火、土";
-    } else {
-      primaryHelper = "火";
-      helperDesc = "火、乾土（身弱喜印綬化生、比劫厚基）";
-      avoidDesc = "水、木";
-    }
-  } else if (dElem === "金") {
-    if (isStrong) {
-      primaryHelper = "水";
-      helperDesc = "水、木、火（身強喜金水相涵、火煉成器）";
-      avoidDesc = "土、金";
-    } else {
-      primaryHelper = "乾土";
-      helperDesc = "土、金（身弱喜土生金助）";
-      avoidDesc = "火、水";
-    }
-  } else { // 水
-    if (isStrong) {
-      primaryHelper = "木";
-      helperDesc = "木、火、乾土（身強喜木洩水氣、火暖調候、土防泛濫）";
-      avoidDesc = "金、水";
-    } else {
-      primaryHelper = "金";
-      helperDesc = "金、水（身弱喜金生水源、比劫相扶）";
-      avoidDesc = "土、火";
-    }
+  // 調候優先
+  if (isWinter && (dStem === "壬" || dStem === "癸")) {
+    primaryHelper = "火";
+  } else if (isSummer && (dStem === "丙" || dStem === "丁")) {
+    primaryHelper = "水";
+  } else if (["申", "酉", "戌"].includes(mBranch) && (dStem === "庚" || dStem === "辛")) {
+    primaryHelper = "木";
+  } else if (["寅", "卯", "辰"].includes(mBranch) && (dStem === "甲" || dStem === "乙")) {
+    primaryHelper = "金";
+  } else if (isStrong) {
+    const party = ["水", "金"].includes(dElem) ? ["水", "金"] :
+                  ["木", "水"].includes(dElem) ? ["木", "水"] :
+                  ["火", "木"].includes(dElem) ? ["火", "木"] :
+                  ["金", "乾土", "濕土"].includes(dElem) ? ["金", "乾土", "濕土"] :
+                  ["乾土", "濕土", "火"];
+    const otherScores = Object.entries(scores).filter(([k]) => !party.includes(k));
+    otherScores.sort((a, b) => a[1] - b[1]);
+    primaryHelper = otherScores[0] ? otherScores[0][0] : "金";
+  } else {
+    primaryHelper = (dStem === "壬" || dStem === "癸") ? "金" :
+                    (dStem === "甲" || dStem === "乙") ? "水" :
+                    (dStem === "丙" || dStem === "丁") ? "木" :
+                    (dStem === "庚" || dStem === "辛") ? "乾土" : "火";
   }
 
-  const dim = LIFESTYLE_DIMENSIONS[primaryHelper] || LIFESTYLE_DIMENSIONS["金"];
-  const quotes = DAY_MASTER_QUOTES[dStem] || DAY_MASTER_QUOTES["丙"];
+  const dim = FIVE_ELEMENTS_MATRIX[primaryHelper] || FIVE_ELEMENTS_MATRIX["金"];
+
+  const cleanColors = dim.majorColors.split('；')[0].replace(/。$/, "");
+  const cleanAvoidColors = dim.avoidColors.replace(/。$/, "");
+  const cleanDirections = dim.directions.replace(/。$/, "");
+  const cleanEnv = dim.indoorEnv.replace(/。$/, "");
 
   return `# 丁｜蔓山 命理誌 · TingManShan.com
 【五行生活指南 · 專屬個人開運全覽】
@@ -329,16 +337,11 @@ export function generateLocalFiveElementsReport(
 命造信息：${birthDate} ${birthTime} · ${genderLabel}
 四柱格局：${yGz}年 · ${mGz}月 · ${dGz}日 · ${hGz}時
 
-命局古籍定論：
-依《滴天髓》云：「${quotes.dts}」
-《窮通寶鑒》定論：「${quotes.qtbj}」
-《子平真詮》指引：「${quotes.zpzq}」本局首重以【${primaryHelper}】為對你較有幫助之元素。
-
 ==================================================
 一、 八字五行量化強弱分析（100分制 DataBasic 專利模型）
 ==================================================
-• 天干（共36分）：年干8分、月干10分、日干10分、時干8分。
-• 地支（共64分）：月令28分（本氣/中氣/餘氣權重）、日支16分、年支10分、時支10分。
+• 天干權重（共 36 分）：年干8分、月干10分、日干10分、時干8分。
+• 地支權重（共 64 分）：月令28分（本氣/中氣/餘氣精算）、日支16分、年支10分、時支10分。
 • 六類五行量化精準得分：
   - 木：${scores["木"].toFixed(1)} 分
   - 火：${scores["火"].toFixed(1)} 分
@@ -346,58 +349,85 @@ export function generateLocalFiveElementsReport(
   - 濕土（辰、丑）：${scores["濕土"].toFixed(1)} 分
   - 金：${scores["金"].toFixed(1)} 分
   - 水：${scores["水"].toFixed(1)} 分
-• 同黨得分（日主及生我之印星）：${sameScore.toFixed(1)} 分 ➜ 判定為 ${strengthLabel}（≥50分為身強，<50分為身弱）。
+• 同黨得分（日主及生我之印星）：${sameScore.toFixed(1)} 分 ➜ 判定為 【${strengthLabel}型】（≥50分為身強，<50分為身弱）。
+
+> 判斷簡析：${isStrong ? `本命局同黨得分達 ${sameScore.toFixed(1)} 分（≥50分），能量充沛剛健，適宜取異黨五行（克洩耗）以引導能量順暢生發、轉化為現實成果。` : `本命局同黨得分為 ${sameScore.toFixed(1)} 分（<50分），適宜取生助日主之元素以充盈基底、借力蓄勢。`}
 
 ==================================================
 二、 五行決策要素（客觀商業視角）
 ==================================================
-【對你較有幫助的元素】：${helperDesc}
-【不宜過多的元素】：${avoidDesc}
+• 對${pronoun}較有幫助的元素（主要有利）：【${primaryHelper}】（命局最核心之開運調候與平衡能量，日常生活與關鍵工作中優先借力）
+• 次要有利元素：${dim.secondaryHelper}
+• 中性元素：${dim.neutralHelper}（順其自然，不刻意強求亦無大礙）
+• 較少使用元素：${dim.secondaryAvoid}（日常環境中無需刻意加強）
+• 不宜過多的元素（主要不利）：${dim.primaryAvoid}（原局已過盛或生克不利，不宜過度堆疊）
 
 ==================================================
 三、 核心五行生活場景轉換（主力元素：${primaryHelper}）
 ==================================================
-1. 個人特性：
+1. 開運特質賦能（後天借力與行為調動）：
+（註：本局原局以日主天賦為主導，主力元素【${primaryHelper}】為平衡命局之核心用神。日常在重大決策與事業拓展時，建議刻意調動及展現以下特質，以達後天開運平衡）：
 ${dim.traits}
 
 2. 色彩調和方案：
-• 適合顏色：${dim.colors}
+• 適合顏色：${dim.majorColors}
+• 次要顏色：${dim.minorColors}
 • 少用顏色：${dim.avoidColors}
 
-3. 形狀與視覺：
-• 適合形狀：${dim.shapes}
-
-==================================================
-四、 事業、財富與空間環境規劃
-==================================================
-1. 行業與崗位：
-• 適合行業：${dim.industries}
-• 適合崗位：${dim.roles}
-
-2. 方位配置：
+3. 方位配置：
 • 有利方向：${dim.directions}
+• 中性方向：${dim.neutralDirections}
 • 較少使用方向：${dim.avoidDirections}
 
-3. 空間環境氣場：
-${dim.environment}
+4. 空間環境氣場：
+• 適合地方／城市環境：${dim.outdoorEnv}
+• 適合室內辦公／居住環境：${dim.indoorEnv}
+• 適合視覺與形狀：${dim.shapes}
 
 ==================================================
-五、 人際關係與貴人協作矩陣
+四、 適合工作環境與行業方向
 ==================================================
-• 適合夥伴類型：${dim.partner}
+• 較適合${pronoun}的工作環境：${dim.workEnvironment}
+• 可優先考慮行業：${dim.industries}
+• 適合崗位：${dim.roles}
+• 較少建議工作類型：${dim.avoidWorkType}
 
 ==================================================
-六、 一頁式「我的五行行動指南」（HK$128 核心精華濃縮）
+五、 事業方向與收入模式（基於【${strengthLabel}型】特質轉化）
 ==================================================
-• 對妳較有幫助的元素：${primaryHelper}
-• 建議方位：${dim.directions}
-• 生活色彩優先：${dim.colors}
-• 空間氣質：${dim.environment}
+• 工作型態：${bizPattern.workType}
+• 事業方向：${bizPattern.careerDirection}
+• 財運方向（${pronoun}的收入模式）：${bizPattern.wealthMode}
+• 創業取向：${bizPattern.entrepreneurshipFit}
+• 財務避坑重點：${bizPattern.riskWarning}
 
-✦ 給您的 3 項實際生活落地建議：
-1. 日常環境中多引入【${dim.colors}】，加強有利五行氣場。
-2. 重要工作桌或辦公方向優先面向【${dim.directions}】，提升專注力與工作決策效率。
-3. 尋求事業合作或諮詢時，優先尋找具備【${primaryHelper}】屬性之專業人士與搭檔。
+==================================================
+六、 人際關係與合作模式（基於【${strengthLabel}型】特質轉化）
+==================================================
+• 適合合作的人：八字帶有${pronoun}【${primaryHelper}】能量充沛的人。
+• 適合的合作模式：${bizPattern.cooperationMode}
+• ${pronoun}的合作優勢：${bizPattern.cooperationAdvantage}
+• 容易相處的人（性格）：${dim.partnerPersonality}
+• 適合合作夥伴類型：${dim.partnerType}
+• 較容易出現衝突的類型：八字滿盤皆是${pronoun}【${dim.primaryAvoid}】、性格極端相剋的人。
+
+==================================================
+七、 一頁式「我的五行行動指南」（HK$128 核心精華濃縮）
+==================================================
+• 對${pronoun}較有幫助的元素：【${primaryHelper}】
+• 不宜過多的元素：【${dim.primaryAvoid}】
+• 生活色彩優先：${cleanColors}
+• 少用顏色：${cleanAvoidColors}
+• 工作方位：${cleanDirections}
+• 環境特質：${cleanEnv}
+• 適合工作特點：${dim.workEnvironment}
+• 收入模式：${bizPattern.wealthMode}
+• 合作夥伴特點：${dim.partnerType}
+
+✦ 給${pronoun}的 3 項實際生活落地建議：
+1. 工作位置優先朝向【${cleanDirections.split('、')[0]}】，善用有利氣場，提升專注力與工作決策效率。
+2. 日常生活與辦公環境中多引入【${cleanColors}】，優化空間氣質，增強有利五行能量支持。
+3. 推進業務合作與尋求合夥諮詢時，優先尋找具備【${primaryHelper}】屬性之專業夥伴，發揮互補協同效應。
 
 --------------------------------------------------
 *分析參考：傳統子平八字典籍及五行理論，經整理後轉換成現代生活及工作建議。*
