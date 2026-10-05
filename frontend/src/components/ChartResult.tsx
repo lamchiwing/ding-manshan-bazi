@@ -5,6 +5,7 @@ interface ChartResultProps {
   onOpenOnlineServices?: () => void;
   onOpenOneOnOneBooking?: () => void;
   onOpenFiveElementsReport?: () => void;
+  onOpenLoveNavigationReport?: () => void;
   onSelectFiveElementsService?: () => void;
 }
 
@@ -13,6 +14,7 @@ export const ChartResult: React.FC<ChartResultProps> = ({
   onOpenOnlineServices,
   onOpenOneOnOneBooking,
   onOpenFiveElementsReport,
+  onOpenLoveNavigationReport,
   onSelectFiveElementsService
 }) => {
   if (!baziData) return null;
@@ -102,7 +104,7 @@ export const ChartResult: React.FC<ChartResultProps> = ({
 
         {/* Quick Report Banner directly below Four Pillars */}
         {(onOpenFiveElementsReport || onSelectFiveElementsService) && (
-          <div className="mb-6 p-4 bg-[#1E3A5F]/20 border border-[#D97706]/60 rounded-[4px] flex flex-col sm:flex-row items-center justify-between gap-3 shadow-sm">
+          <div className="mb-4 p-4 bg-[#1E3A5F]/20 border border-[#D97706]/60 rounded-[4px] flex flex-col sm:flex-row items-center justify-between gap-3 shadow-sm">
             <div className="flex items-center space-x-3">
               <span className="text-2xl">📜</span>
               <div>
@@ -132,7 +134,30 @@ export const ChartResult: React.FC<ChartResultProps> = ({
           </div>
         )}
 
-        {/* Da Yun & Liu Nian Main Box (Cleaned: No Shen Sha or prompt text) */}
+        {/* 💖 專屬個人【姻緣導航‧未來3年】正緣全覽橫幅 */}
+        {onOpenLoveNavigationReport && (
+          <div className="mb-6 p-4 bg-[#9B2C2C]/20 border border-[#9B2C2C]/70 rounded-[4px] flex flex-col sm:flex-row items-center justify-between gap-3 shadow-sm">
+            <div className="flex items-center space-x-3">
+              <span className="text-2xl">💖</span>
+              <div>
+                <h4 className="font-serif font-bold text-[#F4EFEA] text-sm sm:text-base">
+                  專屬個人【姻緣導航‧未來3年】正緣全覽 (HK$188)
+                </h4>
+                <p className="text-xs text-[#A4B3C6]">
+                  5大感情狀態模式 · 7大外部干擾防護 · 36個月導航矩陣 (2026/10 - 2029/09) · 3大解答
+                </p>
+              </div>
+            </div>
+            <button
+              onClick={onOpenLoveNavigationReport}
+              className="bg-[#9B2C2C] hover:bg-[#742A2A] text-white px-5 py-2.5 text-xs font-serif font-bold rounded transition-all shadow-md cursor-pointer whitespace-nowrap self-stretch sm:self-auto text-center"
+            >
+              💖 立即查看姻緣導航報告 (測試預覽) →
+            </button>
+          </div>
+        )}
+
+        {/* Da Yun & Liu Nian Main Box */}
         <div className="bg-[#F4EFEA] text-[#2B2D2F] p-4 md:p-5 rounded-[3px] border border-[#1E3A5F]/20 mb-6">
           {/* Cycle Tabs Navigation */}
           <div className="flex items-center space-x-2 font-sans text-xs border-b border-[#2B2D2F]/10 pb-2.5 mb-4">
@@ -168,7 +193,7 @@ export const ChartResult: React.FC<ChartResultProps> = ({
             </button>
           </div>
 
-          {/* 1. Da Yun (大運排盤) - Vertical Gan-Zhi */}
+          {/* 1. Da Yun (大運排盤) */}
           {activeCycleTab === 'dayun' && (
             <div className="grid grid-cols-4 sm:grid-cols-8 gap-2 mb-4">
               {luckCycles.slice(0, 8).map((lc: any, i: number) => {
@@ -259,14 +284,24 @@ export const ChartResult: React.FC<ChartResultProps> = ({
 
           {/* Action Buttons */}
           <div className="mt-4 pt-3 border-t border-[#2B2D2F]/10 flex flex-wrap items-center justify-between gap-2.5">
-            {onOpenFiveElementsReport && (
-              <button
-                onClick={onOpenFiveElementsReport}
-                className="bg-[#1E3A5F] hover:bg-[#2B2D2F] text-[#F4EFEA] px-4 py-2 text-xs font-sans rounded transition-colors font-bold shadow-sm flex items-center space-x-1.5 cursor-pointer"
-              >
-                <span>📜 查看五行喜忌指南報告</span>
-              </button>
-            )}
+            <div className="flex flex-wrap items-center gap-2">
+              {onOpenFiveElementsReport && (
+                <button
+                  onClick={onOpenFiveElementsReport}
+                  className="bg-[#1E3A5F] hover:bg-[#2B2D2F] text-[#F4EFEA] px-3.5 py-2 text-xs font-sans rounded transition-colors font-bold shadow-sm flex items-center space-x-1.5 cursor-pointer"
+                >
+                  <span>📜 五行生活指南 (HK$128)</span>
+                </button>
+              )}
+              {onOpenLoveNavigationReport && (
+                <button
+                  onClick={onOpenLoveNavigationReport}
+                  className="bg-[#9B2C2C] hover:bg-[#742A2A] text-white px-3.5 py-2 text-xs font-sans rounded transition-colors font-bold shadow-sm flex items-center space-x-1.5 cursor-pointer"
+                >
+                  <span>💖 姻緣導航‧未來3年 (HK$188)</span>
+                </button>
+              )}
+            </div>
             <div className="flex items-center space-x-2 ml-auto">
               <button
                 onClick={onOpenOnlineServices}
