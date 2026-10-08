@@ -11,6 +11,7 @@ import { LegalPage } from './components/LegalPages';
 import { Footer } from './components/Footer';
 import { FiveElementsReportModal } from './components/FiveElementsReportModal';
 import { LoveNavigationModal } from './components/LoveNavigationModal';
+import { CareerNavigationModal } from './components/CareerNavigationModal';
 import { calculateLocalBazi } from './utils/baziLocalEngine';
 import { ServiceItem, SIDEBAR_PRICE_LIST } from './data/services';
 
@@ -32,6 +33,7 @@ export function App() {
   const [isLoading, setIsLoading] = useState(false);
   const [isFiveElementsModalOpen, setIsFiveElementsModalOpen] = useState(false);
   const [isLoveNavigationModalOpen, setIsLoveNavigationModalOpen] = useState(false);
+  const [isCareerNavigationModalOpen, setIsCareerNavigationModalOpen] = useState(false);
   const [currentInputParams, setCurrentInputParams] = useState({
     birthDate: '1990-05-20',
     birthTime: '22:00',
@@ -223,6 +225,10 @@ export function App() {
       setIsLoveNavigationModalOpen(true);
       return;
     }
+    if (service.id === 'srv-career-3yr' && isPreviewDomain) {
+      setIsCareerNavigationModalOpen(true);
+      return;
+    }
     setPreviousView(currentView === 'service-solo' ? 'home' : currentView);
     setSelectedService(service);
     setCurrentView('service-solo');
@@ -301,6 +307,7 @@ export function App() {
                     onOpenOneOnOneBooking={() => handleNavigate('booking-services')}
                     onOpenFiveElementsReport={isPreviewDomain ? () => setIsFiveElementsModalOpen(true) : undefined}
                     onOpenLoveNavigationReport={isPreviewDomain ? () => setIsLoveNavigationModalOpen(true) : undefined}
+                    onOpenCareerNavigationReport={isPreviewDomain ? () => setIsCareerNavigationModalOpen(true) : undefined}
                     onSelectFiveElementsService={() => fiveElementsService && handleSelectServiceSolo(fiveElementsService)}
                   />
                 )}
@@ -350,6 +357,7 @@ export function App() {
             onNavigateHome={() => handleNavigate('home')}
             onOpenFiveElementsReport={isPreviewDomain ? () => setIsFiveElementsModalOpen(true) : undefined}
                     onOpenLoveNavigationReport={isPreviewDomain ? () => setIsLoveNavigationModalOpen(true) : undefined}
+                    onOpenCareerNavigationReport={isPreviewDomain ? () => setIsCareerNavigationModalOpen(true) : undefined}
             baziData={baziData}
           />
         )}
@@ -411,6 +419,16 @@ export function App() {
       <LoveNavigationModal
         isOpen={isLoveNavigationModalOpen}
         onClose={() => setIsLoveNavigationModalOpen(false)}
+        baziData={baziData}
+        birthDate={currentInputParams.birthDate}
+        birthTime={currentInputParams.birthTime}
+        gender={currentInputParams.gender}
+      />
+
+      {/* Career & Wealth Navigation Report Modal (HK$188) */}
+      <CareerNavigationModal
+        isOpen={isCareerNavigationModalOpen}
+        onClose={() => setIsCareerNavigationModalOpen(false)}
         baziData={baziData}
         birthDate={currentInputParams.birthDate}
         birthTime={currentInputParams.birthTime}

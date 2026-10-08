@@ -115,3 +115,17 @@ def api_five_elements_guide(payload: BaziInput):
         }
     except Exception as e:
         raise HTTPException(status_code=400, detail=f"Five Elements Guide Error: {str(e)}")
+@router.post("/career-navigation", response_model=Dict[str, Any])
+def api_career_navigation(payload: BaziInput):
+    try:
+        from app.engine.career_navigation import generate_career_navigation_report
+        bazi = calculate_bazi(
+            birth_date_str=payload.birth_date,
+            birth_time_str=payload.birth_time,
+            gender=payload.gender,
+            day_boundary_rule=payload.day_boundary_rule or "ZI_START_NEXT_DAY"
+        )
+        report = generate_career_navigation_report(bazi)
+        return {"success": True, "bazi": bazi, "report_markdown": report}
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=f"Career Navigation Error: {str(e)}")
