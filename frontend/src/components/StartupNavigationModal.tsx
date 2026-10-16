@@ -1,7 +1,7 @@
-import React, { useState, useMemo } from 'react';
-import { computeStartupNavigationReport } from '../utils/startupNavigationLocal';
+import React, { useState, useMemo } from "react";
+import { computeStartupNavigationReport } from "../utils/startupNavigationLocal";
 
-interface StartupNavigationModalProps {
+interface Props {
   isOpen: boolean;
   onClose: () => void;
   baziData?: any;
@@ -10,7 +10,7 @@ interface StartupNavigationModalProps {
   gender?: string;
 }
 
-export const StartupNavigationModal: React.FC<StartupNavigationModalProps> = ({
+export const StartupNavigationModal: React.FC<Props> = ({
   isOpen,
   onClose,
   baziData,
@@ -18,184 +18,191 @@ export const StartupNavigationModal: React.FC<StartupNavigationModalProps> = ({
   birthTime = "22:00",
   gender = "male"
 }) => {
-  const [activeTab, setActiveTab] = useState<'all' | 'pattern' | 'matrix' | 'factors'>('all');
+  const [tab, setTab] = useState<"all" | "pattern" | "wealth" | "timing" | "factors">("all");
 
   const report = useMemo(() => {
     if (!isOpen) return null;
-    try { return computeStartupNavigationReport(birthDate, birthTime, gender, baziData); }
-    catch(e) { console.error(e); return null; }
+    try {
+      return computeStartupNavigationReport(birthDate, birthTime, gender, baziData);
+    } catch (e) {
+      console.error("Startup report compute error:", e);
+      return null;
+    }
   }, [isOpen, birthDate, birthTime, gender, baziData]);
 
   if (!isOpen) return null;
 
+  const r = (report || {}) as any;
+  const stars = (n = 0) => "★".repeat(Math.max(0, Math.min(5, Math.floor(n || 0)))) + "☆".repeat(5 - Math.max(0, Math.min(5, Math.floor(n || 0))));
+
   return (
     <div className="fixed inset-0 z-50 overflow-y-auto bg-black/70 backdrop-blur-sm flex items-center justify-center p-2 sm:p-4 animate-fade-in font-sans">
-      <div className="bg-[#FAF7F2] text-[#2B2D2F] w-full max-w-4xl rounded-lg shadow-2xl border border-[#1E3A5F]/30 flex flex-col max-h-[92vh] overflow-hidden">
+      <div className="bg-[#FAF7F2] text-[#2B2D2F] w-full max-w-4xl rounded-lg shadow-2xl border border-[#B8860B]/30 flex flex-col max-h-[92vh] overflow-hidden">
         
         {/* Header */}
         <div className="bg-[#1E3A5F] text-[#FAF7F2] px-5 py-4 flex items-center justify-between shadow-md shrink-0">
           <div className="flex items-center space-x-2">
-            <span className="text-xl">💼</span>
+            <span className="text-xl">🚀</span>
             <div>
               <div className="flex items-center space-x-2">
-                <h3 className="font-serif text-lg font-bold tracking-wide">
-                  創業／拓展・未來36個月
-                </h3>
-                <span className="bg-[#D97706] text-white text-[10px] font-bold px-1.5 py-0.5 rounded">
-                  HK$288 官方手冊
-                </span>
+                <h3 className="font-serif text-lg font-bold tracking-wide">創業／拓展・未來36個月</h3>
+                <span className="bg-[#B8860B] text-white text-[10px] font-bold px-1.5 py-0.5 rounded">HK$288 官方命書</span>
               </div>
-              <p className="text-xs text-[#FAF7F2]/80 mt-0.5">
-                檔案編號：{report.reportId} · 依據個人原局與36流月動態推演
-              </p>
+              <p className="text-xs text-[#FAF7F2]/80 mt-0.5">檔案編號：{r.reportId || "TMS-STARTUP"} · 依據個人原局與36流月動態推演</p>
             </div>
           </div>
-          <button
-            onClick={onClose}
-            className="text-white/80 hover:text-white hover:bg-white/10 w-8 h-8 rounded-full flex items-center justify-center text-lg transition-colors cursor-pointer"
-            title="關閉"
-          >
-            ✕
-          </button>
+          <button onClick={onClose} className="text-white/80 hover:text-white hover:bg-white/10 w-8 h-8 rounded-full flex items-center justify-center text-lg transition-colors cursor-pointer" title="關閉">✕</button>
         </div>
 
-        {/* Navigation Tabs */}
+        {/* Tabs */}
         <div className="bg-[#EFE9DF] border-b border-[#2B2D2F]/10 px-4 py-2 flex flex-wrap gap-1.5 overflow-x-auto shrink-0">
           {[
-            { id: 'all', label: '全覽總綱' },
-            { id: 'pattern', label: 'A. 創業格局' },
-            { id: 'matrix', label: 'B. 未來36個月' },
-            { id: 'factors', label: 'C. 創業有利因素' }
-          ].map((tab) => (
+            { id: "all", label: "全覽總綱" },
+            { id: "pattern", label: "A. 創業格局" },
+            { id: "wealth", label: "B. 財運與投資" },
+            { id: "timing", label: "C. 創業Timing" },
+            { id: "factors", label: "D. 事業有利因素" }
+          ].map(t => (
             <button
-              key={tab.id}
-              onClick={() => setActiveTab(tab.id as any)}
+              key={t.id}
+              onClick={() => setTab(t.id as any)}
               className={`px-3 py-1.5 rounded-full text-xs font-serif font-bold transition-all cursor-pointer whitespace-nowrap ${
-                activeTab === tab.id
-                  ? 'bg-[#1E3A5F] text-white shadow-sm'
-                  : 'bg-white/70 text-[#2B2D2F]/80 hover:bg-white'
+                tab === t.id ? "bg-[#1E3A5F] text-white shadow-sm" : "bg-white/70 text-[#2B2D2F]/80 hover:bg-white"
               }`}
             >
-              {tab.label}
+              {t.label}
             </button>
           ))}
         </div>
 
         {/* Body */}
         <div className="p-5 sm:p-6 overflow-y-auto space-y-6 text-sm">
+          
           {/* Top Banner */}
           <div className="bg-white p-4 rounded border border-[#2B2D2F]/10 shadow-xs space-y-2">
             <div className="flex flex-wrap items-center justify-between text-xs text-[#2B2D2F]/70 border-b pb-2 gap-2">
-              <span>生辰：{report.solarDate} · {report.gender}</span>
-              <span className="font-medium text-[#1E3A5F]">
-                日主：【{report.dayMaster}{report.dayElement}】· 四柱：{report.fourPillars.year} / {report.fourPillars.month} / {report.fourPillars.day} / {report.fourPillars.hour}
-              </span>
+              <span>生辰：{r.solarDate || birthDate} · {r.gender || (gender === "male" ? "乾造（男）" : "坤造（女）")}</span>
+              <span className="font-medium text-[#1E3A5F]">日主：【{r.dayMaster || ""}{r.dayElement || ""}】· 四柱：{r.fourPillars?.year || ""} / {r.fourPillars?.month || ""} / {r.fourPillars?.day || ""} / {r.fourPillars?.hour || ""}</span>
             </div>
             <div className="flex flex-wrap items-center justify-between pt-1 gap-2">
-              <h4 className="font-serif font-bold text-base text-[#1E3A5F]">
-                ✦ 命主創業格局：{report.patternName}
-              </h4>
-              <div className="flex items-center space-x-3 text-xs">
-                <span className="bg-[#B8860B]/10 text-[#B8860B] px-2 py-0.5 rounded font-bold">
-                  創業適合度：{report.startupSuitability || 8.5} / 10
-                </span>
-                <span className="bg-[#1E3A5F]/10 text-[#1E3A5F] px-2 py-0.5 rounded font-medium">
-                  綜合財運：{'★'.repeat(report.overallWealthStars || report.directWealthStars || 4)}{'☆'.repeat(5 - (report.overallWealthStars || report.directWealthStars || 4))}
-                </span>
+              <h4 className="font-serif font-bold text-base text-[#1E3A5F]">✦ 命主創業格局：{r.patternName || "建祿陽刃 · 開疆先鋒格"}</h4>
+              <div className="flex items-center space-x-2 text-xs">
+                <span className="bg-[#B8860B]/10 text-[#B8860B] px-2 py-0.5 rounded font-bold">創業適合度：{r.startupSuitability || 8.5} / 10</span>
+                <span className="bg-[#1E3A5F]/10 text-[#1E3A5F] px-2 py-0.5 rounded font-medium">綜合財運：{stars(r.overallWealthStars || 4)}</span>
               </div>
             </div>
           </div>
 
-          {/* Section A */}
-          {(activeTab === 'all' || activeTab === 'pattern') && (
+          {/* Section A: 創業格局 */}
+          {(tab === "all" || tab === "pattern") && (
             <div className="space-y-4">
               <h4 className="font-serif font-bold text-base text-[#1E3A5F] flex items-center space-x-2 border-b border-[#1E3A5F]/20 pb-2">
-                <span>🎯</span>
-                <span>A. 事業與財運格局剖析</span>
+                <span>🎯</span><span>A. 創業與拓展格局深度剖析</span>
               </h4>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
                 <div className="bg-white p-4 rounded border border-[#2B2D2F]/10 shadow-xs space-y-1.5">
-                  <span className="text-[11px] font-bold text-[#1E3A5F] uppercase block">🏢 適合的行業方向</span>
-                  <p className="text-xs text-[#2B2D2F]/90 leading-relaxed font-medium">{report.industryDirections}</p>
+                  <span className="text-[11px] font-bold text-[#1E3A5F] uppercase block">🏢 適合拓展之產業方向</span>
+                  <p className="text-xs text-[#2B2D2F]/90 leading-relaxed font-medium">{r.industryDirections || "新能源、高新科技、品牌孵化、文化娛樂"}</p>
                 </div>
                 <div className="bg-white p-4 rounded border border-[#2B2D2F]/10 shadow-xs space-y-1.5">
-                  <span className="text-[11px] font-bold text-[#1E3A5F] uppercase block">🤝 適合的合夥搭檔特徵</span>
-                  <p className="text-xs text-[#2B2D2F]/90 leading-relaxed font-medium">{report.partnerType || report.functionalRoles || '細節執行力強、精通日常內部營運與行政合規的搭檔'}</p>
+                  <span className="text-[11px] font-bold text-[#B8860B] uppercase block">🚀 適合的創業經營模式</span>
+                  <p className="text-xs text-[#2B2D2F]/90 leading-relaxed font-medium">{r.startupMode || "合夥創辦／股權激勵模式"}</p>
                 </div>
               </div>
               <div className="bg-white p-4 rounded border border-[#2B2D2F]/10 shadow-xs space-y-1.5">
-                <span className="text-[11px] font-bold text-[#D97706] uppercase block">🚀 適合的工作模式</span>
-                <p className="text-xs text-[#2B2D2F]/90 leading-relaxed font-semibold">{report.startupMode || report.workMode || '獨立創辦或持有絕對控制權模式'}</p>
+                <span className="text-[11px] font-bold text-[#1E3A5F] uppercase block">🤝 適合的合夥搭檔特徵</span>
+                <p className="text-xs text-[#2B2D2F]/90 leading-relaxed font-medium">{r.partnerType || "細節執行力強、精通日常內部營運與行政合規的副手"}</p>
               </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
-                <div className="bg-[#1E3A5F]/5 border border-[#1E3A5F]/20 p-4 rounded space-y-2">
-                  <span className="text-xs font-bold text-[#1E3A5F] block">✨ 創業核心優勢</span>
-                  <ul className="space-y-1.5 text-xs text-[#2B2D2F]/85">
-                    {(report.strengths || []).map((item, i) => (
-                      <li key={i} className="flex items-start space-x-1.5"><span className="text-[#1E3A5F] font-bold">✓</span><span>{item}</span></li>
-                    ))}
-                  </ul>
-                </div>
-                <div className="bg-[#D97706]/5 border border-[#D97706]/20 p-4 rounded space-y-2">
-                  <span className="text-xs font-bold text-[#D97706] block">⚠️ 創業風險與防範提醒</span>
-                  <ul className="space-y-1.5 text-xs text-[#2B2D2F]/85">
-                    {(report.blindSpots || []).map((item, i) => (
-                      <li key={i} className="flex items-start space-x-1.5"><span className="text-[#D97706] font-bold">!</span><span>{item}</span></li>
-                    ))}
-                  </ul>
-                </div>
+              <div className="bg-[#9B2C2C]/5 border border-[#9B2C2C]/20 p-4 rounded space-y-1.5">
+                <span className="text-xs font-bold text-[#9B2C2C] flex items-center space-x-1"><span>⚠️</span><span>創業風險與防範提醒</span></span>
+                <ul className="space-y-1 text-xs text-[#2B2D2F]/90">
+                  {(Array.isArray(r.startupRisks) ? r.startupRisks : [r.startupRisks || "戰線拉得過長時容易因細節失控導致資源分散"]).map((item: string, i: number) => (
+                    <li key={i} className="flex items-start space-x-1.5">
+                      <span className="text-[#9B2C2C] font-bold">•</span>
+                      <span>{item}</span>
+                    </li>
+                  ))}
+                </ul>
               </div>
             </div>
           )}
 
-          {/* Section B */}
-          {(activeTab === 'all' || activeTab === 'matrix') && (
+          {/* Section B: 財運與投資 */}
+          {(tab === "all" || tab === "wealth") && (
             <div className="space-y-4">
               <h4 className="font-serif font-bold text-base text-[#1E3A5F] flex items-center space-x-2 border-b border-[#1E3A5F]/20 pb-2">
-                <span>📅</span>
-                <span>B. 未來 36 個月運勢導航（2026/10 - 2029/09）</span>
+                <span>💰</span><span>B. 財運量級與投資合夥佈局</span>
               </h4>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2.5">
-                <div className="bg-white p-3 rounded border border-[#2B2D2F]/10 shadow-xs">
-                  <span className="text-[10px] text-[#1E3A5F] font-bold uppercase block mb-1">⭐ 事業運最旺月份</span>
-                  <p className="font-serif font-bold text-xs text-[#2B2D2F]">{(report.topCareerMonths || []).join("、")}</p>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <div className="bg-white p-3 rounded border border-[#2B2D2F]/10 text-center">
+                  <span className="text-[11px] text-[#2B2D2F]/70 block mb-1">綜合財運量級</span>
+                  <span className="text-[#B8860B] text-xs font-bold">{stars(r.overallWealthStars || 4)}</span>
                 </div>
-                <div className="bg-white p-3 rounded border border-[#2B2D2F]/10 shadow-xs">
-                  <span className="text-[10px] text-[#D97706] font-bold uppercase block mb-1">💰 財運最旺月份</span>
-                  <p className="font-serif font-bold text-xs text-[#2B2D2F]">{(report.topWealthMonths || []).join("、")}</p>
+                <div className="bg-white p-3 rounded border border-[#2B2D2F]/10 text-center">
+                  <span className="text-[11px] text-[#2B2D2F]/70 block mb-1">資產沉澱聚財度</span>
+                  <span className="text-[#1E3A5F] text-xs font-bold">{stars(r.wealthAccumulationStars || 4)}</span>
                 </div>
-                <div className="bg-white p-3 rounded border border-[#2B2D2F]/10 shadow-xs">
-                  <span className="text-[10px] text-[#059669] font-bold uppercase block mb-1">🚀 適合轉工／轉跑道</span>
-                  <p className="font-serif font-bold text-xs text-[#2B2D2F]">{(report.topChangeMonths || []).join("、")}</p>
-                </div>
-                <div className="bg-white p-3 rounded border border-[#2B2D2F]/10 shadow-xs">
-                  <span className="text-[10px] text-[#DC2626] font-bold uppercase block mb-1">⚠️ 需留意事業波折</span>
-                  <p className="font-serif font-bold text-xs text-[#2B2D2F]">{(report.cautionMonths || []).join("、")}</p>
+                <div className="bg-white p-3 rounded border border-[#2B2D2F]/10 text-center">
+                  <span className="text-[11px] text-[#2B2D2F]/70 block mb-1">創收爆發增長度</span>
+                  <span className="text-[#2F5233] text-xs font-bold">{stars(r.incomeGrowthStars || 4)}</span>
                 </div>
               </div>
-              <div className="border border-[#2B2D2F]/15 rounded overflow-x-auto max-h-72 shadow-inner">
+              <div className="bg-[#1E3A5F]/5 border border-[#1E3A5F]/20 p-4 rounded space-y-1.5">
+                <span className="text-xs font-bold text-[#1E3A5F] block">💡 現金流管理與融資投資策略</span>
+                <p className="text-xs text-[#2B2D2F]/90 leading-relaxed">{r.financialStrategy || "積極進取型（善於捕捉商業風口，設立強制備用金底線）"}</p>
+              </div>
+            </div>
+          )}
+
+          {/* Section C: Timing */}
+          {(tab === "all" || tab === "timing") && (
+            <div className="space-y-4">
+              <h4 className="font-serif font-bold text-base text-[#1E3A5F] flex items-center space-x-2 border-b border-[#1E3A5F]/20 pb-2">
+                <span>📅</span><span>C. 未來36個月關鍵時機導航</span>
+              </h4>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2.5">
+                <div className="bg-emerald-50 border border-emerald-200 p-3 rounded">
+                  <span className="text-[10px] font-bold text-emerald-800 uppercase block mb-1">🚀 新項目啟動期</span>
+                  <p className="font-serif font-bold text-xs text-emerald-950">{(r.topNewProjectMonths || r.topCareerMonths || ["2026/11", "2027/03"]).join("、")}</p>
+                </div>
+                <div className="bg-blue-50 border border-blue-200 p-3 rounded">
+                  <span className="text-[10px] font-bold text-blue-800 uppercase block mb-1">📈 規模擴展推進期</span>
+                  <p className="font-serif font-bold text-xs text-blue-950">{(r.topExpansionMonths || r.topWealthMonths || ["2027/05", "2027/08"]).join("、")}</p>
+                </div>
+                <div className="bg-amber-50 border border-amber-200 p-3 rounded">
+                  <span className="text-[10px] font-bold text-amber-800 uppercase block mb-1">🛡️ 審慎防禦整頓期</span>
+                  <p className="font-serif font-bold text-xs text-amber-950">{(r.topDefenseMonths || r.topChangeMonths || ["2026/12", "2027/09"]).join("、")}</p>
+                </div>
+                <div className="bg-rose-50 border border-rose-200 p-3 rounded">
+                  <span className="text-[10px] font-bold text-rose-800 uppercase block mb-1">⚡ 財務動盪預警期</span>
+                  <p className="font-serif font-bold text-xs text-rose-950">{(r.topRiskMonths || r.cautionMonths || ["2028/01", "2028/06"]).join("、")}</p>
+                </div>
+              </div>
+
+              {/* Table */}
+              <div className="border border-[#2B2D2F]/15 rounded overflow-x-auto max-h-72 shadow-inner bg-white">
                 <table className="w-full text-left text-xs border-collapse">
                   <thead className="bg-[#1E3A5F] text-[#FAF7F2] sticky top-0 font-serif">
                     <tr>
                       <th className="p-2">月份週期</th>
                       <th className="p-2">干支氣場</th>
-                      <th className="p-2 text-center">事業運程 (0-10)</th>
-                      <th className="p-2 text-center">收入增長 (0-10)</th>
-                      <th className="p-2 text-center">升職機會 (0-10)</th>
-                      <th className="p-2 text-center">轉工機會 (0-10)</th>
-                      <th className="p-2">事業行動錦囊</th>
+                      <th className="p-2 text-center">機會值</th>
+                      <th className="p-2 text-center">擴展值</th>
+                      <th className="p-2 text-center">防禦值</th>
+                      <th className="p-2 text-center">風險值</th>
+                      <th className="p-2">商業實戰錦囊</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-[#2B2D2F]/10 bg-white">
-                    {report.matrix.map((row) => (
-                      <tr key={row.period} className="hover:bg-[#F4EFEA]/70 transition-colors">
+                  <tbody className="divide-y divide-[#2B2D2F]/10">
+                    {(r.matrix || []).map((row: any, idx: number) => (
+                      <tr key={idx} className="hover:bg-[#F4EFEA]/70 transition-colors">
                         <td className="p-2 font-mono font-bold text-[#1E3A5F] whitespace-nowrap">{row.period}</td>
-                        <td className="p-2 whitespace-nowrap">{row.yearStemBranch}年 {row.monthStemBranch}月</td>
-                        <td className="p-2 text-center font-bold text-[#1E3A5F]">{row.careerScore}</td>
-                        <td className="p-2 text-center font-bold text-[#D97706]">{row.wealthScore}</td>
-                        <td className="p-2 text-center font-bold text-[#059669]">{row.promotionScore}</td>
-                        <td className="p-2 text-center font-bold text-[#7C3AED]">{row.jobChangeScore}</td>
-                        <td className="p-2 text-[#2B2D2F]/80 text-[11px] min-w-[200px]">{row.advice}</td>
+                        <td className="p-2 whitespace-nowrap text-gray-500 font-serif">{row.yearStemBranch}年 {row.monthStemBranch}月</td>
+                        <td className="p-2 text-center font-bold text-emerald-600">{row.opportunityScore ?? row.careerScore ?? 8.0}</td>
+                        <td className="p-2 text-center font-bold text-blue-600">{row.expansionScore ?? row.promotionScore ?? 7.5}</td>
+                        <td className="p-2 text-center font-bold text-amber-600">{row.defenseScore ?? row.changeJobScore ?? 6.5}</td>
+                        <td className="p-2 text-center font-bold text-rose-600">{row.riskScore ?? 5.0}</td>
+                        <td className="p-2 text-[#2B2D2F]/80 text-[11px] min-w-[200px]">{row.advice || "穩步經營，深耕核心業務"}</td>
                       </tr>
                     ))}
                   </tbody>
@@ -204,37 +211,35 @@ export const StartupNavigationModal: React.FC<StartupNavigationModalProps> = ({
             </div>
           )}
 
-          {/* Section C */}
-          {(activeTab === 'all' || activeTab === 'factors') && (
+          {/* Section D: 有利因素 */}
+          {(tab === "all" || tab === "factors") && (
             <div className="space-y-4">
               <h4 className="font-serif font-bold text-base text-[#1E3A5F] flex items-center space-x-2 border-b border-[#1E3A5F]/20 pb-2">
-                <span>🧭</span>
-                <span>C. 事業有利環境與開運因素</span>
+                <span>🧭</span><span>D. 創業商務有利環境與開運因素</span>
               </h4>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-3.5">
                 <div className="bg-white p-4 rounded border border-[#2B2D2F]/10 shadow-xs space-y-1.5">
-                  <span className="text-[11px] font-bold text-[#1E3A5F] uppercase block">🎨 有利事業的顏色</span>
-                  <p className="text-xs text-[#2B2D2F]/90 font-semibold">{report.favorableColors}</p>
+                  <span className="text-[11px] font-bold text-[#1E3A5F] uppercase block">🎨 品牌／商業有利色系</span>
+                  <p className="text-xs text-[#2B2D2F]/90 font-semibold">{r.favorableColors || "深海藍、藏青色、香檳金"}</p>
                 </div>
                 <div className="bg-white p-4 rounded border border-[#2B2D2F]/10 shadow-xs space-y-1.5">
-                  <span className="text-[11px] font-bold text-[#1E3A5F] uppercase block">🧭 有利事業的方位</span>
-                  <p className="text-xs text-[#2B2D2F]/90 font-semibold">{report.favorableDirections}</p>
+                  <span className="text-[11px] font-bold text-[#1E3A5F] uppercase block">🧭 商業拓展吉利方位</span>
+                  <p className="text-xs text-[#2B2D2F]/90 font-semibold">{r.favorableDirections || "北方、西北方"}</p>
                 </div>
                 <div className="bg-white p-4 rounded border border-[#2B2D2F]/10 shadow-xs space-y-1.5">
-                  <span className="text-[11px] font-bold text-[#1E3A5F] uppercase block">🌿 有利事業的環境</span>
-                  <p className="text-xs text-[#2B2D2F]/90">{report.favorableEnvironment}</p>
+                  <span className="text-[11px] font-bold text-[#1E3A5F] uppercase block">🌿 開運辦公／經營環境</span>
+                  <p className="text-xs text-[#2B2D2F]/90">{r.favorableEnvironment || "空間採光充足、動線流暢、具備現代化會議與展示格局"}</p>
                 </div>
               </div>
             </div>
           )}
+
         </div>
 
         {/* Footer */}
         <div className="bg-[#EFE9DF] border-t border-[#2B2D2F]/10 px-5 py-3 flex items-center justify-between text-xs shrink-0">
-          <span className="text-[#2B2D2F]/70">測試網域特別授權：即時免扣款查看全覽報告</span>
-          <button onClick={onClose} className="px-4 py-1.5 bg-[#1E3A5F] hover:bg-[#2B2D2F] text-white font-sans font-bold rounded shadow transition-colors cursor-pointer">
-            關閉報告
-          </button>
+          <span className="text-[#2B2D2F]/70">丁蔓山｜命理誌 · 創業與投資未來3年專項命書</span>
+          <button onClick={onClose} className="px-4 py-1.5 bg-[#1E3A5F] hover:bg-[#2B2D2F] text-white font-sans font-bold rounded shadow transition-colors cursor-pointer">關閉報告</button>
         </div>
 
       </div>
