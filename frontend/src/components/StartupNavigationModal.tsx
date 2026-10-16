@@ -129,7 +129,7 @@ export const StartupNavigationModal: React.FC<StartupNavigationModalProps> = ({
                 <div className="bg-[#1E3A5F]/5 border border-[#1E3A5F]/20 p-4 rounded space-y-2">
                   <span className="text-xs font-bold text-[#1E3A5F] block">✨ 創業核心優勢</span>
                   <ul className="space-y-1.5 text-xs text-[#2B2D2F]/85">
-                    {report.strengths.map((item, i) => (
+                    {(report.strengths || []).map((item, i) => (
                       <li key={i} className="flex items-start space-x-1.5"><span className="text-[#1E3A5F] font-bold">✓</span><span>{item}</span></li>
                     ))}
                   </ul>
@@ -137,7 +137,7 @@ export const StartupNavigationModal: React.FC<StartupNavigationModalProps> = ({
                 <div className="bg-[#D97706]/5 border border-[#D97706]/20 p-4 rounded space-y-2">
                   <span className="text-xs font-bold text-[#D97706] block">⚠️ 創業風險與防範提醒</span>
                   <ul className="space-y-1.5 text-xs text-[#2B2D2F]/85">
-                    {report.blindSpots.map((item, i) => (
+                    {(report.blindSpots || []).map((item, i) => (
                       <li key={i} className="flex items-start space-x-1.5"><span className="text-[#D97706] font-bold">!</span><span>{item}</span></li>
                     ))}
                   </ul>
@@ -156,19 +156,19 @@ export const StartupNavigationModal: React.FC<StartupNavigationModalProps> = ({
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2.5">
                 <div className="bg-white p-3 rounded border border-[#2B2D2F]/10 shadow-xs">
                   <span className="text-[10px] text-[#1E3A5F] font-bold uppercase block mb-1">⭐ 事業運最旺月份</span>
-                  <p className="font-serif font-bold text-xs text-[#2B2D2F]">{report.topCareerMonths.join("、")}</p>
+                  <p className="font-serif font-bold text-xs text-[#2B2D2F]">{(report.topCareerMonths || []).join("、")}</p>
                 </div>
                 <div className="bg-white p-3 rounded border border-[#2B2D2F]/10 shadow-xs">
                   <span className="text-[10px] text-[#D97706] font-bold uppercase block mb-1">💰 財運最旺月份</span>
-                  <p className="font-serif font-bold text-xs text-[#2B2D2F]">{report.topWealthMonths.join("、")}</p>
+                  <p className="font-serif font-bold text-xs text-[#2B2D2F]">{(report.topWealthMonths || []).join("、")}</p>
                 </div>
                 <div className="bg-white p-3 rounded border border-[#2B2D2F]/10 shadow-xs">
                   <span className="text-[10px] text-[#059669] font-bold uppercase block mb-1">🚀 適合轉工／轉跑道</span>
-                  <p className="font-serif font-bold text-xs text-[#2B2D2F]">{report.topChangeMonths.join("、")}</p>
+                  <p className="font-serif font-bold text-xs text-[#2B2D2F]">{(report.topChangeMonths || []).join("、")}</p>
                 </div>
                 <div className="bg-white p-3 rounded border border-[#2B2D2F]/10 shadow-xs">
                   <span className="text-[10px] text-[#DC2626] font-bold uppercase block mb-1">⚠️ 需留意事業波折</span>
-                  <p className="font-serif font-bold text-xs text-[#2B2D2F]">{report.cautionMonths.join("、")}</p>
+                  <p className="font-serif font-bold text-xs text-[#2B2D2F]">{(report.cautionMonths || []).join("、")}</p>
                 </div>
               </div>
               <div className="border border-[#2B2D2F]/15 rounded overflow-x-auto max-h-72 shadow-inner">
