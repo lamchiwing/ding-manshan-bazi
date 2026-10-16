@@ -12,6 +12,7 @@ import { Footer } from './components/Footer';
 import { FiveElementsReportModal } from './components/FiveElementsReportModal';
 import { LoveNavigationModal } from './components/LoveNavigationModal';
 import { CareerNavigationModal } from './components/CareerNavigationModal';
+import { StartupNavigationModal } from './components/StartupNavigationModal';
 import { calculateLocalBazi } from './utils/baziLocalEngine';
 import { ServiceItem, SIDEBAR_PRICE_LIST } from './data/services';
 
@@ -34,6 +35,7 @@ export function App() {
   const [isFiveElementsModalOpen, setIsFiveElementsModalOpen] = useState(false);
   const [isLoveNavigationModalOpen, setIsLoveNavigationModalOpen] = useState(false);
   const [isCareerNavigationModalOpen, setIsCareerNavigationModalOpen] = useState(false);
+  const [isStartupModalOpen, setIsStartupModalOpen] = useState(false);
   const [currentInputParams, setCurrentInputParams] = useState({
     birthDate: '1990-05-20',
     birthTime: '22:00',
@@ -229,6 +231,10 @@ export function App() {
       setIsCareerNavigationModalOpen(true);
       return;
     }
+    if (service.id === 'srv-startup-3yr' && isPreviewDomain) {
+      setIsStartupModalOpen(true);
+      return;
+    }
     setPreviousView(currentView === 'service-solo' ? 'home' : currentView);
     setSelectedService(service);
     setCurrentView('service-solo');
@@ -308,6 +314,7 @@ export function App() {
                     onOpenFiveElementsReport={isPreviewDomain ? () => setIsFiveElementsModalOpen(true) : undefined}
                     onOpenLoveNavigationReport={isPreviewDomain ? () => setIsLoveNavigationModalOpen(true) : undefined}
                     onOpenCareerNavigationReport={isPreviewDomain ? () => setIsCareerNavigationModalOpen(true) : undefined}
+                    onOpenStartupReport={isPreviewDomain ? () => setIsStartupModalOpen(true) : undefined}
                     onSelectFiveElementsService={() => fiveElementsService && handleSelectServiceSolo(fiveElementsService)}
                   />
                 )}
@@ -358,6 +365,7 @@ export function App() {
             onOpenFiveElementsReport={isPreviewDomain ? () => setIsFiveElementsModalOpen(true) : undefined}
                     onOpenLoveNavigationReport={isPreviewDomain ? () => setIsLoveNavigationModalOpen(true) : undefined}
                     onOpenCareerNavigationReport={isPreviewDomain ? () => setIsCareerNavigationModalOpen(true) : undefined}
+                    onOpenStartupReport={isPreviewDomain ? () => setIsStartupModalOpen(true) : undefined}
             baziData={baziData}
           />
         )}
@@ -429,6 +437,15 @@ export function App() {
       <CareerNavigationModal
         isOpen={isCareerNavigationModalOpen}
         onClose={() => setIsCareerNavigationModalOpen(false)}
+        baziData={baziData}
+        birthDate={currentInputParams.birthDate}
+        birthTime={currentInputParams.birthTime}
+        gender={currentInputParams.gender}
+      />
+      {/* Startup Navigation Report Modal (HK$288) */}
+      <StartupNavigationModal
+        isOpen={isStartupModalOpen}
+        onClose={() => setIsStartupModalOpen(false)}
         baziData={baziData}
         birthDate={currentInputParams.birthDate}
         birthTime={currentInputParams.birthTime}

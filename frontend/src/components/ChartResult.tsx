@@ -7,6 +7,7 @@ interface ChartResultProps {
   onOpenFiveElementsReport?: () => void;
   onOpenLoveNavigationReport?: () => void;
   onOpenCareerNavigationReport?: () => void;
+  onOpenStartupReport?: () => void;
   onSelectFiveElementsService?: () => void;
 }
 
@@ -17,6 +18,7 @@ export const ChartResult: React.FC<ChartResultProps> = ({
   onOpenFiveElementsReport,
   onOpenLoveNavigationReport,
   onOpenCareerNavigationReport,
+  onOpenStartupReport,
   onSelectFiveElementsService
 }) => {
   if (!baziData) return null;
@@ -286,6 +288,14 @@ export const ChartResult: React.FC<ChartResultProps> = ({
                   className="bg-[#2B547E] hover:bg-[#1E3A5F] text-white px-3.5 py-2 text-xs font-sans rounded transition-colors font-bold shadow-sm flex items-center space-x-1.5 cursor-pointer"
                 >
                   <span>💼 事業／財運・未來3年 (HK$188)</span>
+                </button>
+              )}
+              {onOpenStartupReport && (
+                <button
+                  onClick={onOpenStartupReport}
+                  className="bg-[#B8860B] hover:bg-[#996515] text-white px-3.5 py-2 text-xs font-sans rounded transition-colors font-bold shadow-sm flex items-center space-x-1.5 cursor-pointer"
+                >
+                  <span>🚀 創業／拓展・未來3年 (HK$288)</span>
                 </button>
               )}
             </div>
