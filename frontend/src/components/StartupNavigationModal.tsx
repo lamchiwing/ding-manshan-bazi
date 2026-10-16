@@ -127,7 +127,7 @@ export const StartupNavigationModal: React.FC<StartupNavigationModalProps> = ({
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
                 <div className="bg-[#1E3A5F]/5 border border-[#1E3A5F]/20 p-4 rounded space-y-2">
-                  <span className="text-xs font-bold text-[#1E3A5F] block">✨ 事業核心競爭優勢</span>
+                  <span className="text-xs font-bold text-[#1E3A5F] block">✨ 創業核心優勢</span>
                   <ul className="space-y-1.5 text-xs text-[#2B2D2F]/85">
                     {report.strengths.map((item, i) => (
                       <li key={i} className="flex items-start space-x-1.5"><span className="text-[#1E3A5F] font-bold">✓</span><span>{item}</span></li>
@@ -135,7 +135,7 @@ export const StartupNavigationModal: React.FC<StartupNavigationModalProps> = ({
                   </ul>
                 </div>
                 <div className="bg-[#D97706]/5 border border-[#D97706]/20 p-4 rounded space-y-2">
-                  <span className="text-xs font-bold text-[#D97706] block">⚠️ 事業發展盲點與提醒</span>
+                  <span className="text-xs font-bold text-[#D97706] block">⚠️ 創業風險與防範提醒</span>
                   <ul className="space-y-1.5 text-xs text-[#2B2D2F]/85">
                     {report.blindSpots.map((item, i) => (
                       <li key={i} className="flex items-start space-x-1.5"><span className="text-[#D97706] font-bold">!</span><span>{item}</span></li>
