@@ -443,14 +443,16 @@ export function App() {
         gender={currentInputParams.gender}
       />
       {/* Startup Navigation Report Modal (HK$288) */}
-      <StartupNavigationModal
-        isOpen={isStartupModalOpen}
-        onClose={() => setIsStartupModalOpen(false)}
-        baziData={baziData}
-        birthDate={currentInputParams.birthDate}
-        birthTime={currentInputParams.birthTime}
-        gender={currentInputParams.gender}
-      />
+      {isStartupModalOpen && (
+        <StartupNavigationModal
+          isOpen={isStartupModalOpen}
+          onClose={() => setIsStartupModalOpen(false)}
+          baziData={baziData}
+          birthDate={currentInputParams.birthDate}
+          birthTime={currentInputParams.birthTime}
+          gender={currentInputParams.gender}
+        />
+      )}
       {/* Footer */}
       <Footer onNavigate={handleNavigate} />
     </div>

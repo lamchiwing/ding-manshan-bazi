@@ -21,8 +21,10 @@ export const StartupNavigationModal: React.FC<StartupNavigationModalProps> = ({
   const [activeTab, setActiveTab] = useState<'all' | 'pattern' | 'matrix' | 'factors'>('all');
 
   const report = useMemo(() => {
-    return computeStartupNavigationReport(birthDate, birthTime, gender, baziData);
-  }, [birthDate, birthTime, gender, baziData]);
+    if (!isOpen) return null;
+    try { return computeStartupNavigationReport(birthDate, birthTime, gender, baziData); }
+    catch(e) { console.error(e); return null; }
+  }, [isOpen, birthDate, birthTime, gender, baziData]);
 
   if (!isOpen) return null;
 
