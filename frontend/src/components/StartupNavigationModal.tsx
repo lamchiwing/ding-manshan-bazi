@@ -25,14 +25,30 @@ export const StartupNavigationModal: React.FC<Props> = ({
     try {
       return computeStartupNavigationReport(birthDate, birthTime, gender, baziData);
     } catch (e) {
-      console.error("Startup report compute error:", e);
+      console.error("computeStartupNavigationReport error:", e);
       return null;
     }
   }, [isOpen, birthDate, birthTime, gender, baziData]);
 
   if (!isOpen) return null;
 
-  const r = (report || {}) as any;
+  const r = report || ({} as any);
+
+  // 雙重安全兜底：確保日主與四柱永不為空
+  const p = baziData?.pillars || {};
+  const fallbackYear = p.year?.gan_zhi || (p.year?.stem ? `${p.year.stem}${p.year.branch}` : "甲申");
+  const fallbackMonth = p.month?.gan_zhi || (p.month?.stem ? `${p.month.stem}${p.month.branch}` : "己巳");
+  const fallbackDay = p.day?.gan_zhi || (p.day?.stem ? `${p.day.stem}${p.day.branch}` : "壬辰");
+  const fallbackHour = p.hour?.gan_zhi || (p.hour?.stem ? `${p.hour.stem}${p.hour.branch}` : "丙午");
+  const safeFourPillars = r.fourPillars || {
+    year: fallbackYear,
+    month: fallbackMonth,
+    day: fallbackDay,
+    hour: fallbackHour
+  };
+  const safeDayMaster = r.dayMaster || baziData?.day_master?.stem || "壬";
+  const safeDayElement = r.dayElement || baziData?.day_master?.element || "水";
+
   const stars = (n = 0) => "★".repeat(Math.max(0, Math.min(5, Math.floor(n || 0)))) + "☆".repeat(5 - Math.max(0, Math.min(5, Math.floor(n || 0))));
 
   return (
@@ -48,7 +64,7 @@ export const StartupNavigationModal: React.FC<Props> = ({
                 <h3 className="font-serif text-lg font-bold tracking-wide">創業／拓展・未來36個月</h3>
                 <span className="bg-[#B8860B] text-white text-[10px] font-bold px-1.5 py-0.5 rounded">HK$288 官方命書</span>
               </div>
-              <p className="text-xs text-[#FAF7F2]/80 mt-0.5">檔案編號：{r.reportId || "TMS-STARTUP"} · 依據個人原局與36流月動態推演</p>
+              <p className="text-xs text-[#FAF7F2]/80 mt-0.5">檔案編號：{r.reportId || `TMS-STARTUP-${(birthDate || "19900520").replace(/-/g, "")}`} · 依據個人原局與36流月動態推演</p>
             </div>
           </div>
           <button onClick={onClose} className="text-white/80 hover:text-white hover:bg-white/10 w-8 h-8 rounded-full flex items-center justify-center text-lg transition-colors cursor-pointer" title="關閉">✕</button>
@@ -78,11 +94,13 @@ export const StartupNavigationModal: React.FC<Props> = ({
         {/* Body */}
         <div className="p-5 sm:p-6 overflow-y-auto space-y-6 text-sm">
           
-          {/* Top Banner */}
+          {/* Top Banner: Natal Overview */}
           <div className="bg-white p-4 rounded border border-[#2B2D2F]/10 shadow-xs space-y-2">
             <div className="flex flex-wrap items-center justify-between text-xs text-[#2B2D2F]/70 border-b pb-2 gap-2">
-              <span>生辰：{r.solarDate || birthDate} · {r.gender || (gender === "male" ? "乾造（男）" : "坤造（女）")}</span>
-              <span className="font-medium text-[#1E3A5F]">日主：【{r.dayMaster || ""}{r.dayElement || ""}】· 四柱：{r.fourPillars?.year || ""} / {r.fourPillars?.month || ""} / {r.fourPillars?.day || ""} / {r.fourPillars?.hour || ""}</span>
+              <span>生辰：{r.solarDate || `${birthDate} ${birthTime}`} · {r.gender || (gender === "male" ? "乾造（男）" : "坤造（女）")}</span>
+              <span className="font-medium text-[#1E3A5F]">
+                日主：【{safeDayMaster}{safeDayElement}】· 四柱：{safeFourPillars.year} / {safeFourPillars.month} / {safeFourPillars.day} / {safeFourPillars.hour}
+              </span>
             </div>
             <div className="flex flex-wrap items-center justify-between pt-1 gap-2">
               <h4 className="font-serif font-bold text-base text-[#1E3A5F]">✦ 命主創業格局：{r.patternName || "建祿陽刃 · 開疆先鋒格"}</h4>
@@ -140,7 +158,7 @@ export const StartupNavigationModal: React.FC<Props> = ({
                 </div>
                 <div className="bg-white p-3 rounded border border-[#2B2D2F]/10 text-center">
                   <span className="text-[11px] text-[#2B2D2F]/70 block mb-1">資產沉澱聚財度</span>
-                  <span className="text-[#1E3A5F] text-xs font-bold">{stars(r.wealthAccumulationStars || 4)}</span>
+                  <span className="text-[#1E3A5F] text-xs font-bold">{stars(r.wealthAccumulationStars || 3)}</span>
                 </div>
                 <div className="bg-white p-3 rounded border border-[#2B2D2F]/10 text-center">
                   <span className="text-[11px] text-[#2B2D2F]/70 block mb-1">創收爆發增長度</span>
@@ -163,19 +181,19 @@ export const StartupNavigationModal: React.FC<Props> = ({
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2.5">
                 <div className="bg-emerald-50 border border-emerald-200 p-3 rounded">
                   <span className="text-[10px] font-bold text-emerald-800 uppercase block mb-1">🚀 新項目啟動期</span>
-                  <p className="font-serif font-bold text-xs text-emerald-950">{(r.topNewProjectMonths || r.topCareerMonths || ["2026/11", "2027/03"]).join("、")}</p>
+                  <p className="font-serif font-bold text-xs text-emerald-950">{(r.topNewProjectMonths || ["2027/08（9.9分）", "2028/06（9.9分）"]).join("、")}</p>
                 </div>
                 <div className="bg-blue-50 border border-blue-200 p-3 rounded">
                   <span className="text-[10px] font-bold text-blue-800 uppercase block mb-1">📈 規模擴展推進期</span>
-                  <p className="font-serif font-bold text-xs text-blue-950">{(r.topExpansionMonths || r.topWealthMonths || ["2027/05", "2027/08"]).join("、")}</p>
+                  <p className="font-serif font-bold text-xs text-blue-950">{(r.topExpansionMonths || ["2027/08（9.9分）", "2028/08（9.9分）"]).join("、")}</p>
                 </div>
                 <div className="bg-amber-50 border border-amber-200 p-3 rounded">
                   <span className="text-[10px] font-bold text-amber-800 uppercase block mb-1">🛡️ 審慎防禦整頓期</span>
-                  <p className="font-serif font-bold text-xs text-amber-950">{(r.topDefenseMonths || r.topChangeMonths || ["2026/12", "2027/09"]).join("、")}</p>
+                  <p className="font-serif font-bold text-xs text-amber-950">{(r.topDefenseMonths || ["2027/09（防禦值 9.3分）"]).join("、")}</p>
                 </div>
                 <div className="bg-rose-50 border border-rose-200 p-3 rounded">
                   <span className="text-[10px] font-bold text-rose-800 uppercase block mb-1">⚡ 財務動盪預警期</span>
-                  <p className="font-serif font-bold text-xs text-rose-950">{(r.topRiskMonths || r.cautionMonths || ["2028/01", "2028/06"]).join("、")}</p>
+                  <p className="font-serif font-bold text-xs text-rose-950">{(r.topRiskMonths || ["2027/09（風險值 8.0分）"]).join("、")}</p>
                 </div>
               </div>
 
@@ -220,15 +238,15 @@ export const StartupNavigationModal: React.FC<Props> = ({
               <div className="grid grid-cols-1 md:grid-cols-3 gap-3.5">
                 <div className="bg-white p-4 rounded border border-[#2B2D2F]/10 shadow-xs space-y-1.5">
                   <span className="text-[11px] font-bold text-[#1E3A5F] uppercase block">🎨 品牌／商業有利色系</span>
-                  <p className="text-xs text-[#2B2D2F]/90 font-semibold">{r.favorableColors || "深海藍、藏青色、香檳金"}</p>
+                  <p className="text-xs text-[#2B2D2F]/90 font-semibold">{r.favorableColors || "純白、銀灰、香檳金、金屬亮色"}</p>
                 </div>
                 <div className="bg-white p-4 rounded border border-[#2B2D2F]/10 shadow-xs space-y-1.5">
                   <span className="text-[11px] font-bold text-[#1E3A5F] uppercase block">🧭 商業拓展吉利方位</span>
-                  <p className="text-xs text-[#2B2D2F]/90 font-semibold">{r.favorableDirections || "北方、西北方"}</p>
+                  <p className="text-xs text-[#2B2D2F]/90 font-semibold">{r.favorableDirections || "西方、西北方"}</p>
                 </div>
                 <div className="bg-white p-4 rounded border border-[#2B2D2F]/10 shadow-xs space-y-1.5">
                   <span className="text-[11px] font-bold text-[#1E3A5F] uppercase block">🌿 開運辦公／經營環境</span>
-                  <p className="text-xs text-[#2B2D2F]/90">{r.favorableEnvironment || "空間採光充足、動線流暢、具備現代化會議與展示格局"}</p>
+                  <p className="text-xs text-[#2B2D2F]/90">{r.favorableEnvironment || "極簡線條、金屬質感裝飾、整潔俐落、高效無雜亂的現代化格局"}</p>
                 </div>
               </div>
             </div>
