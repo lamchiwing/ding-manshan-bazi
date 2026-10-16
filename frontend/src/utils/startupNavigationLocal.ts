@@ -171,6 +171,25 @@ export function computeStartupNavigationReport(birthDate: string = "1990-05-20",
   }
 
   return {
+    directWealthStars: overallWealthStars,
+    indirectWealthStars: wealthAccumulationStars,
+    careerGrowthStars: incomeGrowthStars,
+    wealthRetentionStars: wealthAccumulationStars,
+    functionalRoles: partnerType,
+    workMode: startupMode,
+    strengths: [
+      `創業適合度：${Math.round(suitabilityScore * 10) / 10} / 10（綜合評價）`,
+      `適合經營模式：${startupMode}`,
+      `適合合夥搭檔：${partnerType}`,
+      `現金流財務策略：${financialStrategy}`,
+      `重點拓展賽道：${favInfo.industries}`
+    ],
+    blindSpots: Array.isArray(startupRisks) ? startupRisks : [startupRisks],
+    topCareerMonths: sortedNewProject.slice(0, 3).map(x => `${x.period}（${x.opportunityScore}分）`),
+    topWealthMonths: sortedExpansion.slice(0, 3).map(x => `${x.period}（${x.expansionScore}分）`),
+    topChangeMonths: sortedDefense.slice(0, 3).map(x => `${x.period}（防禦值 ${x.defenseScore}分）`),
+    cautionMonths: sortedRisk.slice(0, 3).map(x => `${x.period}（風險值 ${x.riskScore}分）`),
+
     reportId: `TMS-STARTUP-${birthDate.replace(/-/g, "")}`,
     solarDate: `${birthDate} ${birthTime}`, gender: gender === "male" ? "乾造（男）" : "坤造（女）",
     fourPillars: { year: `${yearStem}${yearBranch}`, month: `${monthStem}${monthBranch}`, day: `${dayStem}${dayBranch}`, hour: `${hourStem}${hourBranch}` },

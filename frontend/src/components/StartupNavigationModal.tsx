@@ -94,11 +94,11 @@ export const StartupNavigationModal: React.FC<StartupNavigationModalProps> = ({
                 ✦ 命主創業格局：{report.patternName}
               </h4>
               <div className="flex items-center space-x-3 text-xs">
-                <span className="bg-[#1E3A5F]/10 text-[#1E3A5F] px-2 py-0.5 rounded font-medium">
-                  正財：{'★'.repeat(report.directWealthStars)}{'☆'.repeat(5 - report.directWealthStars)}
+                <span className="bg-[#B8860B]/10 text-[#B8860B] px-2 py-0.5 rounded font-bold">
+                  創業適合度：{report.startupSuitability || 8.5} / 10
                 </span>
-                <span className="bg-[#D97706]/10 text-[#D97706] px-2 py-0.5 rounded font-medium">
-                  偏財：{'★'.repeat(report.indirectWealthStars)}{'☆'.repeat(5 - report.indirectWealthStars)}
+                <span className="bg-[#1E3A5F]/10 text-[#1E3A5F] px-2 py-0.5 rounded font-medium">
+                  綜合財運：{'★'.repeat(report.overallWealthStars || report.directWealthStars || 4)}{'☆'.repeat(5 - (report.overallWealthStars || report.directWealthStars || 4))}
                 </span>
               </div>
             </div>
@@ -117,13 +117,13 @@ export const StartupNavigationModal: React.FC<StartupNavigationModalProps> = ({
                   <p className="text-xs text-[#2B2D2F]/90 leading-relaxed font-medium">{report.industryDirections}</p>
                 </div>
                 <div className="bg-white p-4 rounded border border-[#2B2D2F]/10 shadow-xs space-y-1.5">
-                  <span className="text-[11px] font-bold text-[#1E3A5F] uppercase block">💼 適合的職能方向</span>
-                  <p className="text-xs text-[#2B2D2F]/90 leading-relaxed font-medium">{report.functionalRoles}</p>
+                  <span className="text-[11px] font-bold text-[#1E3A5F] uppercase block">🤝 適合的合夥搭檔特徵</span>
+                  <p className="text-xs text-[#2B2D2F]/90 leading-relaxed font-medium">{report.partnerType || report.functionalRoles || '細節執行力強、精通日常內部營運與行政合規的搭檔'}</p>
                 </div>
               </div>
               <div className="bg-white p-4 rounded border border-[#2B2D2F]/10 shadow-xs space-y-1.5">
                 <span className="text-[11px] font-bold text-[#D97706] uppercase block">🚀 適合的工作模式</span>
-                <p className="text-xs text-[#2B2D2F]/90 leading-relaxed font-semibold">{report.workMode}</p>
+                <p className="text-xs text-[#2B2D2F]/90 leading-relaxed font-semibold">{report.startupMode || report.workMode || '獨立創辦或持有絕對控制權模式'}</p>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
                 <div className="bg-[#1E3A5F]/5 border border-[#1E3A5F]/20 p-4 rounded space-y-2">
