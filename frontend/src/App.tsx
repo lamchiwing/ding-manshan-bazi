@@ -13,6 +13,7 @@ import { FiveElementsReportModal } from './components/FiveElementsReportModal';
 import { LoveNavigationModal } from './components/LoveNavigationModal';
 import { CareerNavigationModal } from './components/CareerNavigationModal';
 import { StartupNavigationModal } from './components/StartupNavigationModal';
+import { TwelveMonthsReportModal } from './components/TwelveMonthsReportModal';
 import { calculateLocalBazi } from './utils/baziLocalEngine';
 import { ServiceItem, SIDEBAR_PRICE_LIST } from './data/services';
 
