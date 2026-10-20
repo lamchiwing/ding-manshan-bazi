@@ -1,4 +1,5 @@
 import React, { useState, useMemo } from 'react';
+import { ReportFooterCrossSell } from './ReportFooterCrossSell';
 import { calculateLocalBazi } from '../utils/baziLocalEngine';
 
 interface LoveNavigationModalProps {
@@ -517,7 +518,7 @@ export const LoveNavigationModal: React.FC<LoveNavigationModalProps> = ({
               </table>
             </div>
           </div>
-
+          <ReportFooterCrossSell currentProductId="love-marriage" />
         </div>
 
         {/* Modal Footer */}

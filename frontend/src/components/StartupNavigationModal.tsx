@@ -1,4 +1,5 @@
 import React, { useState, useMemo } from "react";
+import { ReportFooterCrossSell } from "./ReportFooterCrossSell";
 import { computeStartupNavigationReport } from "../utils/startupNavigationLocal";
 
 interface Props {
@@ -251,7 +252,7 @@ export const StartupNavigationModal: React.FC<Props> = ({
               </div>
             </div>
           )}
-
+          <ReportFooterCrossSell currentProductId="life-navigator" />
         </div>
 
         {/* Footer */}

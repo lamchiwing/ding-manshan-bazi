@@ -1,4 +1,5 @@
 import React, { useState, useMemo } from 'react';
+import { ReportFooterCrossSell } from './ReportFooterCrossSell';
 import { computeCareerNavigationReport } from '../utils/careerNavigationLocal';
 
 interface CareerNavigationModalProps {
@@ -225,6 +226,7 @@ export const CareerNavigationModal: React.FC<CareerNavigationModalProps> = ({
               </div>
             </div>
           )}
+          <ReportFooterCrossSell currentProductId="career-wealth" />
         </div>
 
         {/* Footer */}

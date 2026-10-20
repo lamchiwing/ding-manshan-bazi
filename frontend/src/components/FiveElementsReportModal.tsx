@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { generateLocalFiveElementsReport } from '../utils/fiveElementsGuideLocal';
+import { ReportFooterCrossSell } from './ReportFooterCrossSell';
 
 interface FiveElementsReportModalProps {
   isOpen: boolean;
@@ -92,6 +93,7 @@ export const FiveElementsReportModal: React.FC<FiveElementsReportModalProps> = (
               {reportText}
             </div>
           </div>
+          <ReportFooterCrossSell currentProductId="five-elements" />
         </div>
 
         {/* Footer Actions */}

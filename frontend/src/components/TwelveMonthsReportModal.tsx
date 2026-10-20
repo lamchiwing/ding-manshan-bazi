@@ -1,5 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import { computeTwelveMonthsReport, TwelveMonthsReportResult } from '../utils/twelveMonthsNavigationLocal';
+import { ReportFooterCrossSell } from './ReportFooterCrossSell';
 
 interface TwelveMonthsReportModalProps {
   isOpen: boolean;
@@ -121,10 +122,7 @@ export const TwelveMonthsReportModal: React.FC<TwelveMonthsReportModalProps> = (
               </div>
             </div>
           )}
-          <div className="bg-[#1E3A5F]/5 border border-[#1E3A5F]/20 rounded p-4 text-xs text-[#2B2D2F]/85 space-y-1.5 mt-4">
-            <div className="flex items-center space-x-1.5 font-bold text-[#1E3A5F]"><span>🔒</span><span>專屬命書授權與防偽提示</span></div>
-            <p className="leading-relaxed">本報告為依據閣下生辰專屬客製之命書。如需批算家人或合作夥伴八字，請返回線上服務選購專屬項目。</p>
-          </div>
+          <ReportFooterCrossSell currentProductId="monthly-calendar" />
         </div>
         <div className="bg-[#EFE9DF] border-t border-[#2B2D2F]/10 px-5 py-3 flex items-center justify-between text-xs shrink-0">
           <span className="text-[#2B2D2F]/70">丁蔓山｜命理誌 · 流年＋12流月專項命書</span>

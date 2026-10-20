@@ -1,42 +1,84 @@
 import os
+import subprocess
 
-print(">>> [1/2] 修復 startupNavigationLocal.ts ...")
-lp = "frontend/src/utils/startupNavigationLocal.ts"
-if os.path.exists(lp):
-    with open(lp, "r", encoding="utf-8") as f:
-        c = f.read().replace("\r\n", "\n")
-    if "jobChangeScore: defScore" not in c:
-        c = c.replace(
-            "actionStrategy: strategy,\n      advice",
-            "actionStrategy: strategy,\n      careerScore: oppScore,\n      wealthScore: wealthScore,\n      promotionScore: expScore,\n      jobChangeScore: defScore,\n      changeJobScore: defScore,\n      advice"
+print(">>> [1/5] 修復 ChartResult.tsx (根除 ReferenceError) ...")
+cr_path = "frontend/src/components/ChartResult.tsx"
+if os.path.exists(cr_path):
+    with open(cr_path, "r", encoding="utf-8") as f:
+        cr = f.read()
+    if "onOpenTwelveMonthsReport?: () => void;" not in cr:
+        cr = cr.replace("onOpenStartupReport?: () => void;", "onOpenStartupReport?: () => void;\n  onOpenTwelveMonthsReport?: () => void;")
+    if "onOpenTwelveMonthsReport," not in cr:
+        cr = cr.replace("onOpenStartupReport,", "onOpenStartupReport,\n  onOpenTwelveMonthsReport,")
+    with open(cr_path, "w", encoding="utf-8") as f:
+        f.write(cr)
+    print("✓ ChartResult.tsx 修復完成！")
+
+print(">>> [2/5] 修復 App.tsx (配置狀態與防崩潰安全掛載) ...")
+app_path = "frontend/src/App.tsx"
+if os.path.exists(app_path):
+    with open(app_path, "r", encoding="utf-8") as f:
+        app = f.read()
+    if "import { TwelveMonthsReportModal }" not in app:
+        app = app.replace(
+            "import { StartupNavigationModal } from './components/StartupNavigationModal';",
+            "import { StartupNavigationModal } from './components/StartupNavigationModal';\nimport { TwelveMonthsReportModal } from './components/TwelveMonthsReportModal';"
         )
-        c = c.replace(
-            "favorableEnvironment: favInfo.environment,\n    matrix\n  };",
-            "favorableEnvironment: favInfo.environment,\n    matrix,\n    directWealthStars: overallWealthStars,\n    indirectWealthStars: wealthAccumulationStars,\n    careerGrowthStars: incomeGrowthStars,\n    wealthRetentionStars: wealthAccumulationStars,\n    topCareerMonths: sortedNewProject.slice(0, 3).map(x => `${x.period}（${x.opportunityScore}分）`),\n    topWealthMonths: sortedExpansion.slice(0, 3).map(x => `${x.period}（${x.expansionScore}分）`),\n    topChangeMonths: sortedDefense.slice(0, 3).map(x => `${x.period}（防禦值 ${x.defenseScore}分）`),\n    cautionMonths: sortedRisk.slice(0, 3).map(x => `${x.period}（風險值 ${x.riskScore}分）`),\n    strengths: [\n      `創業適宜指數：${Math.round(suitabilityScore * 10) / 10} / 10（綜合評估）`,\n      `最佳經營模式：${startupMode}`,\n      `合夥賦能搭檔：${partnerType}`,\n      `重點拓展賽道：${favInfo.industries}`\n    ],\n    blindSpots: startupRisks,\n    functionalRoles: startupMode,\n    workMode: startupMode,\n    workplaceAdvice: financialStrategy\n  };"
+    if "isTwelveMonthsModalOpen" not in app:
+        app = app.replace(
+            "const [isStartupModalOpen, setIsStartupModalOpen] = useState(false);",
+            "const [isStartupModalOpen, setIsStartupModalOpen] = useState(false);\n  const [isTwelveMonthsModalOpen, setIsTwelveMonthsModalOpen] = useState(false);"
         )
-        with open(lp, "w", encoding="utf-8") as f:
-            f.write(c)
-        print("✓ 1. startupNavigationLocal.ts 相容欄位注入成功！")
+    if "service.id === 'srv-12-months'" not in app:
+        app = app.replace(
+            "if (service.id === 'srv-startup-3yr' && isPreviewDomain) {",
+            "if (service.id === 'srv-12-months' && isPreviewDomain) {\n      setIsTwelveMonthsModalOpen(true);\n      return;\n    }\n    if (service.id === 'srv-startup-3yr' && isPreviewDomain) {"
+        )
+    if "onOpenTwelveMonthsReport={isPreviewDomain ? () => setIsTwelveMonthsModalOpen(true) : undefined}" not in app:
+        app = app.replace(
+            "onOpenStartupReport={isPreviewDomain ? () => setIsStartupModalOpen(true) : undefined}",
+            "onOpenStartupReport={isPreviewDomain ? () => setIsStartupModalOpen(true) : undefined}\n                    onOpenTwelveMonthsReport={isPreviewDomain ? () => setIsTwelveMonthsModalOpen(true) : undefined}"
+        )
+    if "<TwelveMonthsReportModal" not in app:
+        app = app.replace(
+            "{/* Footer */}",
+            """{/* Twelve Months Fortune Navigation Report Modal (HK$368) */}
+      {isTwelveMonthsModalOpen && (
+        <TwelveMonthsReportModal
+          isOpen={isTwelveMonthsModalOpen}
+          onClose={() => setIsTwelveMonthsModalOpen(false)}
+          baziData={baziData}
+          birthDate={currentInputParams.birthDate}
+          birthTime={currentInputParams.birthTime}
+          gender={currentInputParams.gender}
+        />
+      )}
 
-print(">>> [2/2] 修復 StartupNavigationModal.tsx 並加入防崩潰保護 ...")
-mp = "frontend/src/components/StartupNavigationModal.tsx"
-if os.path.exists(mp):
-    with open(mp, "r", encoding="utf-8") as f:
-        m = f.read().replace("\r\n", "\n")
-    m = m.replace("事業／財運・未來36個月", "創業／拓展・未來36個月")
-    m = m.replace("命主事業格局", "命主創業格局")
-    m = m.replace("HK$188", "HK$288")
-    m = m.replace("事業核心競爭優勢", "創業核心優勢")
-    m = m.replace("事業發展盲點與提醒", "創業風險與防範提醒")
-    # 加入雙重安全保護，確保即使資料欄位有空值也絕不拋錯黑屏
-    m = m.replace("report.topCareerMonths.join", "(report.topCareerMonths || []).join")
-    m = m.replace("report.topWealthMonths.join", "(report.topWealthMonths || []).join")
-    m = m.replace("report.topChangeMonths.join", "(report.topChangeMonths || []).join")
-    m = m.replace("report.cautionMonths.join", "(report.cautionMonths || []).join")
-    m = m.replace("report.strengths.map", "(report.strengths || []).map")
-    m = m.replace("report.blindSpots.map", "(report.blindSpots || []).map")
-    with open(mp, "w", encoding="utf-8") as f:
-        f.write(m)
-    print("✓ 2. StartupNavigationModal.tsx 防黑屏保護已啟動！")
+      {/* Footer */}"""
+        )
+    with open(app_path, "w", encoding="utf-8") as f:
+        f.write(app)
+    print("✓ App.tsx 配置完成！")
 
-print(">>> 全部修復完成！")
+print(">>> [3/5] 更新 services.ts 為 HK$368 ...")
+serv_path = "frontend/src/data/services.ts"
+if os.path.exists(serv_path):
+    with open(serv_path, "r", encoding="utf-8") as f:
+        st = f.read()
+    st = st.replace('price_hkd: 488', 'price_hkd: 368')
+    st = st.replace('price_display: "HK$288"', 'price_display: "HK$368"')
+    st = st.replace('price_display: "即將登場"', 'price_display: "HK$368"')
+    st = st.replace('isComingSoon: true', 'isComingSoon: false')
+    with open(serv_path, "w", encoding="utf-8") as f:
+        f.write(st)
+    print("✓ services.ts 更新完成！")
+
+print(">>> [4/5] 執行前端編譯打包 (Vite Build) ...")
+subprocess.run("cd frontend && npm run build", shell=True, check=True)
+
+print(">>> [5/5] 提交並推送到 GitHub ...")
+subprocess.run("git add frontend/src frontend/dist", shell=True, check=True)
+subprocess.run('git commit -m "fix: resolve black screen ReferenceError and deploy 12-month navigation modal"', shell=True, check=True)
+subprocess.run("git pull --rebase origin main", shell=True, check=True)
+subprocess.run("git push origin main", shell=True, check=True)
+print("\n🎉 修復並部屬成功！Cloudflare Pages 將在數十秒內完成更新。")
