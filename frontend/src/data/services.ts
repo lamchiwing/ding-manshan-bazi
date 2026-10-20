@@ -411,7 +411,7 @@ export const SIDEBAR_PRICE_LIST: ServiceItem[] = [
   {
     id: "srv-12-months",
     title: "十二流月運程",
-    price_hkd: 488,
+    price_hkd: 368,
     price_display: "HK$188",
     turnaround: "即時生成 · 數位命書",
     isComingSoon: false,
