@@ -37,6 +37,7 @@ export function App() {
   const [isLoveNavigationModalOpen, setIsLoveNavigationModalOpen] = useState(false);
   const [isCareerNavigationModalOpen, setIsCareerNavigationModalOpen] = useState(false);
   const [isStartupModalOpen, setIsStartupModalOpen] = useState(false);
+  const [isTwelveMonthsModalOpen, setIsTwelveMonthsModalOpen] = useState(false);
   const [currentInputParams, setCurrentInputParams] = useState({
     birthDate: '1990-05-20',
     birthTime: '22:00',
@@ -232,6 +233,10 @@ export function App() {
       setIsCareerNavigationModalOpen(true);
       return;
     }
+    if (service.id === 'srv-12-months' && isPreviewDomain) {
+      setIsTwelveMonthsModalOpen(true);
+      return;
+    }
     if (service.id === 'srv-startup-3yr' && isPreviewDomain) {
       setIsStartupModalOpen(true);
       return;
@@ -316,6 +321,7 @@ export function App() {
                     onOpenLoveNavigationReport={isPreviewDomain ? () => setIsLoveNavigationModalOpen(true) : undefined}
                     onOpenCareerNavigationReport={isPreviewDomain ? () => setIsCareerNavigationModalOpen(true) : undefined}
                     onOpenStartupReport={isPreviewDomain ? () => setIsStartupModalOpen(true) : undefined}
+                    onOpenTwelveMonthsReport={isPreviewDomain ? () => setIsTwelveMonthsModalOpen(true) : undefined}
                     onSelectFiveElementsService={() => fiveElementsService && handleSelectServiceSolo(fiveElementsService)}
                   />
                 )}
@@ -367,6 +373,7 @@ export function App() {
                     onOpenLoveNavigationReport={isPreviewDomain ? () => setIsLoveNavigationModalOpen(true) : undefined}
                     onOpenCareerNavigationReport={isPreviewDomain ? () => setIsCareerNavigationModalOpen(true) : undefined}
                     onOpenStartupReport={isPreviewDomain ? () => setIsStartupModalOpen(true) : undefined}
+                    onOpenTwelveMonthsReport={isPreviewDomain ? () => setIsTwelveMonthsModalOpen(true) : undefined}
             baziData={baziData}
           />
         )}
@@ -454,6 +461,18 @@ export function App() {
           gender={currentInputParams.gender}
         />
       )}
+      {/* Twelve Months Fortune Navigation Report Modal (HK$368) */}
+      {isTwelveMonthsModalOpen && (
+        <TwelveMonthsReportModal
+          isOpen={isTwelveMonthsModalOpen}
+          onClose={() => setIsTwelveMonthsModalOpen(false)}
+          baziData={baziData}
+          birthDate={currentInputParams.birthDate}
+          birthTime={currentInputParams.birthTime}
+          gender={currentInputParams.gender}
+        />
+      )}
+
       {/* Footer */}
       <Footer onNavigate={handleNavigate} />
     </div>

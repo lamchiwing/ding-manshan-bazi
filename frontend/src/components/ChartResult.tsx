@@ -8,6 +8,7 @@ interface ChartResultProps {
   onOpenLoveNavigationReport?: () => void;
   onOpenCareerNavigationReport?: () => void;
   onOpenStartupReport?: () => void;
+  onOpenTwelveMonthsReport?: () => void;
   onSelectFiveElementsService?: () => void;
 }
 
@@ -19,6 +20,7 @@ export const ChartResult: React.FC<ChartResultProps> = ({
   onOpenLoveNavigationReport,
   onOpenCareerNavigationReport,
   onOpenStartupReport,
+  onOpenTwelveMonthsReport,
   onSelectFiveElementsService
 }) => {
   if (!baziData) return null;
