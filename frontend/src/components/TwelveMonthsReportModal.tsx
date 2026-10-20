@@ -25,6 +25,7 @@ export const TwelveMonthsReportModal: React.FC<TwelveMonthsReportModalProps> = (
     return computeTwelveMonthsReport(birthDate, birthTime, gender, baziData);
   }, [birthDate, birthTime, gender, baziData]);
 
+  if (Boolean(isOpen) === false) return null;
   const currentMonth = report.monthlyBreakdown[selectedMonthIdx] || report.monthlyBreakdown[0];
 
   return (
@@ -35,7 +36,7 @@ export const TwelveMonthsReportModal: React.FC<TwelveMonthsReportModalProps> = (
             <span className="text-xl">🌙</span>
             <div>
               <h3 className="font-serif font-bold text-base sm:text-lg tracking-wide text-white">丁蔓山｜命理誌 · 流年＋12流月運程報告</h3>
-              <p className="text-[11px] text-[#A4B3C6]">未來12個月事業、財運、愛情、人際、重要事件＋逐月深度詳批 (HK68)</p>
+              <p className="text-[11px] text-[#A4B3C6]">未來12個月事業、財運、愛情、人際、重要事件＋逐月深度詳批 (HK$368)</p>
             </div>
           </div>
           <div className="flex items-center space-x-2">
@@ -88,6 +89,7 @@ export const TwelveMonthsReportModal: React.FC<TwelveMonthsReportModalProps> = (
                 </div>
                 <div className="bg-rose-50/70 border border-rose-200 p-4 rounded shadow-xs space-y-2">
                   <span className="text-xs font-bold text-rose-800 flex items-center space-x-1.5"><span>⚠️</span><span>9. 最需要留意月份（宜穩健防守）</span></span>
+                  <ul className="space-y-1.5 text-xs text-rose-950">{report.annualOverview.cautionMonths.map((cm, i) => (<li key={i} className="flex items-center space-x-1.5"><span className="font-bold">!</span><span className="font-mono">{cm}</span></li>))}</ul>
                 </div>
               </div>
             </div>

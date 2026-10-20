@@ -298,6 +298,14 @@ export const ChartResult: React.FC<ChartResultProps> = ({
                   <span>🚀 創業／拓展・未來3年 (HK$288)</span>
                 </button>
               )}
+              {onOpenTwelveMonthsReport && (
+                <button
+                  onClick={onOpenTwelveMonthsReport}
+                  className="bg-[#1E3A5F] hover:bg-[#2B2D2F] text-[#F4EFEA] px-3.5 py-2 text-xs font-sans rounded transition-colors font-bold shadow-sm flex items-center space-x-1.5 cursor-pointer"
+                >
+                  <span>🌙 流年＋12流月 (HK$368)</span>
+                </button>
+              )}
             </div>
             <div className="flex items-center space-x-2 ml-auto">
               <button
