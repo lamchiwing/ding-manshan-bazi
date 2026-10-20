@@ -59,7 +59,6 @@ const ALL_CROSS_SELL_PRODUCTS: ProductItem[] = [
 ];
 
 export const ReportFooterCrossSell: React.FC<ReportFooterCrossSellProps> = ({ currentProductId }) => {
-  // 自動排除當前報告自身所屬的產品 (除了 report belonging product)
   const recommendations = ALL_CROSS_SELL_PRODUCTS.filter(p => p.id !== currentProductId);
 
   return (
@@ -101,17 +100,13 @@ export const ReportFooterCrossSell: React.FC<ReportFooterCrossSellProps> = ({ cu
                 href={item.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="font-mono text-[11px] text-[#1E3A5F] hover:text-[#D97706] hover:underline flex items-center space-x-1 break-all"
+                className="inline-flex items-center justify-center space-x-1 px-3 py-1 bg-[#1E3A5F] hover:bg-[#2B2D2F] text-white rounded font-sans text-xs transition-colors shadow-xs"
               >
-                <span>{item.url}</span>
-                <span className="text-[10px]">↗</span>
+                <span>查看詳情</span>
+                <span>→</span>
               </a>
             </div>
           ))}
-        </div>
-
-        <div className="text-[10px] text-[#2B2D2F]/60 pt-1 text-right">
-          ※ 丁蔓山｜命理誌 · 現代極簡命理與風水環境哲學
         </div>
       </div>
     </div>
