@@ -27,3 +27,11 @@ class BookingRequest(BaseModel):
     birth_time: Optional[str] = None
     gender: Optional[str] = None
     notes: Optional[str] = None
+
+class TwelveMonthsDecisionsInput(BaseModel):
+    birth_date: str = Field(..., example="1990-05-20", description="YYYY-MM-DD solar calendar")
+    birth_time: str = Field(..., example="21:30", description="HH:mm 24-hour format")
+    gender: str = Field("male", example="male", description="'male' or 'female'")
+    selected_decisions: List[str] = Field(default=["轉工／轉跑道"], description="Max 3 selected major decisions")
+    plan_status: Optional[str] = Field("正在考慮", description="已有明確計劃 / 正在考慮 / 尚未決定")
+    expected_timing: Optional[str] = Field("未確定", description="2026年內 / 2027年 / 1–3個月內 / 3–6個月內 / 6–12個月內 / 未確定")

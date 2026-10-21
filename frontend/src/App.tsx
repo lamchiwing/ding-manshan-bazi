@@ -14,6 +14,7 @@ import { LoveNavigationModal } from './components/LoveNavigationModal';
 import { CareerNavigationModal } from './components/CareerNavigationModal';
 import { StartupNavigationModal } from './components/StartupNavigationModal';
 import { TwelveMonthsReportModal } from './components/TwelveMonthsReportModal';
+import { TwelveMonthsDecisionsModal } from './components/TwelveMonthsDecisionsModal';
 import { calculateLocalBazi } from './utils/baziLocalEngine';
 import { ServiceItem, SIDEBAR_PRICE_LIST } from './data/services';
 
@@ -38,6 +39,7 @@ export function App() {
   const [isCareerNavigationModalOpen, setIsCareerNavigationModalOpen] = useState(false);
   const [isStartupModalOpen, setIsStartupModalOpen] = useState(false);
   const [isTwelveMonthsModalOpen, setIsTwelveMonthsModalOpen] = useState(false);
+  const [isTwelveMonthsDecisionsModalOpen, setIsTwelveMonthsDecisionsModalOpen] = useState(false);
   const [currentInputParams, setCurrentInputParams] = useState({
     birthDate: '1990-05-20',
     birthTime: '22:00',
@@ -241,6 +243,10 @@ export function App() {
       setIsStartupModalOpen(true);
       return;
     }
+    if (service.id === 'srv-12-months-decisions' && isPreviewDomain) {
+      setIsTwelveMonthsDecisionsModalOpen(true);
+      return;
+    }
     setPreviousView(currentView === 'service-solo' ? 'home' : currentView);
     setSelectedService(service);
     setCurrentView('service-solo');
@@ -322,6 +328,7 @@ export function App() {
                     onOpenCareerNavigationReport={isPreviewDomain ? () => setIsCareerNavigationModalOpen(true) : undefined}
                     onOpenStartupReport={isPreviewDomain ? () => setIsStartupModalOpen(true) : undefined}
                     onOpenTwelveMonthsReport={isPreviewDomain ? () => setIsTwelveMonthsModalOpen(true) : undefined}
+                    onOpenTwelveMonthsDecisionsReport={isPreviewDomain ? () => setIsTwelveMonthsDecisionsModalOpen(true) : undefined}
                     onSelectFiveElementsService={() => fiveElementsService && handleSelectServiceSolo(fiveElementsService)}
                   />
                 )}
@@ -374,6 +381,7 @@ export function App() {
                     onOpenCareerNavigationReport={isPreviewDomain ? () => setIsCareerNavigationModalOpen(true) : undefined}
                     onOpenStartupReport={isPreviewDomain ? () => setIsStartupModalOpen(true) : undefined}
                     onOpenTwelveMonthsReport={isPreviewDomain ? () => setIsTwelveMonthsModalOpen(true) : undefined}
+                    onOpenTwelveMonthsDecisionsReport={isPreviewDomain ? () => setIsTwelveMonthsDecisionsModalOpen(true) : undefined}
             baziData={baziData}
           />
         )}
@@ -461,6 +469,18 @@ export function App() {
           gender={currentInputParams.gender}
         />
       )}
+      {/* Twelve Months + Major Decisions Report Modal (HK$488) */}
+      {isTwelveMonthsDecisionsModalOpen && (
+        <TwelveMonthsDecisionsModal
+          isOpen={isTwelveMonthsDecisionsModalOpen}
+          onClose={() => setIsTwelveMonthsDecisionsModalOpen(false)}
+          baziData={baziData}
+          birthDate={currentInputParams.birthDate}
+          birthTime={currentInputParams.birthTime}
+          gender={currentInputParams.gender}
+        />
+      )}
+
       {/* Twelve Months Fortune Navigation Report Modal (HK$368) */}
       {isTwelveMonthsModalOpen && (
         <TwelveMonthsReportModal

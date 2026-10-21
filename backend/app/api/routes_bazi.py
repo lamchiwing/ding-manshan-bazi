@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException
 from typing import Dict, Any
-from app.schemas.bazi import BaziInput, AIChatInput
+from app.schemas.bazi import BaziInput, AIChatInput, TwelveMonthsDecisionsInput
 from app.engine.bazi_calculator import calculate_bazi
 
 router = APIRouter(prefix="/bazi", tags=["Bazi Calculation & AI"])
@@ -129,3 +129,24 @@ def api_career_navigation(payload: BaziInput):
         return {"success": True, "bazi": bazi, "report_markdown": report}
     except Exception as e:
         raise HTTPException(status_code=400, detail=f"Career Navigation Error: {str(e)}")
+
+
+@router.post("/twelve-months-decisions", response_model=Dict[str, Any])
+def api_twelve_months_decisions(payload: TwelveMonthsDecisionsInput):
+    try:
+        from app.engine.twelve_months_decisions import generate_twelve_months_decisions_report
+        bazi = calculate_bazi(
+            birth_date_str=payload.birth_date,
+            birth_time_str=payload.birth_time,
+            gender=payload.gender,
+            day_boundary_rule="ZI_START_NEXT_DAY"
+        )
+        report = generate_twelve_months_decisions_report(
+            bazi=bazi,
+            selected_decisions=payload.selected_decisions,
+            plan_status=payload.plan_status or "正在考慮",
+            expected_timing=payload.expected_timing or "未確定"
+        )
+        return report
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=f"Twelve Months Decisions Error: {str(e)}")

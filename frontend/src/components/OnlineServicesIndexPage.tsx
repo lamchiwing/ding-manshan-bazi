@@ -112,7 +112,13 @@ export const OnlineServicesIndexPage: React.FC<OnlineServicesIndexPageProps> = (
                   onClick={() => onSelectService(service)}
                   className="w-full bg-[#D97706] hover:bg-[#b45309] text-white text-sm font-serif font-bold py-3 rounded-[2px] transition-colors shadow-md flex items-center justify-center space-x-1 cursor-pointer"
                 >
-                  <span>{service.id === 'srv-five-elements' && isPreviewDomain ? '📜 即時預覽完整報告 (測試版)' : `立即推演報告 (${service.price_display})`}</span>
+                  <span>{
+                    service.id === 'srv-five-elements' && isPreviewDomain 
+                      ? '📜 即時預覽完整報告 (測試版)' 
+                      : service.id === 'srv-12-months-decisions' && isPreviewDomain
+                      ? '🎯 即時預覽重大決策報告 (測試版)'
+                      : `立即推演報告 (${service.price_display})`
+                  }</span>
                   <span>→</span>
                 </button>
               )}
