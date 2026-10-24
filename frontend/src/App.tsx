@@ -294,6 +294,24 @@ export function App() {
                     🔔 本次收取為預約訂金 HK$2,400；餘款 HK$1,400 將於正式論命會面前 7 天透過電郵通知繳付。
                   </div>
                 )}
+                {['srv-five-elements', 'srv-love-3yr', 'srv-career-3yr', 'srv-startup-3yr', 'srv-12-months', 'srv-12-months-decisions'].includes(paymentServiceId || '') && (
+                  <div className="pt-2">
+                    <button
+                      onClick={() => {
+                        if (paymentServiceId === 'srv-five-elements') setIsFiveElementsModalOpen(true);
+                        else if (paymentServiceId === 'srv-love-3yr') setIsLoveNavigationModalOpen(true);
+                        else if (paymentServiceId === 'srv-career-3yr') setIsCareerNavigationModalOpen(true);
+                        else if (paymentServiceId === 'srv-startup-3yr') setIsStartupModalOpen(true);
+                        else if (paymentServiceId === 'srv-12-months') setIsTwelveMonthsModalOpen(true);
+                        else if (paymentServiceId === 'srv-12-months-decisions') setIsTwelveMonthsDecisionsModalOpen(true);
+                      }}
+                      className="px-5 py-2 bg-[#D97706] hover:bg-[#b45309] text-white text-xs font-serif font-bold rounded shadow transition-all cursor-pointer flex items-center space-x-1.5"
+                    >
+                      <span>📜 立即查看已解鎖之專屬命書報告</span>
+                      <span>→</span>
+                    </button>
+                  </div>
+                )}
               </div>
             </div>
 

@@ -491,7 +491,7 @@ export const SIDEBAR_PRICE_LIST: ServiceItem[] = [
     price_hkd: 588,
     price_display: "HK$488",
     turnaround: "即將登場 · 深度綜合",
-    isComingSoon: false,
+    isComingSoon: true,
     description: "全方位人生大數據推演，跨越事業、財富、情感與健康的三年總覽。",
     indexFeatures: [
       "人生大格局與大運交接分析",
@@ -508,7 +508,7 @@ export const SIDEBAR_PRICE_LIST: ServiceItem[] = [
     price_hkd: 488,
     price_display: "HK$488",
     turnaround: "即將登場 · 深度合盤",
-    isComingSoon: false,
+    isComingSoon: true,
     description: "深度推演雙方八字五行生剋、緣分深淺、契合度與未來相處建議。",
     categoriesOptions: [
       "計劃發展關係（追求中／曖昧中）",
@@ -557,7 +557,7 @@ export const SIDEBAR_PRICE_LIST: ServiceItem[] = [
     price_hkd: 888,
     price_display: "HK$488",
     turnaround: "即將登場 · 即時生成",
-    isComingSoon: false,
+    isComingSoon: true,
     description: "結合屋主八字與住宅戶型圖，打造九運 5 年旺財旺丁旺健康的空間佈局。",
     indexFeatures: [
       "九運住宅玄空飛星立極",
