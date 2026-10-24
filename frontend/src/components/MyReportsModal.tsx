@@ -23,37 +23,43 @@ export const MyReportsModal: React.FC<MyReportsModalProps> = ({
 }) => {
   const [email, setEmail] = useState('');
   const [currentUserEmail, setCurrentUserEmail] = useState<string | null>(() => {
-    return localStorage.getItem('tingmanshan_user_email');
+    try {
+      return localStorage.getItem('tingmanshan_user_email');
+    } catch {
+      return null;
+    }
   });
   const [isSent, setIsSent] = useState(false);
   const [reports, setReports] = useState<PurchasedReportItem[]>([]);
 
   useEffect(() => {
-    // 讀取本地快取或已登入的報告
-    const saved = localStorage.getItem('tingmanshan_unlocked_services');
-    if (saved) {
-      try {
+    if (!isOpen) return;
+    try {
+      const saved = localStorage.getItem('tingmanshan_unlocked_services');
+      const serviceNames: Record<string, string> = {
+        'srv-five-elements': '八字五行與喜用神個人指南 (HK$128)',
+        'srv-love-3yr': '感情／姻緣・未來 3 年正緣解析 (HK$188)',
+        'srv-career-3yr': '事業／財運・未來 3 年深度解讀 (HK$188)',
+        'srv-startup-3yr': '八字創業／轉職・未來 3 年黃金窗口期 (HK$288)',
+        'srv-12-months': '流年＋十二流月運程全面解讀 (HK$368)',
+        'srv-12-months-decisions': '十二流月運程＋重大決策矩陣 (HK$488)',
+      };
+      
+      let list: PurchasedReportItem[] = [];
+      if (saved) {
         const parsed = JSON.parse(saved);
         if (Array.isArray(parsed)) {
-          const serviceNames: Record<string, string> = {
-            'srv-five-elements': '八字五行與喜用神個人指南 (HK$128)',
-            'srv-love-3yr': '感情／姻緣・未來 3 年正緣解析 (HK$188)',
-            'srv-career-3yr': '事業／財運・未來 3 年深度解讀 (HK$188)',
-            'srv-startup-3yr': '八字創業／轉職・未來 3 年黃金窗口期 (HK$288)',
-            'srv-12-months': '流年＋十二流月運程全面解讀 (HK$368)',
-            'srv-12-months-decisions': '十二流月運程＋重大決策矩陣 (HK$488)',
-          };
-          const list: PurchasedReportItem[] = parsed.map((sid: string) => ({
+          list = parsed.map((sid: string) => ({
             id: sid,
             service_id: sid,
             service_name: serviceNames[sid] || sid,
-            unlocked_at: new Date().toLocaleDateString('zh-HK'),
+            unlocked_at: '永久解鎖',
           }));
-          setReports(list);
         }
-      } catch (e) {
-        console.error(e);
       }
+      setReports(list);
+    } catch (e) {
+      console.error(e);
     }
   }, [isOpen]);
 
@@ -62,19 +68,23 @@ export const MyReportsModal: React.FC<MyReportsModalProps> = ({
   const handleMagicLinkSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!email || !email.includes('@')) return;
-    localStorage.setItem('tingmanshan_user_email', email);
+    try {
+      localStorage.setItem('tingmanshan_user_email', email);
+    } catch {}
     setCurrentUserEmail(email);
     setIsSent(true);
   };
 
   const handleLogout = () => {
-    localStorage.removeItem('tingmanshan_user_email');
+    try {
+      localStorage.removeItem('tingmanshan_user_email');
+    } catch {}
     setCurrentUserEmail(null);
     setIsSent(false);
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fade-in">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
       <div className="relative w-full max-w-xl bg-[#1A1D20] border border-[#1E3A5F] rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
         
         {/* Header */}
@@ -97,13 +107,13 @@ export const MyReportsModal: React.FC<MyReportsModalProps> = ({
           {currentUserEmail ? (
             <div className="flex items-center justify-between p-3 rounded-xl bg-[#1E3A5F]/20 border border-[#1E3A5F]/60 text-xs">
               <div className="flex items-center space-x-2">
-                <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+                <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
                 <span className="text-[#A4B3C6]">已綁定信箱：</span>
                 <span className="font-mono text-[#F4EFEA] font-semibold">{currentUserEmail}</span>
               </div>
               <button
                 onClick={handleLogout}
-                className="text-xs text-[#D97706] hover:underline"
+                className="text-xs text-[#D97706] hover:underline shrink-0 ml-2"
               >
                 切換帳戶
               </button>
@@ -156,9 +166,9 @@ export const MyReportsModal: React.FC<MyReportsModalProps> = ({
             {reports.length === 0 ? (
               <div className="text-center py-10 border border-dashed border-[#1E3A5F]/40 rounded-xl bg-[#141618]">
                 <BookOpen className="w-8 h-8 text-[#A4B3C6]/40 mx-auto mb-2" />
-                <p className="text-xs text-[#A4B3C6]">此裝置目前尚無已解鎖的命書記錄</p>
-                <p className="text-[11px] text-[#A4B3C6]/60 mt-1">
-                  若您已在其他裝置購買，請在上方輸入購買 Email 同步。
+                <p className="text-xs text-[#F4EFEA] font-medium">此裝置目前尚無已解鎖的命書記錄</p>
+                <p className="text-[11px] text-[#A4B3C6] mt-1">
+                  若您已在其他裝置購買，請在上方輸入購買 Email 綁定同步。
                 </p>
               </div>
             ) : (
@@ -170,7 +180,7 @@ export const MyReportsModal: React.FC<MyReportsModalProps> = ({
                   >
                     <div>
                       <div className="text-xs font-semibold text-[#F4EFEA]">{report.service_name}</div>
-                      <div className="text-[10px] text-[#A4B3C6] mt-0.5">批算解鎖日期: {report.unlocked_at}</div>
+                      <div className="text-[10px] text-[#A4B3C6] mt-0.5">狀態: {report.unlocked_at}</div>
                     </div>
                     <button
                       onClick={() => {
@@ -191,7 +201,7 @@ export const MyReportsModal: React.FC<MyReportsModalProps> = ({
           <div className="pt-2 border-t border-[#1E3A5F]/30 flex items-center justify-between text-[11px] text-[#A4B3C6]">
             <span className="flex items-center space-x-1">
               <ShieldCheck className="w-3.5 h-3.5 text-[#D97706]" />
-              <span>丁蔓山命理誌 · 終身查閱保障</span>
+              <span>丁蔓山命理誌 · 永久查閱保障</span>
             </span>
             <span>https://tingmanshan.com</span>
           </div>

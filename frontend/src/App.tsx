@@ -514,6 +514,22 @@ export function App() {
         />
       )}
 
+            {/* User Purchased Reports History Archive Modal */}
+      {isMyReportsModalOpen && (
+        <MyReportsModal
+          isOpen={isMyReportsModalOpen}
+          onClose={() => setIsMyReportsModalOpen(false)}
+          onOpenReport={(sid) => {
+            if (sid === 'srv-five-elements') setIsFiveElementsModalOpen(true);
+            else if (sid === 'srv-love-3yr') setIsLoveNavigationModalOpen(true);
+            else if (sid === 'srv-career-3yr') setIsCareerNavigationModalOpen(true);
+            else if (sid === 'srv-startup-3yr') setIsStartupModalOpen(true);
+            else if (sid === 'srv-12-months') setIsTwelveMonthsModalOpen(true);
+            else if (sid === 'srv-12-months-decisions') setIsTwelveMonthsDecisionsModalOpen(true);
+          }}
+        />
+      )}
+
       {/* Footer */}
       <Footer onNavigate={handleNavigate} />
     </div>

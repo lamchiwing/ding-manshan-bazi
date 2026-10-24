@@ -25,26 +25,9 @@ export const Header: React.FC<HeaderProps> = ({ currentView, onNavigate, onOpenM
         {/* Clean Navigation: 主頁 | 線上服務 | 線上一對一預約 | 命理誌 */}
         <nav className="flex items-center space-x-4 sm:space-x-8 text-xs sm:text-sm text-[#A4B3C6]">
           <button
-            onClick={() => onNavigate('home')}
-            className={`hover:text-[#F4EFEA] transition-colors py-1 ${
-              currentView === 'home' ? 'text-[#D97706] font-semibold border-b-2 border-[#D97706]' : ''
-            }`}
-          >
-            主頁
-          </button>
-
-          <button
-            onClick={() => onNavigate('online-services')}
-            className={`hover:text-[#F4EFEA] transition-colors py-1 ${
-              currentView === 'online-services' ? 'text-[#D97706] font-semibold border-b-2 border-[#D97706]' : ''
-            }`}
-          >
-            線上服務
-          </button>
-
-          <button
-            onClick={onOpenMyReports}
-            className="flex items-center space-x-1 text-xs text-[#D97706] hover:text-[#F4EFEA] px-2.5 py-1 rounded bg-[#D97706]/10 border border-[#D97706]/30 transition-colors"
+            type="button"
+            onClick={() => onOpenMyReports && onOpenMyReports()}
+            className="flex items-center space-x-1 text-xs text-[#D97706] hover:text-[#F4EFEA] px-2.5 py-1 rounded bg-[#D97706]/10 border border-[#D97706]/30 transition-colors font-medium"
           >
             <span>📜 我的命書</span>
           </button>
