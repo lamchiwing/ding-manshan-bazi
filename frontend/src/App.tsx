@@ -15,6 +15,7 @@ import { CareerNavigationModal } from './components/CareerNavigationModal';
 import { StartupNavigationModal } from './components/StartupNavigationModal';
 import { TwelveMonthsReportModal } from './components/TwelveMonthsReportModal';
 import { TwelveMonthsDecisionsModal } from './components/TwelveMonthsDecisionsModal';
+import { MyReportsModal } from './components/MyReportsModal';
 import { calculateLocalBazi } from './utils/baziLocalEngine';
 import { ServiceItem, SIDEBAR_PRICE_LIST } from './data/services';
 
@@ -40,6 +41,7 @@ export function App() {
   const [isStartupModalOpen, setIsStartupModalOpen] = useState(false);
   const [isTwelveMonthsModalOpen, setIsTwelveMonthsModalOpen] = useState(false);
   const [isTwelveMonthsDecisionsModalOpen, setIsTwelveMonthsDecisionsModalOpen] = useState(false);
+  const [isMyReportsModalOpen, setIsMyReportsModalOpen] = useState(false);
   const [currentInputParams, setCurrentInputParams] = useState({
     birthDate: '1990-05-20',
     birthTime: '22:00',
@@ -259,6 +261,7 @@ export function App() {
       <Header
         currentView={currentView}
         onNavigate={handleNavigate}
+        onOpenMyReports={() => setIsMyReportsModalOpen(true)}
       />
 
       {/* Payment Success Notification Banner */}

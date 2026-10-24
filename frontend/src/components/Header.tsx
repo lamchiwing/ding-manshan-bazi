@@ -1,11 +1,12 @@
 import React from 'react';
 
 interface HeaderProps {
+  onOpenMyReports?: () => void;
   currentView: 'home' | 'online-services' | 'booking-services' | 'service-solo';
   onNavigate: (view: 'home' | 'online-services' | 'booking-services') => void;
 }
 
-export const Header: React.FC<HeaderProps> = ({ currentView, onNavigate }) => {
+export const Header: React.FC<HeaderProps> = ({ currentView, onNavigate, onOpenMyReports }) => {
   return (
     <header className="sticky top-0 z-40 w-full bg-[#1e2022]/95 backdrop-blur border-b border-[#1E3A5F]/40 font-sans">
       <div className="max-w-[1440px] mx-auto px-4 sm:px-8 md:px-12 lg:px-16 h-16 flex items-center justify-between">
@@ -39,6 +40,13 @@ export const Header: React.FC<HeaderProps> = ({ currentView, onNavigate }) => {
             }`}
           >
             線上服務
+          </button>
+
+          <button
+            onClick={onOpenMyReports}
+            className="flex items-center space-x-1 text-xs text-[#D97706] hover:text-[#F4EFEA] px-2.5 py-1 rounded bg-[#D97706]/10 border border-[#D97706]/30 transition-colors"
+          >
+            <span>📜 我的命書</span>
           </button>
 
           <button
