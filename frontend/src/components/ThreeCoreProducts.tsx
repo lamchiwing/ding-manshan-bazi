@@ -16,16 +16,16 @@ export const ThreeCoreProducts: React.FC<ThreeCoreProductsProps> = ({
   const almanac = useMemo(() => getDailyAlmanac(new Date()), []);
 
   return (
-    <section className="w-full py-2 font-sans select-none">
+    <section className="w-full pt-2 pb-20 sm:pb-24 font-sans select-none">
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-5 items-stretch">
         
         {/* ========================================================= */}
-        {/* 01 A.I. 算命 (黑底 · 橘黃標籤 · 5項定價清單 · 照片往下移) */}
+        {/* 01 A.I. 算命 (黑底 · 相片大幅下移 · 底部突出懸空 60px) */}
         {/* ========================================================= */}
-        <div className="bg-[#1F2022] p-5 flex flex-col justify-between shadow-xl">
-          <div className="flex flex-col sm:flex-row gap-4 h-full">
+        <div className="bg-[#1F2022] p-5 flex flex-col justify-between shadow-xl relative">
+          <div className="flex flex-col sm:flex-row gap-4 h-full relative">
             {/* Left Content Column */}
-            <div className="flex-1 flex flex-col justify-between">
+            <div className="flex-1 flex flex-col justify-between z-10">
               <div>
                 <h2 className="text-sm sm:text-base font-serif font-bold text-[#D97706] mb-1.5">
                   A.I. 算命
@@ -66,9 +66,9 @@ export const ThreeCoreProducts: React.FC<ThreeCoreProductsProps> = ({
               </div>
             </div>
 
-            {/* Right Column: Image (羅盤與青銅器 · 往下移一點) */}
-            <div className="w-full sm:w-[44%] shrink-0 flex flex-col justify-end pt-6 sm:pt-10">
-              <div className="h-64 sm:h-[310px] w-full overflow-hidden relative shadow-md bg-[#0D0F11]">
+            {/* Right Column: Image (羅盤與青銅器 · 頂部大幅下移、底部突出懸空) */}
+            <div className="w-full sm:w-[42%] shrink-0 flex flex-col justify-end pt-20 sm:pt-28 -mb-14 sm:-mb-16 relative z-20">
+              <div className="h-72 sm:h-[340px] w-full overflow-hidden shadow-2xl bg-[#0D0F11]">
                 <img
                   src={AI_CARD_IMG}
                   alt="A.I. 算命古籍與羅盤"
@@ -80,12 +80,12 @@ export const ThreeCoreProducts: React.FC<ThreeCoreProductsProps> = ({
         </div>
 
         {/* ========================================================= */}
-        {/* 02 預約 丁蔓山 (暖琥珀色底 · 白/淺色字 · 3項真人服務 · 照片往下移) */}
+        {/* 02 預約 丁蔓山 (暖琥珀底 · 相片大幅下移 · 底部突出懸空 60px) */}
         {/* ========================================================= */}
-        <div className="bg-[#C66D0F] p-5 flex flex-col justify-between shadow-xl">
-          <div className="flex flex-col sm:flex-row gap-4 h-full">
+        <div className="bg-[#C66D0F] p-5 flex flex-col justify-between shadow-xl relative">
+          <div className="flex flex-col sm:flex-row gap-4 h-full relative">
             {/* Left Content Column */}
-            <div className="flex-1 flex flex-col justify-between">
+            <div className="flex-1 flex flex-col justify-between z-10">
               <div>
                 <h2 className="text-sm sm:text-base font-serif font-bold text-[#7B1113] mb-1.5">
                   預約 丁蔓山
@@ -127,9 +127,9 @@ export const ThreeCoreProducts: React.FC<ThreeCoreProductsProps> = ({
               </div>
             </div>
 
-            {/* Right Column: Image (茶具古籍圖 · 往下移一點) */}
-            <div className="w-full sm:w-[44%] shrink-0 flex flex-col justify-end pt-6 sm:pt-10">
-              <div className="h-64 sm:h-[310px] w-full overflow-hidden relative shadow-md bg-[#8E4B07]">
+            {/* Right Column: Image (茶具古籍圖 · 頂部大幅下移、底部突出懸空) */}
+            <div className="w-full sm:w-[42%] shrink-0 flex flex-col justify-end pt-20 sm:pt-28 -mb-14 sm:-mb-16 relative z-20">
+              <div className="h-72 sm:h-[340px] w-full overflow-hidden shadow-2xl bg-[#8E4B07]">
                 <img
                   src={BOOKING_CARD_IMG}
                   alt="丁蔓山大師案頭茶具與古籍"
