@@ -4,14 +4,33 @@ interface HeaderProps {
   onOpenMyReports?: () => void;
   currentView: 'home' | 'online-services' | 'booking-services' | 'service-solo';
   onNavigate: (view: 'home' | 'online-services' | 'booking-services') => void;
+  onScrollToSection?: (sectionId: string) => void;
 }
 
-export const Header: React.FC<HeaderProps> = ({ currentView, onNavigate, onOpenMyReports }) => {
+export const Header: React.FC<HeaderProps> = ({ 
+  currentView, 
+  onNavigate, 
+  onOpenMyReports,
+  onScrollToSection 
+}) => {
+  const handleScroll = (id: string) => {
+    if (currentView !== 'home') {
+      onNavigate('home');
+      setTimeout(() => {
+        const el = document.getElementById(id);
+        if (el) el.scrollIntoView({ behavior: 'smooth' });
+      }, 150);
+    } else {
+      const el = document.getElementById(id);
+      if (el) el.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
   return (
-    <header className="sticky top-0 z-40 w-full bg-[#1e2022]/95 backdrop-blur border-b border-[#1E3A5F]/40 font-sans">
-      <div className="max-w-[1440px] mx-auto px-4 sm:px-8 md:px-12 lg:px-16 h-16 flex items-center justify-between">
+    <header className="sticky top-0 z-40 w-full bg-[#16181A]/95 backdrop-blur border-b border-[#1E3A5F]/40 font-sans">
+      <div className="max-w-[1440px] mx-auto px-4 sm:px-6 md:px-10 h-16 flex items-center justify-between">
         
-        {/* Brand Logo */}
+        {/* Brand Logo: 丁蔓山 ｜ 命理誌 */}
         <div 
           onClick={() => onNavigate('home')}
           className="cursor-pointer text-xl md:text-2xl font-serif tracking-widest flex items-center select-none"
@@ -19,48 +38,75 @@ export const Header: React.FC<HeaderProps> = ({ currentView, onNavigate, onOpenM
           <span className="text-[#D97706] font-bold">丁</span>
           <span className="text-[#D97706] mx-1 font-light">｜</span>
           <span className="text-[#F4EFEA] font-semibold">蔓山</span>
-          <span className="text-[#A4B3C6] text-sm ml-2 font-sans font-light">命理誌</span>
+          <span className="text-[#A4B3C6] text-xs sm:text-sm ml-2 font-sans font-light">命理誌</span>
         </div>
 
-        {/* Clean Navigation: 主頁 | 線上服務 | 線上一對一預約 | 命理誌 */}
-        <nav className="flex items-center space-x-4 sm:space-x-8 text-xs sm:text-sm text-[#A4B3C6]">
+        {/* Navigation: [主頁] [關於丁蔓山] [預約丁蔓山] [A.I. 算命] [通勝 App] [命理誌] [我的命書] [Threads] */}
+        <nav className="flex items-center space-x-3 sm:space-x-5 lg:space-x-6 text-xs sm:text-sm text-[#A4B3C6]">
+          {/* 1. 主頁 */}
+          <button
+            onClick={() => onNavigate('home')}
+            className={`hover:text-[#F4EFEA] transition-colors py-1 cursor-pointer ${
+              currentView === 'home' ? 'text-[#D97706] font-semibold border-b-2 border-[#D97706]' : ''
+            }`}
+          >
+            主頁
+          </button>
+
+          {/* 2. 關於丁蔓山 */}
+          <button
+            onClick={() => handleScroll('about')}
+            className="hover:text-[#F4EFEA] transition-colors py-1 cursor-pointer hidden md:inline-block"
+          >
+            關於丁蔓山
+          </button>
+
+          {/* 3. 預約丁蔓山 */}
+          <button
+            onClick={() => onNavigate('booking-services')}
+            className={`hover:text-[#F4EFEA] transition-colors py-1 cursor-pointer ${
+              currentView === 'booking-services' ? 'text-[#D97706] font-semibold border-b-2 border-[#D97706]' : ''
+            }`}
+          >
+            預約丁蔓山
+          </button>
+
+          {/* 4. A.I. 算命 */}
+          <button
+            onClick={() => onNavigate('online-services')}
+            className={`hover:text-[#F4EFEA] transition-colors py-1 cursor-pointer ${
+              currentView === 'online-services' ? 'text-[#D97706] font-semibold border-b-2 border-[#D97706]' : ''
+            }`}
+          >
+            A.I. 算命
+          </button>
+
+          {/* 5. 通勝 App */}
+          <button
+            onClick={() => handleScroll('tung-shing')}
+            className="hover:text-[#F4EFEA] transition-colors py-1 cursor-pointer hidden sm:inline-block"
+          >
+            通勝 App
+          </button>
+
+          {/* 6. 命理誌 */}
+          <button
+            onClick={() => handleScroll('magazine')}
+            className="hover:text-[#F4EFEA] transition-colors py-1 cursor-pointer"
+          >
+            命理誌
+          </button>
+
+          {/* 7. 我的命書 (專屬歷史庫) */}
           <button
             type="button"
             onClick={() => onOpenMyReports && onOpenMyReports()}
-            className="flex items-center space-x-1 text-xs text-[#D97706] hover:text-[#F4EFEA] px-2.5 py-1 rounded bg-[#D97706]/10 border border-[#D97706]/30 transition-colors font-medium"
+            className="flex items-center space-x-1 text-xs text-[#D97706] hover:text-[#F4EFEA] px-2.5 py-1 rounded bg-[#D97706]/10 border border-[#D97706]/40 transition-colors font-medium cursor-pointer"
           >
             <span>📜 我的命書</span>
           </button>
 
-          <button
-            onClick={() => onNavigate('booking-services')}
-            className={`hover:text-[#F4EFEA] transition-colors py-1 ${
-              currentView === 'booking-services' ? 'text-[#D97706] font-semibold border-b-2 border-[#D97706]' : ''
-            }`}
-          >
-            線上一對一預約
-          </button>
-
-          <a
-            href="#magazine"
-            onClick={(e) => {
-              if (currentView !== 'home') {
-                onNavigate('home');
-                setTimeout(() => {
-                  const el = document.getElementById('magazine');
-                  if (el) el.scrollIntoView({ behavior: 'smooth' });
-                }, 100);
-              } else {
-                const el = document.getElementById('magazine');
-                if (el) el.scrollIntoView({ behavior: 'smooth' });
-              }
-            }}
-            className="hover:text-[#F4EFEA] transition-colors py-1"
-          >
-            命理誌
-          </a>
-
-          {/* Social Follow: Threads */}
+          {/* 8. Threads */}
           <a
             href="https://www.threads.net/@ting.manshan"
             target="_blank"

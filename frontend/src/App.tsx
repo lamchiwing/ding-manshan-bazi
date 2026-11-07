@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Header } from './components/Header';
+import { ThreeCoreProducts } from './components/ThreeCoreProducts';
 import { HeroChartInput } from './components/HeroChartInput';
 import { ChartResult } from './components/ChartResult';
 import { ServicesSidebar } from './components/ServicesSidebar';
@@ -223,6 +224,15 @@ export function App() {
     }
   };
 
+    const handleSelectServiceById = (serviceId: string) => {
+    const found = SIDEBAR_PRICE_LIST.find((s) => s.id === serviceId);
+    if (found) {
+      handleSelectServiceSolo(found);
+    } else {
+      handleNavigate('online-services');
+    }
+  };
+
   const handleSelectServiceSolo = (service: ServiceItem) => {
     // 方案 A：僅在測試網域 (*.pages.dev / localhost) 直接彈窗看報告；正式網址 (tingmanshan.com) 走標準付款流程
     if (service.id === 'srv-five-elements' && isPreviewDomain) {
@@ -330,43 +340,123 @@ export function App() {
       
       {/* Main Views Container (All Full-Page Views, ZERO Pop-ups) */}
       <main className="flex-1 w-full flex flex-col">
-        {/* 1. Home Page View */}
+                {/* 1. Home Page View */}
         {currentView === 'home' && (
-          <div className="max-w-[1440px] w-full mx-auto px-4 sm:px-8 md:px-12 lg:px-16 py-6 md:py-8">
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-              
-              {/* Left Column: Birth Input + Chart Result + Magazine */}
-              <div className="lg:col-span-7 xl:col-span-8 space-y-6">
-                <HeroChartInput onCalculate={handleCalculate} isLoading={isLoading} />
-
-                {baziData && (
-                  <ChartResult 
-                    baziData={baziData} 
-                    onOpenOnlineServices={() => handleNavigate('online-services')}
-                    onOpenOneOnOneBooking={() => handleNavigate('booking-services')}
-                    onOpenFiveElementsReport={isPreviewDomain ? () => setIsFiveElementsModalOpen(true) : undefined}
-                    onOpenLoveNavigationReport={isPreviewDomain ? () => setIsLoveNavigationModalOpen(true) : undefined}
-                    onOpenCareerNavigationReport={isPreviewDomain ? () => setIsCareerNavigationModalOpen(true) : undefined}
-                    onOpenStartupReport={isPreviewDomain ? () => setIsStartupModalOpen(true) : undefined}
-                    onOpenTwelveMonthsReport={isPreviewDomain ? () => setIsTwelveMonthsModalOpen(true) : undefined}
-                    onOpenTwelveMonthsDecisionsReport={isPreviewDomain ? () => setIsTwelveMonthsDecisionsModalOpen(true) : undefined}
-                    onSelectFiveElementsService={() => fiveElementsService && handleSelectServiceSolo(fiveElementsService)}
-                  />
-                )}
-
-                <LibrarySection />
-              </div>
-
-              {/* Right Sidebar: Services Quick List (Clicking opens Solo Page) */}
-              <div className="lg:col-span-5 xl:col-span-4 sticky top-24">
-                <ServicesSidebar
-                  onSelectService={handleSelectServiceSolo}
-                  onOpenBookingCards={() => handleNavigate('booking-services')}
-                  selectedServiceId={selectedService?.id}
-                />
-              </div>
-
+          <div className="max-w-[1440px] w-full mx-auto px-4 sm:px-6 md:px-10 lg:px-12 py-6 space-y-8">
+            
+            {/* 2. Brand Hero Tagline */}
+            <div className="text-center py-2 border-b border-[#1E3A5F]/30 pb-3">
+              <p className="text-xs sm:text-sm font-serif tracking-widest text-[#A4B3C6]">
+                傳承古法 · 洞察人生 ｜ <span className="text-[#D97706]">結合中國命理古籍與現代演算法</span>
+              </p>
             </div>
+
+            {/* 3. THREE CORE PRODUCTS (三大核心銷售入口 · 3 欄並排 / 手機端上下堆疊) */}
+            <ThreeCoreProducts
+              onStartAIReading={() => {
+                const el = document.getElementById('bazi-calculator');
+                if (el) {
+                  el.scrollIntoView({ behavior: 'smooth' });
+                } else {
+                  handleNavigate('online-services');
+                }
+              }}
+              onOpenBooking={() => handleNavigate('booking-services')}
+              onOpenOnlineServices={() => handleNavigate('online-services')}
+            />
+
+            {/* 4. 命理誌 JOURNAL（三大產品正下方 · 不斷 Update 的動態文章專區） */}
+            <LibrarySection
+              onSelectServiceById={handleSelectServiceById}
+            />
+
+            {/* 5. A.I. 算命與即時八字排盤專區 (點擊卡片1直達) */}
+            <div id="bazi-calculator" className="pt-6 border-t border-[#1E3A5F]/40 space-y-6">
+              <div className="text-center max-w-2xl mx-auto space-y-1.5">
+                <div className="inline-flex items-center space-x-1.5 px-3 py-0.5 rounded-full border border-[#D97706]/40 bg-[#D97706]/10 text-[#D97706] text-xs font-mono">
+                  <span>A.I. 實時算命引擎</span>
+                </div>
+                <h3 className="text-2xl font-serif font-bold text-[#F4EFEA] tracking-wide">
+                  即時個人八字命盤排盤與分析
+                </h3>
+                <p className="text-xs text-[#A4B3C6] font-serif leading-relaxed">
+                  輸入您的陽曆出生年月日時，即時生成個人命盤、十神強弱、五行分佈與專屬人生報告建議。
+                </p>
+              </div>
+
+              <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+                <div className="lg:col-span-8 space-y-6">
+                  <HeroChartInput onCalculate={handleCalculate} isLoading={isLoading} />
+
+                  {baziData && (
+                    <ChartResult
+                      baziData={baziData}
+                      onOpenOnlineServices={() => handleNavigate('online-services')}
+                      onOpenOneOnOneBooking={() => handleNavigate('booking-services')}
+                      onOpenFiveElementsReport={isPreviewDomain ? () => setIsFiveElementsModalOpen(true) : undefined}
+                      onOpenLoveNavigationReport={isPreviewDomain ? () => setIsLoveNavigationModalOpen(true) : undefined}
+                      onOpenCareerNavigationReport={isPreviewDomain ? () => setIsCareerNavigationModalOpen(true) : undefined}
+                      onOpenStartupReport={isPreviewDomain ? () => setIsStartupModalOpen(true) : undefined}
+                      onOpenTwelveMonthsReport={isPreviewDomain ? () => setIsTwelveMonthsModalOpen(true) : undefined}
+                      onOpenTwelveMonthsDecisionsReport={isPreviewDomain ? () => setIsTwelveMonthsDecisionsModalOpen(true) : undefined}
+                      onSelectFiveElementsService={() => fiveElementsService && handleSelectServiceSolo(fiveElementsService)}
+                    />
+                  )}
+                </div>
+
+                <div className="lg:col-span-4 sticky top-24">
+                  <ServicesSidebar
+                    onSelectService={handleSelectServiceSolo}
+                    onOpenBookingCards={() => handleNavigate('booking-services')}
+                    selectedServiceId={selectedService?.id}
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* 6. ABOUT 丁蔓山 & 品牌理念 */}
+            <div id="about" className="rounded-2xl bg-[#14171A] border border-[#1E3A5F]/40 p-6 sm:p-8 space-y-4 shadow-xl">
+              <div className="flex flex-col md:flex-row items-start md:items-center justify-between pb-4 border-b border-[#1E3A5F]/40 gap-4">
+                <div>
+                  <span className="text-xs font-mono text-[#D97706] tracking-widest uppercase">ABOUT TING MAN SHAN</span>
+                  <h3 className="text-xl sm:text-2xl font-serif font-bold text-[#F4EFEA] mt-0.5">
+                    關於丁蔓山
+                  </h3>
+                </div>
+                <div className="flex items-center space-x-3">
+                  <a
+                    href="https://www.threads.net/@ting.manshan"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="px-3 py-1.5 rounded-lg bg-[#2A3B4C]/60 hover:bg-[#1E3A5F] text-xs font-mono text-[#F4EFEA] border border-[#4B5E71]/40 hover:border-[#D97706] transition-all flex items-center space-x-1.5"
+                  >
+                    <span>Threads: @ting.manshan</span>
+                  </a>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-xs text-[#A4B3C6] leading-relaxed font-serif">
+                <div className="p-4 rounded-xl bg-[#1A1D20] border border-[#1E3A5F]/30 space-y-2">
+                  <h4 className="text-sm font-bold text-[#D97706] font-sans">研習古籍 · 傳承正統</h4>
+                  <p>
+                    丁蔓山多年沉浸於《子平真詮》、《滴天髓》、《窮通寶鑑》、《三命通會》等命理經典，融會貫通明清以來正統子平命理精髓，去除江湖附會，還原易學哲學真諦。
+                  </p>
+                </div>
+                <div className="p-4 rounded-xl bg-[#1A1D20] border border-[#1E3A5F]/30 space-y-2">
+                  <h4 className="text-sm font-bold text-[#D97706] font-sans">現代數據 · 確定算法</h4>
+                  <p>
+                    將數千個歷史命盤格局與十神生剋權重，轉化為現代計算機嚴謹算法，建立五行百分配比與流月決策矩陣，使傳統命理具備透明、嚴謹與可驗證的現代科學特質。
+                  </p>
+                </div>
+                <div className="p-4 rounded-xl bg-[#1A1D20] border border-[#1E3A5F]/30 space-y-2">
+                  <h4 className="text-sm font-bold text-[#D97706] font-sans">務實指引 · 順天應時</h4>
+                  <p>
+                    命理非宿命宿縛，而是認清自我天賦與生命洋流的導航工具。旨在幫助現代人在事業轉折、婚姻抉擇、空間風水與人生關鍵期做出最佳時空決策。
+                  </p>
+                </div>
+              </div>
+            </div>
+
           </div>
         )}
 
