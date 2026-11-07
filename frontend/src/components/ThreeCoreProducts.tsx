@@ -20,42 +20,42 @@ export const ThreeCoreProducts: React.FC<ThreeCoreProductsProps> = ({
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-5 items-stretch">
         
         {/* ========================================================= */}
-        {/* 01 A.I. 算命 (黑底 · 相片大幅下移 · 底部突出懸空 60px) */}
+        {/* 01 A.I. 算命 (文字橫跨圖片上方 · 圖片緊接文字下方並突出懸空) */}
         {/* ========================================================= */}
         <div className="bg-[#1F2022] p-5 flex flex-col justify-between shadow-xl relative">
-          <div className="flex flex-col sm:flex-row gap-4 h-full relative">
-            {/* Left Content Column */}
-            <div className="flex-1 flex flex-col justify-between z-10">
-              <div>
-                <h2 className="text-sm sm:text-base font-serif font-bold text-[#D97706] mb-1.5">
-                  A.I. 算命
-                </h2>
-                
-                <h3 className="text-xs sm:text-[13px] font-bold text-[#F4EFEA] mb-2 leading-snug">
-                  結合傳統命理與人工智能
-                </h3>
+          {/* Top Full-Width Content: 標題、副標題與兩段介紹 (橫跨卡片上方，在圖片之上) */}
+          <div className="w-full">
+            <h2 className="text-sm sm:text-base font-serif font-bold text-[#D97706] mb-1.5">
+              A.I. 算命
+            </h2>
+            
+            <h3 className="text-xs sm:text-[13px] font-bold text-[#F4EFEA] mb-2 leading-snug">
+              結合傳統命理與人工智能
+            </h3>
 
-                <div className="text-[10.5px] sm:text-[11px] text-[#A4B3C6] leading-[1.65] text-justify space-y-2">
-                  <p>
-                    結合丁蔓山多年研習中國命理古籍的心得、實際批算經驗及個人筆記，整理成專屬命理知識資料庫，融入人工智能技術，提供個人化八字及風水分析。
-                  </p>
-                  <p>
-                    由五行喜忌、八字人生導航、姻緣、事業財運，到未來三年運程及住宅風水，讓傳統命理知識以更直接、方便的方式呈現。
-                  </p>
-                </div>
+            <div className="text-[10.5px] sm:text-[11px] text-[#A4B3C6] leading-[1.65] text-justify space-y-2">
+              <p>
+                結合丁蔓山多年研習中國命理古籍的心得、實際批算經驗及個人筆記，整理成專屬命理知識資料庫，融入人工智能技術，提供個人化八字及風水分析。
+              </p>
+              <p>
+                由五行喜忌、八字人生導航、姻緣、事業財運，到未來三年運程及住宅風水，讓傳統命理知識以更直接、方便的方式呈現。
+              </p>
+            </div>
+          </div>
 
-                {/* 5 項專屬方向定價列表 */}
-                <div className="my-3 space-y-1 text-[11px] text-[#F4EFEA] font-medium font-serif">
-                  <div>五行喜忌指南 HK$128</div>
-                  <div>3年人生及流年 HK$388</div>
-                  <div>姻緣及合盤 HK$388+</div>
-                  <div>3年事業財運導航 HK$488</div>
-                  <div>流月及重大決策 HK$488+</div>
-                </div>
+          {/* Bottom Split Section: 左側 5 項定價與按鈕，右側為相片 */}
+          <div className="flex flex-row gap-4 items-end mt-4 pt-1 flex-1 relative">
+            {/* Left Sub-Column: 5 項定價與探索按鈕 */}
+            <div className="flex-1 flex flex-col justify-between h-full z-10">
+              <div className="space-y-1 text-[11px] text-[#F4EFEA] font-medium font-serif">
+                <div>五行喜忌指南 HK$128</div>
+                <div>3年人生及流年 HK$388</div>
+                <div>姻緣及合盤 HK$388+</div>
+                <div>3年事業財運導航 HK$488</div>
+                <div>流月及重大決策 HK$488+</div>
               </div>
 
-              {/* Bottom Link: 探索所有 AI 命理產品 */}
-              <div className="pt-2 mt-auto">
+              <div className="pt-4 mt-auto">
                 <button
                   type="button"
                   onClick={onStartAIReading}
@@ -66,9 +66,9 @@ export const ThreeCoreProducts: React.FC<ThreeCoreProductsProps> = ({
               </div>
             </div>
 
-            {/* Right Column: Image (羅盤與青銅器 · 頂部大幅下移、底部突出懸空) */}
-            <div className="w-full sm:w-[42%] shrink-0 flex flex-col justify-end pt-20 sm:pt-28 -mb-14 sm:-mb-16 relative z-20">
-              <div className="h-72 sm:h-[340px] w-full overflow-hidden shadow-2xl bg-[#0D0F11]">
+            {/* Right Sub-Column: 圖片 (緊貼文字下方，底部懸空突出 56px) */}
+            <div className="w-[44%] shrink-0 -mb-14 sm:-mb-16 relative z-20">
+              <div className="h-64 sm:h-[290px] w-full overflow-hidden shadow-2xl bg-[#0D0F11]">
                 <img
                   src={AI_CARD_IMG}
                   alt="A.I. 算命古籍與羅盤"
@@ -80,43 +80,43 @@ export const ThreeCoreProducts: React.FC<ThreeCoreProductsProps> = ({
         </div>
 
         {/* ========================================================= */}
-        {/* 02 預約 丁蔓山 (暖琥珀底 · 相片大幅下移 · 底部突出懸空 60px) */}
+        {/* 02 預約 丁蔓山 (文字橫跨圖片上方 · 圖片緊接文字下方並突出懸空) */}
         {/* ========================================================= */}
         <div className="bg-[#C66D0F] p-5 flex flex-col justify-between shadow-xl relative">
-          <div className="flex flex-col sm:flex-row gap-4 h-full relative">
-            {/* Left Content Column */}
-            <div className="flex-1 flex flex-col justify-between z-10">
-              <div>
-                <h2 className="text-sm sm:text-base font-serif font-bold text-[#7B1113] mb-1.5">
-                  預約 丁蔓山
-                </h2>
-                
-                <h3 className="text-xs sm:text-[13px] font-bold text-[#FFF8F0] mb-2 leading-snug">
-                  八字命理、擇日問事及家居商業風水專業諮詢
-                </h3>
+          {/* Top Full-Width Content: 標題、副標題與三段介紹 (橫跨卡片上方，在圖片之上) */}
+          <div className="w-full">
+            <h2 className="text-sm sm:text-base font-serif font-bold text-[#7B1113] mb-1.5">
+              預約 丁蔓山
+            </h2>
+            
+            <h3 className="text-xs sm:text-[13px] font-bold text-[#FFF8F0] mb-2 leading-snug">
+              八字命理、擇日問事及家居商業風水專業諮詢
+            </h3>
 
-                <div className="text-[10.5px] sm:text-[11px] text-[#FFF8F0]/95 leading-[1.65] text-justify space-y-2">
-                  <p>
-                    丁蔓山多年研習命理及風水術數，結合傳統古籍理論與實際批算經驗，提供個人及企業專業諮詢服務。
-                  </p>
-                  <p>
-                    服務涵蓋八字論命、流年問事、起卦求謀、嬰兒命名、吉時擇日，以及家居與商業風水布局。
-                  </p>
-                  <p>
-                    每項諮詢均由丁蔓山親自批算及分析，按個別情況提供專業意見。
-                  </p>
-                </div>
+            <div className="text-[10.5px] sm:text-[11px] text-[#FFF8F0]/95 leading-[1.65] text-justify space-y-2">
+              <p>
+                丁蔓山多年研習命理及風水術數，結合傳統古籍理論與實際批算經驗，提供個人及企業專業諮詢服務。
+              </p>
+              <p>
+                服務涵蓋八字論命、流年問事、起卦求謀、嬰兒命名、吉時擇日，以及家居與商業風水布局。
+              </p>
+              <p>
+                每項諮詢均由丁蔓山親自批算及分析，按個別情況提供專業意見。
+              </p>
+            </div>
+          </div>
 
-                {/* 3 大真人諮詢定價列表 */}
-                <div className="my-3 space-y-1 text-[11px] text-[#FFF8F0] font-medium font-serif">
-                  <div>八字命理 | HK$2,800+</div>
-                  <div>擇日問事 | HK$2,800+</div>
-                  <div>家居及商業風水 | HK$18,00</div>
-                </div>
+          {/* Bottom Split Section: 左側 3 大定價與按鈕，右側為相片 */}
+          <div className="flex flex-row gap-4 items-end mt-4 pt-1 flex-1 relative">
+            {/* Left Sub-Column: 3 項定價與查看按鈕 */}
+            <div className="flex-1 flex flex-col justify-between h-full z-10">
+              <div className="space-y-1 text-[11px] text-[#FFF8F0] font-medium font-serif">
+                <div>八字命理 | HK$2,800+</div>
+                <div>擇日問事 | HK$2,800+</div>
+                <div>家居及商業風水 | HK$18,00</div>
               </div>
 
-              {/* Bottom Link: 查看所有真人服務 */}
-              <div className="pt-2 mt-auto">
+              <div className="pt-4 mt-auto">
                 <button
                   type="button"
                   onClick={onOpenBooking}
@@ -127,9 +127,9 @@ export const ThreeCoreProducts: React.FC<ThreeCoreProductsProps> = ({
               </div>
             </div>
 
-            {/* Right Column: Image (茶具古籍圖 · 頂部大幅下移、底部突出懸空) */}
-            <div className="w-full sm:w-[42%] shrink-0 flex flex-col justify-end pt-20 sm:pt-28 -mb-14 sm:-mb-16 relative z-20">
-              <div className="h-72 sm:h-[340px] w-full overflow-hidden shadow-2xl bg-[#8E4B07]">
+            {/* Right Sub-Column: 圖片 (緊貼文字下方，底部懸空突出 56px) */}
+            <div className="w-[44%] shrink-0 -mb-14 sm:-mb-16 relative z-20">
+              <div className="h-64 sm:h-[290px] w-full overflow-hidden shadow-2xl bg-[#8E4B07]">
                 <img
                   src={BOOKING_CARD_IMG}
                   alt="丁蔓山大師案頭茶具與古籍"
