@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { Download } from 'lucide-react';
 import { AI_CARD_IMG, BOOKING_CARD_IMG } from '../data/cardImages';
+import { getDailyAlmanac } from '../utils/almanacHelper';
 
 interface ThreeCoreProductsProps {
   onStartAIReading: () => void;
@@ -12,12 +13,14 @@ export const ThreeCoreProducts: React.FC<ThreeCoreProductsProps> = ({
   onStartAIReading,
   onOpenBooking,
 }) => {
+  const almanac = useMemo(() => getDailyAlmanac(new Date()), []);
+
   return (
     <section className="w-full py-2 font-sans select-none">
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-5 items-stretch">
         
         {/* ========================================================= */}
-        {/* 01 A.I. 算命 (黑底 · 金色標籤 · 5項定價清單 · 羅盤圖) */}
+        {/* 01 A.I. 算命 (黑底 · 橘黃標籤 · 5項定價清單 · 照片往下移) */}
         {/* ========================================================= */}
         <div className="bg-[#1F2022] p-5 flex flex-col justify-between shadow-xl">
           <div className="flex flex-col sm:flex-row gap-4 h-full">
@@ -63,19 +66,21 @@ export const ThreeCoreProducts: React.FC<ThreeCoreProductsProps> = ({
               </div>
             </div>
 
-            {/* Right Column: Image (羅盤與青銅器) */}
-            <div className="w-full sm:w-[44%] shrink-0 h-64 sm:h-auto overflow-hidden relative bg-[#0D0F11]">
-              <img
-                src={AI_CARD_IMG}
-                alt="A.I. 算命古籍與羅盤"
-                className="w-full h-full object-cover object-center"
-              />
+            {/* Right Column: Image (羅盤與青銅器 · 往下移一點) */}
+            <div className="w-full sm:w-[44%] shrink-0 flex flex-col justify-end pt-6 sm:pt-10">
+              <div className="h-64 sm:h-[310px] w-full overflow-hidden relative shadow-md bg-[#0D0F11]">
+                <img
+                  src={AI_CARD_IMG}
+                  alt="A.I. 算命古籍與羅盤"
+                  className="w-full h-full object-cover object-center"
+                />
+              </div>
             </div>
           </div>
         </div>
 
         {/* ========================================================= */}
-        {/* 02 預約 丁蔓山 (暖琥珀色底 · 白/淺色字 · 3項真人服務 · 茶具圖) */}
+        {/* 02 預約 丁蔓山 (暖琥珀色底 · 白/淺色字 · 3項真人服務 · 照片往下移) */}
         {/* ========================================================= */}
         <div className="bg-[#C66D0F] p-5 flex flex-col justify-between shadow-xl">
           <div className="flex flex-col sm:flex-row gap-4 h-full">
@@ -122,83 +127,82 @@ export const ThreeCoreProducts: React.FC<ThreeCoreProductsProps> = ({
               </div>
             </div>
 
-            {/* Right Column: Image (茶具古籍圖) */}
-            <div className="w-full sm:w-[44%] shrink-0 h-64 sm:h-auto overflow-hidden relative bg-[#8E4B07]">
-              <img
-                src={BOOKING_CARD_IMG}
-                alt="丁蔓山大師案頭茶具與古籍"
-                className="w-full h-full object-cover object-center"
-              />
+            {/* Right Column: Image (茶具古籍圖 · 往下移一點) */}
+            <div className="w-full sm:w-[44%] shrink-0 flex flex-col justify-end pt-6 sm:pt-10">
+              <div className="h-64 sm:h-[310px] w-full overflow-hidden relative shadow-md bg-[#8E4B07]">
+                <img
+                  src={BOOKING_CARD_IMG}
+                  alt="丁蔓山大師案頭茶具與古籍"
+                  className="w-full h-full object-cover object-center"
+                />
+              </div>
             </div>
           </div>
         </div>
 
         {/* ========================================================= */}
-        {/* 03 通勝 App (米灰白底 · 大紅吉字與大紅3 · 大綠忌字) */}
+        {/* 03 通勝 App (萬年曆動態顯示 · 粗體大紅數字 · 常規字重) */}
         {/* ========================================================= */}
         <div id="tung-shing" className="bg-[#EDE9E3] text-[#1E293B] p-5 flex flex-col justify-between shadow-xl">
           <div className="flex flex-col h-full justify-between space-y-3">
             
-            {/* Top Date Header */}
-            <div className="text-center font-serif text-[#1F2937] pb-2">
-              <div className="font-bold text-xs sm:text-sm tracking-wide">
-                2026年11月3日
+            {/* Top Date Header (根據萬年曆顯示公曆與農曆) */}
+            <div className="text-center font-serif text-[#1F2937] pb-1">
+              <div className="font-medium text-sm sm:text-base tracking-wider text-[#1F2937]">
+                {almanac.solarDateStr}
               </div>
-              <div className="text-[10px] sm:text-[11px] text-[#4B5563] tracking-wider mt-0.5">
-                丙午年 九月 廿五日 辛巳日
+              <div className="text-[11px] sm:text-xs text-[#4B5563] tracking-widest mt-0.5 font-normal">
+                {almanac.lunarFullStr}
               </div>
             </div>
 
-            {/* Middle Grid: 大紅吉 | 大紅3 中吉 犯沖肖豬 | 大綠忌 */}
+            {/* Middle Grid: 大紅吉 | 大紅數字 中吉 犯沖 | 大綠忌 */}
             <div className="grid grid-cols-7 gap-1 items-stretch py-1">
               
               {/* Left Column: 大紅 吉 */}
               <div className="col-span-2 flex flex-col items-center">
-                <div className="text-[#DC2626] font-serif font-bold text-2xl mb-1">
+                <div className="text-[#DC2626] font-serif font-bold text-xl sm:text-2xl mb-1.5">
                   吉
                 </div>
-                <div className="flex flex-col items-center space-y-1 font-serif text-[11px] text-[#1E293B] tracking-wider">
-                  <span>交易</span>
-                  <span>動土</span>
-                  <span>安床</span>
-                  <span>栽種</span>
-                  <span>移徙</span>
-                  <span>納畜</span>
+                <div className="flex flex-col items-center space-y-1 font-serif text-xs text-[#1E293B] tracking-widest font-normal">
+                  {almanac.auspicious.map((item, idx) => (
+                    <span key={idx}>{item}</span>
+                  ))}
                 </div>
               </div>
 
-              {/* Center Column: Big Red 3 */}
+              {/* Center Column: Big Red Number (粗體現代數字) */}
               <div className="col-span-3 flex flex-col items-center justify-between text-center">
-                <div className="font-serif font-bold text-6xl text-[#DC2626] leading-none my-auto pt-1">
-                  3
+                <div className="font-sans font-bold text-6xl sm:text-7xl text-[#DC2626] leading-none my-auto pt-1 tracking-tight">
+                  {almanac.solarDay}
                 </div>
                 <div className="w-full space-y-0.5 pb-1">
-                  <div className="text-xs text-[#DC2626] font-serif font-bold">
-                    中吉
+                  <div className="text-xs text-[#DC2626] font-serif font-medium tracking-widest">
+                    {almanac.luck}
                   </div>
-                  <div className="text-[11px] text-[#1E293B] font-serif">
-                    犯沖肖豬
+                  <div className="text-[11px] text-[#1E293B] font-serif font-normal tracking-wider">
+                    {almanac.clash}
                   </div>
                 </div>
               </div>
 
               {/* Right Column: 大綠 忌 */}
               <div className="col-span-2 flex flex-col items-center">
-                <div className="text-[#16A34A] font-serif font-bold text-2xl mb-1">
+                <div className="text-[#16A34A] font-serif font-bold text-xl sm:text-2xl mb-1.5">
                   忌
                 </div>
-                <div className="flex flex-col items-center space-y-1 font-serif text-[11px] text-[#1E293B] tracking-wider">
-                  <span>行程</span>
-                  <span>取魚</span>
-                  <span>醞釀</span>
-                  <span>針灸</span>
+                <div className="flex flex-col items-center space-y-1 font-serif text-xs text-[#1E293B] tracking-widest font-normal">
+                  {almanac.inauspicious.map((item, idx) => (
+                    <span key={idx}>{item}</span>
+                  ))}
                 </div>
               </div>
 
             </div>
 
-            {/* Bottom Actions: 每日通勝 免費下載 & Badges */}
-            <div className="pt-2 flex flex-col items-center space-y-2 text-center">
+            {/* Bottom Actions: 每日通勝 免費下載 & 官方雙按鈕 */}
+            <div className="pt-2 flex items-center justify-between px-1">
+              {/* Left: 每日通勝 免費下載 */}
               <div>
                 <a
                   href="#download"
@@ -206,25 +210,37 @@ export const ThreeCoreProducts: React.FC<ThreeCoreProductsProps> = ({
                     e.preventDefault();
                     alert('丁蔓山《每日通勝》App 即將開放下載！');
                   }}
-                  className="text-xs font-serif font-bold text-[#DC2626] hover:underline flex items-center space-x-1 cursor-pointer"
+                  className="text-xs font-serif font-medium text-[#DC2626] hover:underline flex items-center space-x-1 cursor-pointer"
                 >
                   <span>每日通勝 免費下載</span>
                   <Download className="w-3.5 h-3.5" />
                 </a>
               </div>
 
-              <div className="flex items-center gap-2">
-                <div 
-                  onClick={() => alert('App Store 繁體中文版即將上架！')}
-                  className="cursor-pointer px-2.5 py-1 bg-black text-white rounded text-[9px] font-mono flex items-center space-x-1 hover:bg-neutral-800 transition-colors shadow-sm"
-                >
-                  <span> App Store</span>
-                </div>
+              {/* Right: Badges Stacked (跟足附件 ting ui.jpg 排列) */}
+              <div className="flex flex-col space-y-1">
+                {/* Google Play Badge */}
                 <div 
                   onClick={() => alert('Google Play 繁體中文版即將上架！')}
-                  className="cursor-pointer px-2.5 py-1 bg-black text-white rounded text-[9px] font-mono flex items-center space-x-1 hover:bg-neutral-800 transition-colors shadow-sm"
+                  className="cursor-pointer px-2 py-0.5 bg-black text-white rounded text-[8.5px] font-sans flex items-center space-x-1 hover:bg-neutral-800 transition-colors shadow-sm"
                 >
-                  <span>▶ Google Play</span>
+                  <span className="text-[#34A853] text-[9px]">▶</span>
+                  <div className="flex flex-col leading-none text-left">
+                    <span className="text-[6px] text-gray-300 uppercase tracking-tighter">GET IT ON</span>
+                    <span className="font-semibold text-[8px]">Google Play</span>
+                  </div>
+                </div>
+
+                {/* App Store Badge */}
+                <div 
+                  onClick={() => alert('App Store 繁體中文版即將上架！')}
+                  className="cursor-pointer px-2 py-0.5 bg-black text-white rounded text-[8.5px] font-sans flex items-center space-x-1 hover:bg-neutral-800 transition-colors shadow-sm"
+                >
+                  <span className="text-white text-[10px]"></span>
+                  <div className="flex flex-col leading-none text-left">
+                    <span className="text-[6px] text-gray-300 tracking-tighter">Download on the</span>
+                    <span className="font-semibold text-[8px]">App Store</span>
+                  </div>
                 </div>
               </div>
             </div>
