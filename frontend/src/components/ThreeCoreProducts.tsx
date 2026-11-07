@@ -1,5 +1,6 @@
 import React from 'react';
 import { Download } from 'lucide-react';
+import { AI_CARD_IMG, BOOKING_CARD_IMG } from '../data/cardImages';
 
 interface ThreeCoreProductsProps {
   onStartAIReading: () => void;
@@ -16,7 +17,7 @@ export const ThreeCoreProducts: React.FC<ThreeCoreProductsProps> = ({
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-5 items-stretch">
         
         {/* ========================================================= */}
-        {/* 01 A.I. 算命 (黑底 · 橘黃標籤 · 5項定價清單 · 羅盤圖) */}
+        {/* 01 A.I. 算命 (黑底 · 金色標籤 · 5項定價清單 · 羅盤圖) */}
         {/* ========================================================= */}
         <div className="bg-[#1F2022] p-5 flex flex-col justify-between shadow-xl">
           <div className="flex flex-col sm:flex-row gap-4 h-full">
@@ -63,9 +64,9 @@ export const ThreeCoreProducts: React.FC<ThreeCoreProductsProps> = ({
             </div>
 
             {/* Right Column: Image (羅盤與青銅器) */}
-            <div className="w-full sm:w-[44%] shrink-0 h-56 sm:h-auto overflow-hidden relative bg-[#0D0F11]">
+            <div className="w-full sm:w-[44%] shrink-0 h-64 sm:h-auto overflow-hidden relative bg-[#0D0F11]">
               <img
-                src="/ai_card_img.jpg"
+                src={AI_CARD_IMG}
                 alt="A.I. 算命古籍與羅盤"
                 className="w-full h-full object-cover object-center"
               />
@@ -81,7 +82,7 @@ export const ThreeCoreProducts: React.FC<ThreeCoreProductsProps> = ({
             {/* Left Content Column */}
             <div className="flex-1 flex flex-col justify-between">
               <div>
-                <h2 className="text-sm sm:text-base font-serif font-bold text-[#8A0000] mb-1.5">
+                <h2 className="text-sm sm:text-base font-serif font-bold text-[#7B1113] mb-1.5">
                   預約 丁蔓山
                 </h2>
                 
@@ -122,9 +123,9 @@ export const ThreeCoreProducts: React.FC<ThreeCoreProductsProps> = ({
             </div>
 
             {/* Right Column: Image (茶具古籍圖) */}
-            <div className="w-full sm:w-[44%] shrink-0 h-56 sm:h-auto overflow-hidden relative bg-[#8E4B07]">
+            <div className="w-full sm:w-[44%] shrink-0 h-64 sm:h-auto overflow-hidden relative bg-[#8E4B07]">
               <img
-                src="/booking_card_img.jpg"
+                src={BOOKING_CARD_IMG}
                 alt="丁蔓山大師案頭茶具與古籍"
                 className="w-full h-full object-cover object-center"
               />
@@ -135,7 +136,7 @@ export const ThreeCoreProducts: React.FC<ThreeCoreProductsProps> = ({
         {/* ========================================================= */}
         {/* 03 通勝 App (米灰白底 · 大紅吉字與大紅3 · 大綠忌字) */}
         {/* ========================================================= */}
-        <div id="tung-shing" className="bg-[#E5E3DD] text-[#1E293B] p-5 flex flex-col justify-between shadow-xl">
+        <div id="tung-shing" className="bg-[#EDE9E3] text-[#1E293B] p-5 flex flex-col justify-between shadow-xl">
           <div className="flex flex-col h-full justify-between space-y-3">
             
             {/* Top Date Header */}
