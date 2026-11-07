@@ -57,7 +57,7 @@ export const ThreeCoreProducts: React.FC<ThreeCoreProductsProps> = ({
             {/* Right Image Column (40~45%) */}
             <div className="w-full sm:w-[42%] shrink-0 h-48 sm:h-auto rounded-lg overflow-hidden border border-[#233547] relative bg-[#0D0F11]">
               <img
-                src="/ai_card_img.jpg"
+                src="/ai_card_img.jpg" onError={(e)=>{ (e.target as HTMLElement).style.display="none"; }}
                 alt="A.I. 算命古籍與羅盤"
                 className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-500"
               />
@@ -111,7 +111,7 @@ export const ThreeCoreProducts: React.FC<ThreeCoreProductsProps> = ({
             {/* Right Image Column (40~45%) */}
             <div className="w-full sm:w-[42%] shrink-0 h-48 sm:h-auto rounded-lg overflow-hidden border border-[#D97706]/40 relative bg-[#1A1208]">
               <img
-                src="/booking_card_img.jpg"
+                src="/booking_card_img.jpg" onError={(e)=>{ (e.target as HTMLElement).style.display="none"; }}
                 alt="丁蔓山大師案頭茶具與古籍"
                 className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-500"
               />
