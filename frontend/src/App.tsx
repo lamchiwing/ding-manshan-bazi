@@ -344,13 +344,6 @@ export function App() {
         {currentView === 'home' && (
           <div className="max-w-[1440px] w-full mx-auto px-4 sm:px-6 md:px-10 lg:px-12 py-6 space-y-8">
             
-            {/* 2. Brand Hero Tagline */}
-            <div className="text-center py-2 border-b border-[#1E3A5F]/30 pb-3">
-              <p className="text-xs sm:text-sm font-serif tracking-widest text-[#A4B3C6]">
-                傳承古法 · 洞察人生 ｜ <span className="text-[#D97706]">結合中國命理古籍與現代演算法</span>
-              </p>
-            </div>
-
             {/* 3. THREE CORE PRODUCTS (三大核心銷售入口 · 3 欄並排 / 手機端上下堆疊) */}
             <ThreeCoreProducts
               onStartAIReading={() => {
