@@ -1,6 +1,8 @@
 // Client-side deterministic Bazi calculation engine matching backend logic exactly
 // Supports 早子時 (00:00 - 00:59) and 夜子時 (23:00 - 23:59)
 
+import { lookupJie, toStamp, luckStartAge } from './solarTerms.ts';
+
 const STEMS = ["甲", "乙", "丙", "丁", "戊", "己", "庚", "辛", "壬", "癸"];
 const BRANCHES = ["子", "丑", "寅", "卯", "辰", "巳", "午", "未", "申", "酉", "戌", "亥"];
 
@@ -128,17 +130,15 @@ export function calculateLocalBazi(birthDate: string, birthTime: string, gender:
   const hour = parseInt(hStr, 10);
   const min = parseInt(minStr, 10);
 
-  // Year Pillar (Lichun estimation ~Feb 4)
-  const isBeforeLichun = month === 1 || (month === 2 && day < 4);
-  const baziYear = isBeforeLichun ? year - 1 : year;
+  // Year / Month Pillar：以節氣表（立春換年、十二節換月）查出，與 Python 引擎共用同一份資料
+  const jie = lookupJie(year, month, day, hour, min);
+  const baziYear = jie.baziYear;
   const yearStemIdx = (baziYear - 4 + 60) % 10;
   const yearBranchIdx = (baziYear - 4 + 60) % 12;
   const yearStem = STEMS[yearStemIdx];
   const yearBranch = BRANCHES[yearBranchIdx];
 
-  // Month Pillar
-  const monthBranches = ["丑", "寅", "卯", "辰", "巳", "午", "未", "申", "酉", "戌", "亥", "子"];
-  const mBranch = monthBranches[(month - 1) % 12];
+  const mBranch = jie.monthBranch;
   const tigerBase = FIVE_TIGER_BASE[yearStem];
   const tigerIdx = STEMS.indexOf(tigerBase);
   const monthBranchOrder = ["寅", "卯", "辰", "巳", "午", "未", "申", "酉", "戌", "亥", "子", "丑"];
@@ -233,17 +233,18 @@ export function calculateLocalBazi(birthDate: string, birthTime: string, gender:
   const currMStemIdx = STEMS.indexOf(monthStem);
   const currMBranchIdx = BRANCHES.indexOf(mBranch);
 
+  const baseStartAge = luckStartAge(jie, toStamp(year, month, day, hour, min), isForward);
   for (let seq = 1; seq <= 8; seq++) {
     const step = isForward ? seq : -seq;
     const dyStem = STEMS[(currMStemIdx + step + 60) % 10];
     const dyBranch = BRANCHES[(currMBranchIdx + step + 60) % 12];
-    const startAge = 5 + (seq - 1) * 10;
+    const startAge = baseStartAge + (seq - 1) * 10;
     luckCycles.push({
       sequence: seq,
       start_age: startAge,
       end_age: startAge + 9,
-      start_year: year + startAge,
-      end_year: year + startAge + 9,
+      start_year: baziYear + startAge,   // 與 Python 引擎一致（待定：是否改用西曆出生年，見方案文件）
+      end_year: baziYear + startAge + 9,
       stem: dyStem,
       branch: dyBranch,
       gan_zhi: `${dyStem}${dyBranch}`,
