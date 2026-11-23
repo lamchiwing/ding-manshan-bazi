@@ -228,8 +228,10 @@ def calculate_bazi(
         diff_seconds = (birth_dt - prev_term_dt).total_seconds()
         
     diff_days = diff_seconds / 86400.0
-    start_age_years = round(diff_days / 3.0, 1)
-    base_start_age = max(1, int(round(start_age_years)))
+    # 三天折一歲；只做一次「四捨五入（half-up）」。原本先 round(...,1) 再 round() 會因雙重捨入及銀行家捨入
+    # 令約 5% 個案差 1 歲，且與 TS 引擎無法一致。
+    start_age_years = diff_days / 3.0
+    base_start_age = max(1, int(math.floor(start_age_years + 0.5)))
 
     luck_cycles = []
     for seq in range(1, 9):
