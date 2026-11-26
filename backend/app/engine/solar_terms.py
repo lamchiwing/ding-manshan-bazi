@@ -129,11 +129,9 @@ def get_year_solar_terms(year: int, tz_offset_hours: float = 8.0):
     # 24 terms starting with Lichun (315°) through Dahan (300°)
     for i, name in enumerate(SOLAR_TERMS_NAMES):
         angle = (315.0 + i * 15.0) % 360.0
-        calc_year = year if angle >= 300.0 or angle <= 285.0 else year
-        # Note: Xiao Han and Da Han (Jan) belong to early calendar year
-        if name in ["小寒", "大寒"]:
-            calc_year = year + 1
-        utc_dt = get_solar_term_time(calc_year, angle)
+        # get_solar_term_time(year, angle) 返回「以 year 年立春為起點的一個回歸年內」的時刻，
+        # 因此小寒/大寒（隔年 1 月）亦應傳入同一個 year，不可 +1（+1 會跳到再隔一年）。
+        utc_dt = get_solar_term_time(year, angle)
         local_dt = utc_dt.astimezone(tz)
         results.append({
             "term_name": name,
@@ -159,10 +157,8 @@ def get_all_jie_terms(year: int, tz_offset_hours: float = 8.0):
     tz = timezone(timedelta(hours=tz_offset_hours))
     jie_terms = []
     for term_name, month_branch, angle in JIE_QI_MONTH_MAP:
-        calc_year = year
-        if term_name == "小寒":
-            calc_year = year + 1
-        utc_dt = get_solar_term_time(calc_year, angle)
+        # 同上：小寒屬於「year 年立春起算」的回歸年末段，傳入 year 即可（原本 +1 會令小寒變成再隔一年的 1 月）
+        utc_dt = get_solar_term_time(year, angle)
         local_dt = utc_dt.astimezone(tz)
         jie_terms.append({
             "term_name": term_name,
